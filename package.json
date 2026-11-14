@@ -1,0 +1,23 @@
+{
+  "name": "the-art-archive",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "db:migrate": "node --env-file-if-exists=.env scripts/migrate.js",
+    "db:seed": "node --env-file-if-exists=.env scripts/seed.js",
+    "db:reset": "node --env-file-if-exists=.env scripts/migrate.js --reset && node --env-file-if-exists=.env scripts/seed.js",
+    "db:admin": "node --env-file-if-exists=.env scripts/create-admin.js",
+    "db:check": "node --env-file-if-exists=.env scripts/check-db.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "jose": "^6.2.17",
+    "next": "^16.4.6",
+    "pg": "^8.23.1",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
+  }
+}

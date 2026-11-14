@@ -1,0 +1,72 @@
+[
+ {
+  "id": "c01-senja",
+  "title": "Senja di Ujung Dunia",
+  "painter": "Rizky Pratama",
+  "category": "classic",
+  "studioUrl": "https://example.com/studio-view",
+  "synopsis": "Ketika matahari mulai tenggelam, dunia seakan berhenti sejenak. Karya ini menangkap keindahan momen senja sebagai simbol harapan di penghujung perjalanan.",
+  "file": "c01-senja.jpg",
+  "mime": "image/jpeg"
+ },
+ {
+  "id": "c02-fajar",
+  "title": "Fajar di Pegunungan",
+  "painter": "Karya contoh",
+  "category": "classic",
+  "studioUrl": "",
+  "synopsis": "Contoh karya klasik. Lapisan punggung gunung yang makin biru menjauh menggambarkan jarak dan udara pagi.",
+  "file": "c02-fajar.jpg",
+  "mime": "image/jpeg"
+ },
+ {
+  "id": "c03-cincin",
+  "title": "Cincin Warna",
+  "painter": "Karya contoh",
+  "category": "anamorphic-color",
+  "studioUrl": "https://example.com/studio-view",
+  "synopsis": "Contoh karya anamorphic color. Lingkaran-lingkaran warna yang saling tumpang tindih menjadi satu bentuk utuh dari sudut pandang tertentu.",
+  "file": "c03-cincin.jpg",
+  "mime": "image/jpeg"
+ },
+ {
+  "id": "c04-danau",
+  "title": "Danau Malam",
+  "painter": "Karya contoh",
+  "category": "classic",
+  "studioUrl": "",
+  "synopsis": "Contoh karya klasik. Bulan penuh dan pantulannya di danau yang tenang.",
+  "file": "c04-danau.jpg",
+  "mime": "image/jpeg"
+ },
+ {
+  "id": "c05-garis",
+  "title": "Garis Berpindah",
+  "painter": "Karya contoh",
+  "category": "agamograph",
+  "studioUrl": "",
+  "synopsis": "Contoh karya agamograph. Dua gambar disusun dalam garis-garis tipis, sehingga warnanya berubah ketika dilihat dari kiri atau kanan.",
+  "file": "c05-garis.jpg",
+  "mime": "image/jpeg"
+ },
+ {
+  "id": "c06-bayangan",
+  "title": "Bayangan Panjang",
+  "painter": "Karya contoh",
+  "category": "anamorphic-shadow",
+  "studioUrl": "",
+  "synopsis": "Contoh karya anamorphic shadow. Sebuah botol dan bola melemparkan bayangan panjang di lantai.",
+  "file": "c06-bayangan.jpg",
+  "mime": "image/jpeg"
+ },
+ {
+  "id": "c07-bukit",
+  "title": "Bukit Siang",
+  "painter": "Karya contoh",
+  "category": "classic",
+  "studioUrl": "",
+  "synopsis": "Contoh karya klasik. Bukit hijau berlapis di bawah awan tipis siang hari.",
+  "file": "c07-bukit.jpg",
+  "mime": "image/jpeg"
+ }
+]
