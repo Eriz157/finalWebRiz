@@ -11,6 +11,7 @@ export default function CommentsDrawer({ art, onCount, onClose }) {
   const [text, setText] = useState('');
   const [err, setErr] = useState('');
   const [busy, setBusy] = useState(false);
+  const [replyTo, setReplyTo] = useState(null);
   const body = useRef(null);
 
   const load = async () => {
@@ -26,19 +27,52 @@ export default function CommentsDrawer({ art, onCount, onClose }) {
     if (!t) { setErr('Tulis komentar terlebih dahulu.'); return; }
     setBusy(true); setErr('');
     try {
-      await api(`/api/artworks/${art.id}/comments`, { method: 'POST', json: { body: t } });
-      setText(''); await load();
+      await api(`/api/artworks/${art.id}/comments`, { method: 'POST', json: { body: t, parentId: replyTo ? replyTo.id : undefined } });
+      setText(''); setReplyTo(null); await load();
     } catch (e2) { setErr(e2.message); }
     setBusy(false);
   };
   useEffect(() => { if (list) onCount && onCount(list.length); }, [list]); // eslint-disable-line
 
   const del = async (c) => {
-    const ok = await confirm({ title: 'Hapus komentar?', text: 'Komentar ini akan dihapus permanen.', ok: 'Hapus', danger: true });
+    const ok = await confirm({ title: 'Hapus komentar?', text: 'Komentar ini (beserta balasannya) akan dihapus permanen.', ok: 'Hapus', danger: true });
     if (!ok) return;
     try { await api(`/api/comments/${c.id}`, { method: 'DELETE' }); await load(); } catch (e) { toast(e.message, 'err'); }
   };
+  const like = async (c) => {
+    if (!user) { toast('Masuk untuk menyukai komentar.', 'err'); return; }
+    try {
+      const d = await api(`/api/comments/${c.id}/like`, { method: 'POST' });
+      setList((l) => l.map((x) => (x.id === c.id ? { ...x, liked: d.liked, likes: d.likes } : x)));
+    } catch (e) { toast(e.message, 'err'); }
+  };
+  const startReply = (c) => {
+    if (!user) { toast('Masuk untuk membalas komentar.', 'err'); return; }
+    setReplyTo(c); setErr('');
+    setTimeout(() => { const el = document.getElementById('cmText'); if (el) el.focus(); }, 0);
+  };
   const n = list ? list.length : 0;
+  const tops = (list || []).filter((c) => !c.parentId);
+  const repliesOf = (id) => (list || []).filter((c) => c.parentId === id);
+  const Item = ({ c, top }) => {
+    const mine = user && (user.id === c.userId || user.role === 'admin');
+    return (
+      <div className={'cm' + (top ? '' : ' cm-reply')}>
+        <Avatar u={{ name: c.userName, avatar: c.avatar }} cls="md" />
+        <div>
+          <div className="hd"><b>{c.userName}</b>{c.userRole !== 'public' && <Badge r={c.userRole} />}<small suppressHydrationWarning>{relTime(c.createdAt)}</small></div>
+          <p>{c.body}</p>
+          <div className="cm-act">
+            <button type="button" className={'cm-like' + (c.liked ? ' on' : '')} onClick={() => like(c)} aria-pressed={!!c.liked} aria-label={c.liked ? 'Batal sukai komentar' : 'Sukai komentar'}>
+              <Icon n="heart" /> <span>{c.likes || 0}</span>
+            </button>
+            <button type="button" className="cm-rep" onClick={() => startReply(c)}>Balas</button>
+            {mine && <button type="button" className="del" onClick={() => del(c)}>{user.id === c.userId ? 'Hapus' : 'Hapus (moderasi)'}</button>}
+          </div>
+        </div>
+      </div>
+    );
+  };
   return (
     <>
       <div className="dr-head">
@@ -52,28 +86,22 @@ export default function CommentsDrawer({ art, onCount, onClose }) {
             <p style={{ margin: 0 }}>{user ? 'Jadilah yang pertama memberi tanggapan.' : 'Masuk untuk memberi tanggapan pertama.'}</p>
           </div>
         )}
-        {(list || []).map((c) => {
-          const mine = user && (user.id === c.userId || user.role === 'admin');
-          return (
-            <div className="cm" key={c.id}>
-              <Avatar u={{ name: c.userName, avatar: c.avatar }} cls="md" />
-              <div>
-                <div className="hd"><b>{c.userName}</b>{c.userRole !== 'public' && <Badge r={c.userRole} />}<small suppressHydrationWarning>{relTime(c.createdAt)}</small></div>
-                <p>{c.body}</p>
-                {mine && <button type="button" className="del" onClick={() => del(c)}>{user.id === c.userId ? 'Hapus komentar' : 'Hapus (moderasi)'}</button>}
-              </div>
-            </div>
-          );
-        })}
+        {tops.map((c) => (
+          <div className="cm-thread" key={c.id}>
+            <Item c={c} top />
+            {repliesOf(c.id).map((r) => <Item c={r} key={r.id} />)}
+          </div>
+        ))}
       </div>
       <div className="dr-foot">
         {user ? (
           <form onSubmit={submit} noValidate>
-            <textarea className="in" id="cmText" maxLength={500} value={text} onChange={(e) => setText(e.target.value)} placeholder="Tulis tanggapanmu tentang karya ini…" aria-label="Komentar" />
+            {replyTo && <div className="cm-replying">Membalas <b>{replyTo.userName}</b><button type="button" onClick={() => setReplyTo(null)} aria-label="Batal membalas">×</button></div>}
+            <textarea className="in" id="cmText" maxLength={500} value={text} onChange={(e) => setText(e.target.value)} placeholder={replyTo ? `Balas ${replyTo.userName}…` : 'Tulis tanggapanmu tentang karya ini…'} aria-label="Komentar" />
             <p className="msg-err" role="alert" style={{ margin: '0 0 8px' }}>{err}</p>
             <div className="btn-row" style={{ justifyContent: 'space-between' }}>
               <span className="small mute">Maks. 500 karakter</span>
-              <button type="submit" className="btn primary sm" disabled={busy}>Kirim komentar</button>
+              <button type="submit" className="btn primary sm" disabled={busy}>{replyTo ? 'Kirim balasan' : 'Kirim komentar'}</button>
             </div>
           </form>
         ) : (

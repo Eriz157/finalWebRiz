@@ -1,12 +1,7 @@
-import { route, json, requireUser, ApiError } from '@/lib/api';
-import { query } from '@/lib/db';
-import { destroySession } from '@/lib/auth';
+import { route, requireUser, ApiError } from '@/lib/api';
 
-// Hapus akun sendiri (admin tidak dapat menghapus akunnya lewat sini).
+// Penghapusan akun mandiri dinonaktifkan. Akun hanya dapat dihapus oleh admin lewat User Management.
 export const DELETE = route(async () => {
-  const u = await requireUser();
-  if (u.role === 'admin') throw new ApiError(403, 'Akun admin tidak dapat dihapus.');
-  await query('DELETE FROM users WHERE id=$1', [u.id]);
-  await destroySession();
-  return json({ ok: true });
+  await requireUser();
+  throw new ApiError(403, 'Penghapusan akun sendiri dinonaktifkan. Hubungi admin bila perlu.');
 });

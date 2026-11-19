@@ -1,7 +1,7 @@
 /* ===================== THE ART ARCHIVE — theme ===================== */
 :root{
   --bg:#f3f0e9;--bg2:#ebe6da;--paper:#faf8f2;--ink:#222622;--ink2:#575a54;--mute:#8a8b83;
-  --line:#dcd7ca;--line2:#c6bfae;
+  --line:#dcd7ca;--line2:#c6bfae;--nav-real:82px;
   --terra:#b0735a;--terra-d:#8c4b33;--terra-l:#efdcd2;
   --olive:#5d6b4a;--olive-l:#e0e5d3;--sand:#e9e1cf;--ok:#4c7a58;--err:#a0402f;--warn:#a98441;
   --serif:"Cormorant Garamond","Cormorant","Iowan Old Style","Palatino Linotype",Georgia,serif;
@@ -21,7 +21,7 @@ img{max-width:100%}
 ::selection{background:var(--terra);color:#fff}
 
 /* ---------- navbar ---------- */
-.nav{position:sticky;top:0;z-index:60;background:var(--bg);padding:12px 20px}
+.nav{position:sticky;top:0;z-index:60;padding:12px 20px;background:transparent}
 .nav-box{position:relative;max-width:1260px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:22px;border:1px solid var(--line2);padding:0 22px;height:58px;background:var(--bg)}
 .brand{font-family:var(--serif);font-size:27px;font-weight:500;letter-spacing:-.01em;text-decoration:none;white-space:nowrap;line-height:1}
 .brand em{font-style:italic}
@@ -873,3 +873,65 @@ select.in{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns=
 .b-pin2 .b-stage::before{display:none}
 .b-stage.is-ready::before{display:none}
 .b-stage canvas{position:relative;z-index:1}
+
+/* Komentar: sukai & balas */
+.cm-thread{border-bottom:1px solid var(--line)}
+.cm-thread .cm{border-bottom:0}
+.cm-reply{margin-left:44px;padding-top:4px;position:relative}
+.cm-reply::before{content:"";position:absolute;left:-26px;top:0;bottom:50%;width:16px;border-left:1px solid var(--line2);border-bottom:1px solid var(--line2);border-bottom-left-radius:8px}
+.cm-act{display:flex;gap:16px;align-items:center;margin-top:6px}
+.cm-act button{font-size:12.5px;color:var(--mute);display:inline-flex;gap:5px;align-items:center}
+.cm-act button:hover{color:var(--terra-d)}
+.cm-act .del{margin-top:0}
+.cm-like svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.7}
+.cm-like.on{color:var(--terra-d)}
+.cm-like.on svg{fill:var(--terra);stroke:var(--terra)}
+.cm-replying{display:flex;justify-content:space-between;align-items:center;background:var(--bg2,#ece7dc);border-left:2px solid var(--terra);padding:6px 10px;margin-bottom:8px;font-size:13px;color:var(--ink2)}
+.cm-replying button{font-size:18px;line-height:1;color:var(--mute)}
+
+/* Detail gallery: Studio View menyala bila tersedia + sinopsis lebih terbaca */
+#p-galeri .syn{box-sizing:border-box;width:100%;max-height:200px;background:linear-gradient(135deg,rgba(34,22,14,.62),rgba(34,22,14,.46));backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,240,220,.22);border-left:3px solid #e8c386;border-radius:10px;padding:16px 20px;line-height:1.6;color:#fff8ec;text-shadow:0 1px 10px rgba(0,0,0,.5);box-shadow:0 12px 34px rgba(20,12,6,.28)}
+#p-galeri .syn::-webkit-scrollbar{width:6px}
+#p-galeri .syn::-webkit-scrollbar-thumb{background:rgba(255,240,220,.35);border-radius:6px}
+#p-galeri .studio:not(.on){background:rgba(60,48,40,.5);border-style:dashed;cursor:not-allowed}
+#p-galeri .studio.on{background:linear-gradient(120deg,#f3d391 0%,#e2a653 50%,#f3d391 100%);background-size:220% 100%;border-color:#ffe3a8;color:#2a1b0c;animation:studioGlow 2.6s ease-in-out infinite,studioSheen 5s linear infinite}
+#p-galeri .studio.on .ic svg,#p-galeri .studio.on .go svg{stroke:#2a1b0c}
+#p-galeri .studio.on .st b{font-weight:600}
+#p-galeri .studio.on small{color:#4a2f12;font-weight:500}
+#p-galeri .studio.on .led{background:#2f9a55;box-shadow:0 0 0 4px rgba(47,154,85,.3)}
+#p-galeri a.studio.on:hover{transform:translateY(-3px) scale(1.015)}
+@keyframes studioGlow{0%,100%{box-shadow:0 0 0 1px rgba(255,227,168,.7),0 0 18px 2px rgba(255,196,102,.45),0 10px 30px rgba(120,80,20,.3)}50%{box-shadow:0 0 0 1px rgba(255,236,190,.95),0 0 38px 8px rgba(255,200,110,.7),0 10px 30px rgba(120,80,20,.3)}}
+@keyframes studioSheen{0%{background-position:0% 0}100%{background-position:-220% 0}}
+@media (prefers-reduced-motion:reduce){#p-galeri .studio.on{animation:none;box-shadow:0 0 24px 4px rgba(255,200,110,.6)}}
+#p-galeri .detail.enter .studio.on{animation:cardIn .9s var(--ease) 1.6s backwards,studioGlow 2.6s ease-in-out 2.5s infinite,studioSheen 5s linear 2.5s infinite}
+
+/* Pencarian gallery */
+#p-galeri .gsearch{position:absolute;z-index:8;top:max(28px,5vh);left:max(24px,3.4vw);width:min(340px,46vw);display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:0 14px;height:46px;border-radius:999px;background:rgba(40,28,20,.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,240,220,.4);color:#fbf1e0;cursor:text}
+#p-galeri .gsearch:focus-within{border-color:#f0cf98;box-shadow:0 0 0 3px rgba(240,207,152,.25)}
+#p-galeri .gsearch svg{width:18px;height:18px;stroke:#f3e6d2;fill:none;stroke-width:1.8;stroke-linecap:round;flex:none}
+#p-galeri .gsearch input{flex:1;min-width:0;background:none;border:0;outline:0;color:#fff8ec;font:inherit;font-size:15px}
+#p-galeri .gsearch input::placeholder{color:rgba(243,230,210,.75)}
+#p-galeri .gsearch input::-webkit-search-cancel-button{display:none}
+#p-galeri .gs-x{font-size:20px;line-height:1;color:#f3e6d2}
+#p-galeri .gs-n{position:absolute;left:18px;top:52px;font-size:12.5px;letter-spacing:.04em;color:#f3e6d2;text-shadow:0 1px 8px rgba(24,16,10,.9)}
+
+/* Pencarian challenge */
+.sp-search{display:flex;align-items:center;gap:8px;margin-top:22px;width:min(300px,100%);height:44px;padding:0 14px;border-radius:999px;background:rgba(243,231,208,.08);border:1px solid rgba(243,231,208,.3);color:#f3e7d0;position:relative;z-index:7}
+.sp-search:focus-within{border-color:#e8c386;box-shadow:0 0 0 3px rgba(232,195,134,.22)}
+.sp-search svg{width:17px;height:17px;stroke:rgba(243,231,208,.8);fill:none;stroke-width:1.8;stroke-linecap:round;flex:none}
+.sp-search input{flex:1;min-width:0;background:none;border:0;outline:0;color:#fff8ec;font:inherit;font-size:14.5px}
+.sp-search input::placeholder{color:rgba(243,231,208,.6)}
+.sp-search input::-webkit-search-cancel-button{display:none}
+.sp-search button{font-size:19px;line-height:1;color:rgba(243,231,208,.8)}
+
+/* Navbar transparan: hanya kotak teks yang solid; adegan penuh layar naik ke belakang navbar */
+body:has(#p-galeri) .nav,body:has(#p-challenge) .nav{margin-bottom:calc(-1 * var(--nav-real))}
+#p-galeri .stage > .view{inset:var(--nav-real) 0 0 0}
+.sp-page{box-sizing:border-box;padding-top:var(--nav-real);height:100svh;min-height:560px}
+.b-pin .b-hero{padding-top:calc(var(--nav-real) + clamp(34px,6vh,72px))}
+#sec-view,#sec-calls{padding-top:calc(var(--nav-real) + clamp(12px,1.6vw,26px))}
+body:has(.b-pin) .nav{margin-bottom:calc(-1 * var(--nav-real))}
+html:has(.b-pin){--nav-h:0px}
+@media (max-width:700px){#p-galeri .ptitle{top:86px;max-width:70vw}#p-galeri .gsearch{top:20px;width:calc(100vw - 48px)}}
+/* Tepi atas latar aula memudar halus ke latar blur di belakang navbar (tidak terlihat terpotong) */
+#p-galeri .canvas .bg{-webkit-mask-image:linear-gradient(180deg,transparent 0,rgba(0,0,0,.55) 38px,#000 130px);mask-image:linear-gradient(180deg,transparent 0,rgba(0,0,0,.55) 38px,#000 130px)}

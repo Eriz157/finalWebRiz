@@ -94,9 +94,9 @@ export default function HomeView({ stats, popular, newest, calls, joinedIds }) {
   useEffect(() => {
     const pinEl = pin.current, stickEl = stick.current, txt = heroTxt.current;
     let dead = false, handle = null, raf = 0;
-    const setNav = () => { const n = document.querySelector('.nav'); document.documentElement.style.setProperty('--nav-h', (n ? n.offsetHeight : 84) + 'px'); };
+    const setNav = () => { const n = document.querySelector('.nav'); document.documentElement.style.setProperty('--nav-real', (n ? n.offsetHeight : 82) + 'px'); document.documentElement.style.setProperty('--nav-h', '0px'); };
     const progress = () => {
-      const r = pinEl.getBoundingClientRect(), navH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 84;
+      const r = pinEl.getBoundingClientRect(), navH = (() => { const v = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')); return Number.isNaN(v) ? 84 : v; })();
       const total = Math.max(1, r.height - stickEl.offsetHeight);
       return clamp01((navH - r.top) / total);
     };
@@ -124,7 +124,7 @@ export default function HomeView({ stats, popular, newest, calls, joinedIds }) {
     const secEl = countSec.current, stickEl = countStick.current, txt = countTxt.current;
     let dead = false, handle = null, started = false, raf = 0;
     const ENT = 0.28, HOLD = 0.52; // 0–0.2 animasi masuk, sampai 0.5 diam, 0.5–1 animasi keluar
-    const navH = () => parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 84;
+    const navH = () => { const v = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')); return Number.isNaN(v) ? 84 : v; };
     const apply = () => {
       raf = 0;
       const nh = navH(), vh = window.innerHeight, r = secEl.getBoundingClientRect();

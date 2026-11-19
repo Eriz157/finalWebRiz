@@ -25,8 +25,14 @@ export default function ChallengesView({ challenges, joinedIds, myArts }) {
   const [sel, setSel] = useState(null);
 
   const all = useMemo(() => [...challenges].sort((a, b) => ORD[a.status] - ORD[b.status] || (a.end < b.end ? -1 : 1)), [challenges]);
-  const list = useMemo(() => all.filter((c) => filter === 'all' || c.status === filter), [all, filter]);
-  const cnt = { all: all.length, active: 0, soon: 0, ended: 0 }; all.forEach((c) => { cnt[c.status]++; });
+  const [q, setQ] = useState('');
+  const found = useMemo(() => {
+    const t = q.trim().toLowerCase();
+    if (!t) return all;
+    return all.filter((c) => [c.title, c.description, c.prize, c.ownerName, CH_LABEL[c.status]].join(' ').toLowerCase().includes(t));
+  }, [all, q]);
+  const list = useMemo(() => found.filter((c) => filter === 'all' || c.status === filter), [found, filter]);
+  const cnt = { all: found.length, active: 0, soon: 0, ended: 0 }; found.forEach((c) => { cnt[c.status]++; });
 
   const pageRef = useRef(null);
   const rootRef = useRef(null);
@@ -65,7 +71,7 @@ export default function ChallengesView({ challenges, joinedIds, myArts }) {
 
     function measure() {
       const nav = document.querySelector('.nav');
-      page.style.height = `calc(100svh - ${nav ? nav.offsetHeight : 84}px)`;
+      page.style.height = "100svh";
       W = root.clientWidth; H = root.clientHeight;
       if (!W || !H || !cards.length) return;
       const cw = Math.min(W * 0.92, 1240);
@@ -274,6 +280,11 @@ export default function ChallengesView({ challenges, joinedIds, myArts }) {
         <h1 className="sp-h1">Daftar <em>challenge.</em></h1>
         <p className="sp-lead">{note}</p>
         {addBtn}
+        <div className="sp-search" role="search">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" /><path d="m16 16 4.5 4.5" /></svg>
+          <input type="search" value={q} onChange={(e) => { setQ(e.target.value); if (location.hash.startsWith(HASH)) location.hash = '#/'; }} placeholder="Cari challenge…" aria-label="Cari challenge" autoComplete="off" />
+          {q && <button type="button" onClick={() => setQ('')} aria-label="Hapus pencarian">×</button>}
+        </div>
       </header>
 
       <nav className="sp-side" role="tablist" aria-label="Filter challenge">
@@ -294,7 +305,7 @@ export default function ChallengesView({ challenges, joinedIds, myArts }) {
             </a>
           ))}
         </div>
-        {!list.length && <div className="sp-empty"><b>Tidak ada challenge</b><span>Belum ada challenge pada kategori ini.</span></div>}
+        {!list.length && <div className="sp-empty"><b>Tidak ada challenge</b><span>{q.trim() ? 'Tidak ada challenge yang cocok dengan pencarianmu.' : 'Belum ada challenge pada kategori ini.'}</span></div>}
 
       </section>
 

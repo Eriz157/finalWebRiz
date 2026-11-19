@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useApp } from './context';
 import { createGallery } from './galleryController';
 import ArtForm from './ArtForm';
@@ -9,7 +9,14 @@ export default function GalleryView({ arts: serverArts, initialId }) {
   const app = useApp();
   const appRef = useRef(app); appRef.current = app;
   const [arts, setArts] = useState(serverArts);
-  const artsRef = useRef(arts); artsRef.current = arts;
+  const [q, setQ] = useState('');
+  const shown = useMemo(() => {
+    const t = q.trim().toLowerCase();
+    if (!t) return arts;
+    return arts.filter((a) => [a.title, a.painter, a.synopsis, (app.cats[a.category] || {}).label || a.category].join(' ').toLowerCase().includes(t));
+  }, [arts, q, app.cats]);
+  const qRef = useRef(q); qRef.current = q;
+  const artsRef = useRef(shown); artsRef.current = shown;
   const ctl = useRef(null);
 
   // Data baru dari server (setelah router.refresh) menggantikan data lokal.
@@ -18,13 +25,14 @@ export default function GalleryView({ arts: serverArts, initialId }) {
     ctl.current = createGallery({
       ui: () => appRef.current,
       arts: () => artsRef.current,
+      emptyText: () => (qRef.current.trim() ? 'Tidak ada karya yang cocok dengan pencarianmu.' : 'Belum ada karya yang dipamerkan.'),
       initialId,
       removeLocal: (id) => setArts((l) => l.filter((a) => a.id !== id)),
       onEdit: (a) => appRef.current.openModal(<ArtForm art={a} />),
     });
     return () => { ctl.current && ctl.current.destroy(); ctl.current = null; };
   }, []); // eslint-disable-line
-  useEffect(() => { if (ctl.current) { ctl.current.sync(); } }, [arts, app.user]);
+  useEffect(() => { if (ctl.current) { ctl.current.sync(); } }, [shown, app.user]);
 
   const I = (d) => <svg viewBox="0 0 24 24" aria-hidden="true"><path d={d} /></svg>;
   return (
@@ -69,6 +77,12 @@ export default function GalleryView({ arts: serverArts, initialId }) {
         </div>
         <section className="view spiral" id="spiral" aria-label="Galeri karya">
           <div className="hw"><div className="helix" id="helix" /></div>
+          <div className="gsearch" onPointerDown={(e) => e.stopPropagation()} onWheel={(e) => e.stopPropagation()}>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" /><path d="m16 16 4.5 4.5" /></svg>
+            <input type="search" id="gSearch" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Cari karya, pelukis, kategori…" aria-label="Cari karya" autoComplete="off" />
+            {q && <button type="button" className="gs-x" onClick={() => setQ('')} aria-label="Hapus pencarian">×</button>}
+            {q.trim() && <span className="gs-n" aria-live="polite">{shown.length} dari {arts.length} karya</span>}
+          </div>
           <div className="sbar"><span className="n" aria-hidden="true"><b id="cIdx">00</b> / <span id="cTotal">00</span></span><p id="hint">Memuat koleksi…</p></div>
           <div className="ptitle" aria-hidden="true"><h2 id="pTitle" /><p id="pBy" /></div>
         </section>

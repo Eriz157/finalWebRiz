@@ -10,7 +10,11 @@ const fs = require('fs'), path = require('path'), { Client } = require('pg');
     console.log('Skema lama dihapus.');
   }
   const exists = await c.query("SELECT to_regclass('public.users') AS t");
-  if (exists.rows[0].t) { console.log('Tabel sudah ada. Pakai `npm run db:reset` untuk membuat ulang.'); await c.end(); return; }
+  if (exists.rows[0].t) {
+    await c.query(fs.readFileSync(path.join(__dirname, '..', 'db', 'upgrade-comments.sql'), 'utf8'));
+    console.log('Tabel sudah ada: data tidak diubah. Fitur sukai & balas komentar dipastikan tersedia.');
+    await c.end(); return;
+  }
   await c.query(fs.readFileSync(path.join(__dirname, '..', 'db', 'schema.sql'), 'utf8'));
   console.log('Tabel berhasil dibuat.');
   await c.end();

@@ -86,7 +86,7 @@ export function createGallery(env) {
   function layout() {
     const N = state.arts.length, h = byId('hint');
     byId('cIdx').textContent = pad2(N ? currentIndex() + 1 : 0); byId('cTotal').textContent = pad2(N);
-    if (!N) h.textContent = 'Belum ada karya yang dipamerkan.';
+    if (!N) h.textContent = env.emptyText ? env.emptyText() : 'Belum ada karya yang dipamerkan.';
     else h.textContent = (window.matchMedia('(pointer:coarse)').matches ? 'Geser' : 'Gulir') + ' untuk memutar spiral, pilih karya untuk melihatnya';
     if (!N) setTitle(null);
     sp.c = -1; paint();
@@ -198,9 +198,9 @@ export function createGallery(env) {
     if (!portrait) { cw = 1600; ch = 900; sh = Math.max(H, 560); sc = Math.min(W / cw, sh / ch); left = (W - cw * sc) / 2; top = (sh - ch * sc) / 2; }
     else { cw = 800; sc = W / cw; ch = state.view === 'detail' ? Math.max(detail.offsetHeight, 1500) : 1500; sh = Math.max(ch * sc, H); left = 0; top = (sh - ch * sc) / 2; }
     canvas.dataset.lb = left > 28 ? 'x' : (top > 28 ? 'y' : '');
-    stage.style.height = (state.view === 'detail' ? sh : H) + 'px';
+    stage.style.height = (state.view === 'detail' ? sh : H) + navH + 'px';
     canvas.style.width = cw + 'px'; canvas.style.height = ch + 'px';
-    canvas.style.transform = 'translate(' + left + 'px,' + top + 'px) scale(' + sc + ')';
+    canvas.style.transform = 'translate(' + left + 'px,' + (top + navH) + 'px) scale(' + sc + ')';
     geom();
   }
   const schedFit = () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(fit); };

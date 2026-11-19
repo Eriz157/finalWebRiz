@@ -71,10 +71,6 @@ function AccountTab({ u }) {
     if (!(await confirm({ title: 'Ajukan jadi Curator?', text: 'Admin akan meninjau pengajuanmu. Kamu tetap bisa memakai akun ini sebagai Public selama menunggu.', ok: 'Ajukan' }))) return;
     try { await api('/api/me/curator-request', { method: 'POST' }); toast('Pengajuan terkirim ke admin.', 'ok'); refresh(); } catch (x) { toast(x.message, 'err'); }
   };
-  const del = async () => {
-    if (!(await confirm({ title: 'Hapus akunmu?', text: 'Karya, komentar, dan submisi challenge milikmu akan ikut terhapus. Tindakan ini tidak dapat dibatalkan.', ok: 'Hapus akun saya', danger: true }))) return;
-    try { await api('/api/me', { method: 'DELETE' }); toast('Akunmu telah dihapus.', 'ok'); router.push('/'); router.refresh(); } catch (x) { toast(x.message, 'err'); }
-  };
   return (
     <>
       <div className="panel" style={{ marginBottom: 24 }}><h3>Kelola akun</h3><p className="sub">Informasi privat. Tidak tampil di profil publik.</p>
@@ -90,12 +86,9 @@ function AccountTab({ u }) {
       {u.role === 'public' && (
         <div className="panel" style={{ marginBottom: 24 }}><h3>Menjadi Curator</h3>
           {u.curatorStatus === 'pending' ? <p className="sub">Pengajuanmu sedang ditinjau admin. <Badge r="pending">Pending</Badge></p>
-            : u.curatorStatus === 'rejected' ? <p className="sub">Pengajuan sebelumnya ditolak admin. Menurut aturan platform, akun dengan pengajuan ditolak hanya dapat dihapus atau tetap dipakai sebagai Public.</p>
+            : u.curatorStatus === 'rejected' ? <p className="sub">Pengajuan sebelumnya ditolak admin. Menurut aturan platform, akun dengan pengajuan ditolak tetap dipakai sebagai Public.</p>
             : <><p className="sub">Curator dapat membuka challenge dan memilih pemenang. Pengajuan perlu disetujui admin.</p><button type="button" className="btn line sm" onClick={apply}>Ajukan jadi Curator</button></>}
         </div>
-      )}
-      {u.role !== 'admin' && (
-        <div className="panel" style={{ borderColor: '#d7a79b' }}><h3 style={{ color: 'var(--err)' }}>Hapus akun</h3><p className="sub">Menghapus akun akan ikut menghapus karya, komentar, dan data terkait. Tindakan ini tidak dapat dibatalkan.</p><button type="button" className="btn danger sm" onClick={del}>Hapus akun saya</button></div>
       )}
     </>
   );
@@ -137,7 +130,7 @@ export default function ProfileView({ profile: u, own, arts, favorites, subs, ch
     right = (
       <>
         {u.curatorStatus === 'pending' && <div className="banner"><div><b>Pengajuan Curator sedang ditinjau</b>Admin akan memeriksa pengajuanmu. Selama menunggu, kamu tetap dapat menjelajah sebagai Public.</div></div>}
-        {u.curatorStatus === 'rejected' && <div className="banner rej"><div><b>Pengajuan Curator ditolak</b>Admin menolak pengajuanmu. Kamu tetap dapat memakai akun ini sebagai Public, atau menghapus akunmu di tab Akun.</div></div>}
+        {u.curatorStatus === 'rejected' && <div className="banner rej"><div><b>Pengajuan Curator ditolak</b>Admin menolak pengajuanmu. Kamu tetap dapat memakai akun ini sebagai Public.</div></div>}
         <div className="tabs" role="tablist">{tabs.map(([k, t]) => <button key={k} type="button" className="tab" role="tab" aria-selected={tab === k} onClick={() => setTab(k)}>{t}</button>)}</div>
         {body}
       </>

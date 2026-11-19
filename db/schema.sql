@@ -53,9 +53,16 @@ CREATE TABLE comments (
   artwork_id  integer NOT NULL REFERENCES artworks(id) ON DELETE CASCADE,
   user_id     integer NOT NULL REFERENCES users(id)    ON DELETE CASCADE,
   body        varchar(500) NOT NULL,
+  parent_id   integer REFERENCES comments(id) ON DELETE CASCADE,
   created_at  timestamptz NOT NULL DEFAULT now()
 );
 CREATE INDEX comments_artwork_idx ON comments (artwork_id, created_at);
+CREATE TABLE comment_likes (
+  user_id     integer NOT NULL REFERENCES users(id)    ON DELETE CASCADE,
+  comment_id  integer NOT NULL REFERENCES comments(id) ON DELETE CASCADE,
+  created_at  timestamptz NOT NULL DEFAULT now(),
+  PRIMARY KEY (user_id, comment_id)
+);
 
 CREATE TABLE challenges (
   id               integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,

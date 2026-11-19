@@ -31,3 +31,18 @@ export function todayStr() {
   const tz = process.env.APP_TZ || 'Asia/Makassar';
   return new Intl.DateTimeFormat('en-CA', { timeZone: tz }).format(new Date());
 }
+
+// Memastikan kolom/tabel untuk sukai & balas komentar ada (aman dipanggil berulang; dijalankan sekali per proses).
+export function ensureCommentSchema() {
+  if (!g.__commentSchema) {
+    g.__commentSchema = pool.query(
+      `ALTER TABLE comments ADD COLUMN IF NOT EXISTS parent_id integer REFERENCES comments(id) ON DELETE CASCADE;
+       CREATE TABLE IF NOT EXISTS comment_likes (
+         user_id integer NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+         comment_id integer NOT NULL REFERENCES comments(id) ON DELETE CASCADE,
+         created_at timestamptz NOT NULL DEFAULT now(),
+         PRIMARY KEY (user_id, comment_id));`
+    ).catch((e) => { g.__commentSchema = null; throw e; });
+  }
+  return g.__commentSchema;
+}

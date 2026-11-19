@@ -46,7 +46,7 @@ export default function UsersView({ users, artTotal }) {
   const setRole = (u, role) => run(() => api(`/api/users/${u.id}`, { method: 'PATCH', json: { role } }), `${u.name} sekarang berperan sebagai ${ROLE_LABEL[role]}.`);
   const approve = (u) => run(() => api(`/api/users/${u.id}/curator`, { method: 'POST', json: { action: 'approve' } }), `${u.name} disetujui sebagai Curator.`);
   const reject = async (u) => {
-    if (!(await confirm({ title: 'Tolak pengajuan?', text: `${u.name} akan melihat bahwa pengajuannya ditolak dan hanya dapat memakai akun sebagai Public atau menghapus akunnya.`, ok: 'Tolak pengajuan', danger: true }))) return;
+    if (!(await confirm({ title: 'Tolak pengajuan?', text: `${u.name} akan melihat bahwa pengajuannya ditolak dan tetap dapat memakai akun sebagai Public.`, ok: 'Tolak pengajuan', danger: true }))) return;
     run(() => api(`/api/users/${u.id}/curator`, { method: 'POST', json: { action: 'reject' } }), 'Pengajuan ditolak.');
   };
   const del = async (u) => {
