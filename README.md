@@ -21,8 +21,6 @@ Galeri digital untuk memamerkan, menemukan, dan membahas karya seni, lengkap den
   <a href="#-kontribusi"><img src="https://img.shields.io/badge/🤝-Kontribusi-E07B39?style=for-the-badge" alt="Kontribusi"></a>
 </p>
 
-<hr>
-
 ---
 
 ## 📋 Daftar Isi
