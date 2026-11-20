@@ -1,4 +1,4 @@
-import { query, todayStr } from './db';
+import { query, todayStr, ensureArtworkSchema } from './db';
 import { mapUser } from './auth';
 
 /* ---------- kategori ---------- */
@@ -9,7 +9,7 @@ export async function listCategories() {
 
 /* ---------- karya ---------- */
 const ART_SELECT = `
-  SELECT a.id,a.owner_id,a.title,a.painter,a.synopsis,a.category,a.studio_url,a.is_example,a.created_at,
+  SELECT a.id,a.owner_id,a.title,a.painter,a.synopsis,a.description,a.category,a.studio_url,a.is_example,a.created_at,
     (SELECT count(*) FROM likes l WHERE l.artwork_id=a.id) AS likes,
     (SELECT count(*) FROM comments c WHERE c.artwork_id=a.id) AS comments,
     EXISTS(SELECT 1 FROM likes l WHERE l.artwork_id=a.id AND l.user_id=$1) AS liked,
@@ -17,12 +17,13 @@ const ART_SELECT = `
   FROM artworks a`;
 export function mapArt(r) {
   return {
-    id: r.id, ownerId: r.owner_id, title: r.title, painter: r.painter, synopsis: r.synopsis, category: r.category,
+    id: r.id, ownerId: r.owner_id, title: r.title, painter: r.painter, synopsis: r.synopsis, description: r.description || '', category: r.category,
     studioUrl: r.studio_url, example: r.is_example, createdAt: new Date(r.created_at).toISOString(),
     likes: r.likes, comments: r.comments, liked: r.liked, faved: r.faved, image: `/api/artworks/${r.id}/image`,
   };
 }
 export async function listArtworks(viewerId, { ownerId, favoritesOf } = {}) {
+  await ensureArtworkSchema();
   let where = '', params = [viewerId || 0];
   if (ownerId) { where = ' WHERE a.owner_id=$2'; params.push(ownerId); }
   else if (favoritesOf) { where = ' WHERE EXISTS(SELECT 1 FROM favorites f2 WHERE f2.artwork_id=a.id AND f2.user_id=$2)'; params.push(favoritesOf); }
@@ -30,6 +31,7 @@ export async function listArtworks(viewerId, { ownerId, favoritesOf } = {}) {
   return r.rows.map(mapArt);
 }
 export async function getArtwork(id, viewerId) {
+  await ensureArtworkSchema();
   const r = await query(`${ART_SELECT} WHERE a.id=$2`, [viewerId || 0, id]);
   return r.rows[0] ? mapArt(r.rows[0]) : null;
 }

@@ -8,7 +8,7 @@ export default function ArtForm({ art }) {
   const { user, categories, toast, closeModal, refresh } = useApp();
   const edit = !!art;
   const [f, setF] = useState({
-    title: art?.title || '', painter: art?.painter || user?.name || '', synopsis: art?.synopsis || '',
+    title: art?.title || '', painter: art?.painter || user?.name || '', synopsis: art?.synopsis || '', description: art?.description || '',
     category: art?.category || 'classic', studio: !!art?.studioUrl, url: art?.studioUrl || '',
   });
   const [file, setFile] = useState(null);
@@ -24,17 +24,18 @@ export default function ArtForm({ art }) {
     if (!edit && !file) return setErr('Pilih gambar karya terlebih dahulu.');
     if (!f.title.trim()) return setErr('Isi judul karya.');
     if (!f.painter.trim()) return setErr('Isi nama seniman.');
+    if (!f.description.trim()) return setErr('Isi deskripsi singkat karya.');
     if (!f.synopsis.trim()) return setErr('Isi sinopsis karya.');
     if (f.studio && !/^https?:\/\//i.test(f.url.trim())) return setErr('Isi tautan Studio View yang diawali http:// atau https://');
     setBusy(true);
     try {
       const studioUrl = f.studio ? f.url.trim() : '';
       if (edit) {
-        await api(`/api/artworks/${art.id}`, { method: 'PATCH', json: { title: f.title, painter: f.painter, synopsis: f.synopsis, category: f.category, studioUrl } });
+        await api(`/api/artworks/${art.id}`, { method: 'PATCH', json: { title: f.title, painter: f.painter, synopsis: f.synopsis, description: f.description, category: f.category, studioUrl } });
         toast('Karya diperbarui.', 'ok');
       } else {
         const fd = new FormData();
-        fd.append('title', f.title); fd.append('painter', f.painter); fd.append('synopsis', f.synopsis); fd.append('category', f.category); fd.append('studioUrl', studioUrl);
+        fd.append('title', f.title); fd.append('painter', f.painter); fd.append('synopsis', f.synopsis); fd.append('description', f.description); fd.append('category', f.category); fd.append('studioUrl', studioUrl);
         fd.append('image', await shrinkToBlob(file), 'karya.jpg');
         await api('/api/artworks', { method: 'POST', form: fd });
         toast('Karya ditambahkan ke Gallery.', 'ok');
@@ -49,6 +50,7 @@ export default function ArtForm({ art }) {
       <form onSubmit={submit} noValidate>
         <div className="fld"><label htmlFor="afTitle">Judul karya</label><input className="in" id="afTitle" maxLength={120} autoComplete="off" autoFocus placeholder="Contoh: Senja di Ujung Dunia" value={f.title} onChange={set('title')} /></div>
         <div className="fld"><label htmlFor="afPainter">Nama seniman</label><input className="in" id="afPainter" maxLength={80} autoComplete="off" placeholder="Nama lengkap atau nama panggung" value={f.painter} onChange={set('painter')} /></div>
+        <div className="fld"><label htmlFor="afDesc">Deskripsi singkat</label><textarea className="in" id="afDesc" maxLength={240} style={{ minHeight: 72 }} placeholder="Satu atau dua kalimat yang tampil di halaman pertama Gallery" value={f.description} onChange={set('description')} /><small className="hint">{f.description.length}/240 karakter</small></div>
         <div className="fld"><label htmlFor="afSyn">Sinopsis karya</label><textarea className="in" id="afSyn" maxLength={1200} placeholder="Ceritakan makna atau latar belakang karya ini" value={f.synopsis} onChange={set('synopsis')} /></div>
         <div className="fld"><span className="lbl">Kategori</span>
           <div className="catpick">{categories.map((c) => (

@@ -8,6 +8,7 @@ const EXPECTED = {
   "title": "character varying",
   "painter": "character varying",
   "synopsis": "text",
+  "description": "character varying",
   "category": "character varying",
   "studio_url": "text",
   "image": "bytea",
@@ -99,7 +100,7 @@ const EXPECTED = {
   }
   console.log('2. Menjalankan query yang dipakai halaman...');
   const tests = {
-    'daftar karya (Gallery, My Artwork)': "SELECT a.id,a.owner_id,a.title,a.painter,a.synopsis,a.category,a.studio_url,a.is_example,a.created_at,(SELECT count(*) FROM likes l WHERE l.artwork_id=a.id) AS likes,(SELECT count(*) FROM comments c WHERE c.artwork_id=a.id) AS comments,EXISTS(SELECT 1 FROM likes l WHERE l.artwork_id=a.id AND l.user_id=0) AS liked,EXISTS(SELECT 1 FROM favorites f WHERE f.artwork_id=a.id AND f.user_id=0) AS faved FROM artworks a WHERE a.owner_id=1 ORDER BY a.created_at,a.id",
+    'daftar karya (Gallery, My Artwork)': "SELECT a.id,a.owner_id,a.title,a.painter,a.synopsis,a.description,a.category,a.studio_url,a.is_example,a.created_at,(SELECT count(*) FROM likes l WHERE l.artwork_id=a.id) AS likes,(SELECT count(*) FROM comments c WHERE c.artwork_id=a.id) AS comments,EXISTS(SELECT 1 FROM likes l WHERE l.artwork_id=a.id AND l.user_id=0) AS liked,EXISTS(SELECT 1 FROM favorites f WHERE f.artwork_id=a.id AND f.user_id=0) AS faved FROM artworks a WHERE a.owner_id=1 ORDER BY a.created_at,a.id",
     'jumlah submisi member': 'SELECT count(*) AS n FROM submissions WHERE user_id=1',
     'daftar challenge': "SELECT c.id,u.name,(SELECT count(*) FROM submissions s WHERE s.challenge_id=c.id) AS participants FROM challenges c JOIN users u ON u.id=c.owner_id",
     'gambar karya': 'SELECT image, image_mime FROM artworks LIMIT 1',

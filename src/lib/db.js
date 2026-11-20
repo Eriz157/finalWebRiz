@@ -33,6 +33,16 @@ export function todayStr() {
 }
 
 // Memastikan kolom/tabel untuk sukai & balas komentar ada (aman dipanggil berulang; dijalankan sekali per proses).
+// Memastikan kolom "deskripsi" karya ada (aman dipanggil berulang; dijalankan sekali per proses).
+export function ensureArtworkSchema() {
+  if (!g.__artworkSchema) {
+    g.__artworkSchema = pool
+      .query("ALTER TABLE artworks ADD COLUMN IF NOT EXISTS description varchar(240) NOT NULL DEFAULT ''")
+      .catch((e) => { g.__artworkSchema = null; throw e; });
+  }
+  return g.__artworkSchema;
+}
+
 export function ensureCommentSchema() {
   if (!g.__commentSchema) {
     g.__commentSchema = pool.query(

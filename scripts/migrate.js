@@ -12,7 +12,8 @@ const fs = require('fs'), path = require('path'), { Client } = require('pg');
   const exists = await c.query("SELECT to_regclass('public.users') AS t");
   if (exists.rows[0].t) {
     await c.query(fs.readFileSync(path.join(__dirname, '..', 'db', 'upgrade-comments.sql'), 'utf8'));
-    console.log('Tabel sudah ada: data tidak diubah. Fitur sukai & balas komentar dipastikan tersedia.');
+    await c.query(fs.readFileSync(path.join(__dirname, '..', 'db', 'upgrade-description.sql'), 'utf8'));
+    console.log('Tabel sudah ada: data tidak diubah. Fitur sukai & balas komentar serta kolom deskripsi karya dipastikan tersedia.');
     await c.end(); return;
   }
   await c.query(fs.readFileSync(path.join(__dirname, '..', 'db', 'schema.sql'), 'utf8'));

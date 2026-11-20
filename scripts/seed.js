@@ -40,9 +40,9 @@ const ROOT = path.join(__dirname, '..');
     for (const a of arts) {
       const buf = fs.readFileSync(path.join(ROOT, 'db/seed/arts', a.file));
       const mime = a.file.endsWith('.png') ? 'image/png' : 'image/jpeg';
-      const r = await c.query(`INSERT INTO artworks(owner_id,title,painter,synopsis,category,studio_url,image,image_mime,is_example,created_at)
-        VALUES($1,$2,$3,$4,$5,$6,$7,$8,true, now() - ($9 || ' days')::interval) RETURNING id`,
-        [U[owner[a.id]], a.title, painter[a.id] || a.painter, a.synopsis, a.category, a.studioUrl, buf, mime, String(100 - i)]);
+      const r = await c.query(`INSERT INTO artworks(owner_id,title,painter,synopsis,description,category,studio_url,image,image_mime,is_example,created_at)
+        VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,true, now() - ($10 || ' days')::interval) RETURNING id`,
+        [U[owner[a.id]], a.title, painter[a.id] || a.painter, a.synopsis, a.description || '', a.category, a.studioUrl, buf, mime, String(100 - i)]);
       A[a.id] = r.rows[0].id; i++;
     }
     const likes = { 'c01-senja':['rina','bima','sari','pub','dimas'],'c02-fajar':['rizky','bima','pub'],'c03-cincin':['rizky','rina','bima','sari','pub','dimas'],'c04-danau':['rina'],'c05-garis':['sari','pub'],'c06-bayangan':['rizky','rina','pub'],'c07-bukit':['bima'] };

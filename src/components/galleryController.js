@@ -78,10 +78,18 @@ export function createGallery(env) {
       if (state.view === 'home') { state.centerId = state.arts[c].id; live('Karya ' + (c + 1) + ' dari ' + N + ': ' + state.arts[c].title); }
     }
   }
+  // Deskripsi singkat karya; bila kosong (karya lama) dipakai cuplikan sinopsis.
+  function briefOf(a) {
+    const d = (a.description || '').trim(); if (d) return d;
+    const s = (a.synopsis || '').trim(); return s.length > 150 ? s.slice(0, 147).trimEnd() + '…' : s;
+  }
   function setTitle(a) {
     const b = $('.ptitle'); if (!b) return;
     byId('pTitle').textContent = a ? a.title : ''; byId('pBy').textContent = a ? a.painter : '';
-    if (!RM && a && b.animate) b.animate([{ opacity: 0, transform: 'translateY(10px)' }, { opacity: 1, transform: 'none' }], { duration: 420, easing: 'cubic-bezier(.2,.8,.2,1)' });
+    const box = byId('pDescBox'), dTxt = a ? briefOf(a) : '';
+    if (box) { byId('pDesc').textContent = dTxt; box.hidden = !dTxt; }
+    const fade = { duration: 420, easing: 'cubic-bezier(.2,.8,.2,1)' }, kf = [{ opacity: 0, transform: 'translateY(10px)' }, { opacity: 1, transform: 'none' }];
+    if (!RM && a && b.animate) b.animate(kf, fade);
   }
   function layout() {
     const N = state.arts.length, h = byId('hint');
@@ -238,6 +246,7 @@ export function createGallery(env) {
   });
   on(byId('btnBack'), 'click', () => { if (busy) return; setView('home'); });
   on(byId('fBack'), 'click', () => closeFocus());
+  on(byId('btnOpenFocus'), 'click', () => { const a = current(); if (a) openFocus(a.id); });
   on(byId('btnDetail'), 'click', () => toDetail());
   // Tautan internal (profil kreator) memakai router Next.
   on(byId('p-galeri'), 'click', (e) => { const a = e.target.closest('a[data-nav]'); if (a) { e.preventDefault(); env.ui().router.push(a.getAttribute('href')); } });

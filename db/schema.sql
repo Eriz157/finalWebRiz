@@ -27,6 +27,7 @@ CREATE TABLE artworks (
   title       varchar(120) NOT NULL,
   painter     varchar(80)  NOT NULL,
   synopsis    text         NOT NULL,
+  description varchar(240) NOT NULL DEFAULT '',
   category    varchar(40)  NOT NULL REFERENCES categories(slug),
   studio_url  text         NOT NULL DEFAULT '',
   image       bytea        NOT NULL,

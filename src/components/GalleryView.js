@@ -13,7 +13,7 @@ export default function GalleryView({ arts: serverArts, initialId }) {
   const shown = useMemo(() => {
     const t = q.trim().toLowerCase();
     if (!t) return arts;
-    return arts.filter((a) => [a.title, a.painter, a.synopsis, (app.cats[a.category] || {}).label || a.category].join(' ').toLowerCase().includes(t));
+    return arts.filter((a) => [a.title, a.painter, a.description, a.synopsis, (app.cats[a.category] || {}).label || a.category].join(' ').toLowerCase().includes(t));
   }, [arts, q, app.cats]);
   const qRef = useRef(q); qRef.current = q;
   const artsRef = useRef(shown); artsRef.current = shown;
@@ -84,7 +84,13 @@ export default function GalleryView({ arts: serverArts, initialId }) {
             {q.trim() && <span className="gs-n" aria-live="polite">{shown.length} dari {arts.length} karya</span>}
           </div>
           <div className="sbar"><span className="n" aria-hidden="true"><b id="cIdx">00</b> / <span id="cTotal">00</span></span><p id="hint">Memuat koleksi…</p></div>
-          <div className="ptitle" aria-hidden="true"><h2 id="pTitle" /><p id="pBy" /></div>
+          <div className="ptitle">
+            <h2 id="pTitle" aria-hidden="true" /><p id="pBy" aria-hidden="true" />
+            <div className="pdesc" id="pDescBox" hidden onPointerDown={(e) => e.stopPropagation()}>
+              <p id="pDesc" />
+              <button type="button" className="pill solid sm" id="btnOpenFocus"><span>Ketuk karya, lihat selengkapnya!</span>{I('M4 12h15M13 6l6 6-6 6')}</button>
+            </div>
+          </div>
         </section>
         <section className="view focus is-off" id="focus" aria-label="Karya terpilih">
           <button type="button" className="back" id="fBack"><span className="rnd">{I('M20 12H5M11 6l-6 6 6 6')}</span><span>Kembali ke Galeri</span></button>

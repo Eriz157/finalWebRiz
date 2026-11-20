@@ -963,3 +963,19 @@ html:has(.b-pin){--nav-h:0px}
 @media (max-width:700px){#p-galeri .ptitle{top:86px;max-width:70vw}#p-galeri .gsearch{top:20px;width:calc(100vw - 48px)}}
 /* Tepi atas latar aula memudar halus ke latar blur di belakang navbar (tidak terlihat terpotong) */
 #p-galeri .canvas .bg{-webkit-mask-image:linear-gradient(180deg,transparent 0,rgba(0,0,0,.55) 38px,#000 130px);mask-image:linear-gradient(180deg,transparent 0,rgba(0,0,0,.55) 38px,#000 130px)}
+
+/* ---------- Deskripsi karya di halaman pertama Gallery ---------- */
+#p-galeri .ptitle .pdesc{margin:var(--s-20) 0 0 auto;max-width:min(380px,32vw);padding:var(--s-16) var(--s-20);pointer-events:auto;text-align:left;text-shadow:none;background:rgba(34,24,18,.62);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid rgba(255,240,220,.22);border-radius:var(--r-3);box-shadow:var(--sh-scene)}
+#p-galeri .ptitle .pdesc[hidden]{display:none}
+#p-galeri .pdesc p{margin:0 0 var(--s-16);font-size:var(--fs-15);line-height:1.55;color:var(--on-dark-2);display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden}
+#p-galeri .pdesc .pill.solid{background:var(--c-gold);color:var(--c-brown);box-shadow:var(--sh-scene);font-size:var(--fs-15);font-weight:500;padding:11px var(--s-20);white-space:normal;text-align:left;line-height:1.25}
+#p-galeri .pdesc .pill.solid:hover{background:var(--c-gold-hi)}
+#p-galeri .pdesc .pill.solid:focus-visible{outline:2px solid var(--on-dark);outline-offset:3px}
+@media (max-width:1100px){#p-galeri .ptitle .pdesc{max-width:min(340px,44vw)}}
+@media (max-width:700px){
+  #p-galeri .ptitle{max-width:none}
+  #p-galeri .ptitle .pdesc{position:fixed;left:var(--s-20);right:var(--s-20);bottom:max(124px,calc(env(safe-area-inset-bottom,0px) + 116px));max-width:none;margin:0;padding:var(--s-12) var(--s-16)}
+  #p-galeri .pdesc p{font-size:var(--fs-14);-webkit-line-clamp:3;margin-bottom:var(--s-12)}
+  #p-galeri .pdesc .pill.solid{width:100%;justify-content:space-between;font-size:var(--fs-14)}
+}
+.fld small.hint{display:block;margin-top:var(--s-4);color:var(--mute);font-size:var(--fs-12);text-align:right}
