@@ -468,20 +468,6 @@ art-archive-next/
 | `submissions` | Karya yang diikutsertakan ke challenge |
 | `winners` | Pemenang challenge |
 
-Skema lengkap ada di `db/schema.sql`. Untuk database lama, `npm run db:migrate` menambahkan `comment_likes`, `comments.parent_id`, dan `artworks.description` tanpa mengubah data. Aplikasi juga menambahkan kolom/tabel itu otomatis saat pertama kali dipakai.
-
-Query manual untuk database lama:
-
-```sql
--- Atribut deskripsi karya
-ALTER TABLE artworks ADD COLUMN IF NOT EXISTS description varchar(240) NOT NULL DEFAULT '';
-
--- (Opsional) isi deskripsi karya lama dari cuplikan sinopsis
-UPDATE artworks
-SET description = CASE WHEN length(synopsis) > 150 THEN left(synopsis, 147) || '…' ELSE synopsis END
-WHERE description = '';
-```
-
 ### 🖼️ Penyimpanan Gambar
 
 Semua gambar tersimpan di PostgreSQL:
