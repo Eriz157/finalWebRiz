@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/banner.png" alt="The Art Archive" width="100%">
+  <img width="1672" height="941" alt="Walk the Archive in Paint" src="https://github.com/user-attachments/assets/4794d088-17c3-4893-9f1a-3bfb06f3c5aa" />
 </p>
 
 <p align="center">
