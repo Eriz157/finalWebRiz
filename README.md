@@ -15,6 +15,10 @@
 Galeri digital untuk memamerkan, menemukan, dan membahas karya seni, lengkap dengan challenge dan komentar.
 </h3>
 
+<div align="center">
+  [![Features](https://img.shields.io/badge/📋-Fitur-blue?style=flat-square)](#fitur) • [![Installation](https://img.shields.io/badge/🚀-Instalasi-green?style=flat-square)](#instalasi) • [![Contributing](https://img.shields.io/badge/🤝-Kontribusi-orange?style=flat-square)](#kontribusi)
+</div>
+
 <p align="center">
   <a href="#fitur">📋 Fitur</a> ·
   <a href="#instalasi">🚀 Instalasi</a> ·
@@ -23,9 +27,49 @@ Galeri digital untuk memamerkan, menemukan, dan membahas karya seni, lengkap den
 
 <hr>
 
-<h1>
-  📸 Documentation of This Project
-</h1>
+---
+
+## 📋 Daftar Isi
+
+- [🎯 Tentang Proyek](#-tentang-proyek)
+- [🖼 Tampilan](#-tampilan)
+- [✨ Fitur](#-fitur)
+- [🧰 Teknologi yang Digunakan](#-teknologi-yang-digunakan)
+- [💻 Persyaratan Sistem](#-persyaratan-sistem)
+- [🚀 Instalasi](#-instalasi)
+- [🔧 Konfigurasi](#-konfigurasi)
+- [📁 Struktur Proyek](#-struktur-proyek)
+- [📖 Penggunaan](#-penggunaan)
+- [📚 Dokumentasi](#-dokumentasi)
+- [🧪 Pengujian](#-pengujian)
+- [🆘 Masalah Umum](#-masalah-umum)
+- [🤝 Kontribusi](#-kontribusi)
+- [👤 Kontak](#-kontak)
+
+---
+
+## 🎯 Tentang Proyek
+
+**The Art Archive** adalah platform pameran seni berbasis web. Karya ditampilkan di galeri 3D yang berputar seperti spiral, setiap karya punya halaman detail dengan ruang pamer virtual, dan komunitas dapat berinteraksi lewat suka, favorit, komentar, serta challenge bulanan yang dikurasi.
+
+Platform ini memiliki lima peran (guest, public, member, curator, admin) dengan otorisasi yang selalu dicek di server.
+
+### 🎯 Tujuan
+- 🖼️ Memberi kreator ruang pamer yang indah untuk karya mereka
+- 💬 Memfasilitasi kritik dan diskusi yang jujur lewat komentar bertingkat
+- 🏆 Mendorong kreator berkarya lewat challenge yang dikurasi
+- 🛡️ Menjaga arsip tetap rapi lewat peran dan pengelolaan akun
+
+### ⭐ Nilai Inti
+- ✅ **Satu Design System** - Warna, tipografi, spasi, radius, shadow, dan transisi dikelola lewat design tokens terpusat
+- ✅ **Galeri Imersif** - Alur tiga tahap: Spiral → Fokus → Detail, dengan animasi yang halus
+- ✅ **Otorisasi di Server** - Setiap route API memeriksa peran pengguna, bukan hanya menyembunyikan tombol
+- ✅ **Tanpa Penyimpanan Berkas** - Semua gambar tersimpan di PostgreSQL, tanpa folder `uploads`
+- ✅ **Responsif** - Dirancang untuk desktop, tablet, dan mobile
+
+---
+
+## 🖼 Tampilan
 
 <hr>
 
@@ -86,62 +130,6 @@ Galeri digital untuk memamerkan, menemukan, dan membahas karya seni, lengkap den
 <p>
   Halaman ini merupakan halaman yang eksklusif hanya untuk akun dengan role curator. dilengkapi berbagai fitur untuk manajemen challenge.
 </p>
-
----
-
-## 📋 Daftar Isi
-
-- [🎯 Tentang Proyek](#-tentang-proyek)
-- [🖼 Tampilan](#-tampilan)
-- [✨ Fitur](#-fitur)
-- [🧰 Teknologi yang Digunakan](#-teknologi-yang-digunakan)
-- [💻 Persyaratan Sistem](#-persyaratan-sistem)
-- [🚀 Instalasi](#-instalasi)
-- [🔧 Konfigurasi](#-konfigurasi)
-- [📁 Struktur Proyek](#-struktur-proyek)
-- [📖 Penggunaan](#-penggunaan)
-- [📚 Dokumentasi](#-dokumentasi)
-- [🧪 Pengujian](#-pengujian)
-- [🆘 Masalah Umum](#-masalah-umum)
-- [🤝 Kontribusi](#-kontribusi)
-- [👤 Kontak](#-kontak)
-
----
-
-## 🎯 Tentang Proyek
-
-**The Art Archive** adalah platform pameran seni berbasis web. Karya ditampilkan di galeri 3D yang berputar seperti spiral, setiap karya punya halaman detail dengan ruang pamer virtual, dan komunitas dapat berinteraksi lewat suka, favorit, komentar, serta challenge bulanan yang dikurasi.
-
-Platform ini memiliki lima peran (guest, public, member, curator, admin) dengan otorisasi yang selalu dicek di server.
-
-### 🎯 Tujuan
-- 🖼️ Memberi kreator ruang pamer yang indah untuk karya mereka
-- 💬 Memfasilitasi kritik dan diskusi yang jujur lewat komentar bertingkat
-- 🏆 Mendorong kreator berkarya lewat challenge yang dikurasi
-- 🛡️ Menjaga arsip tetap rapi lewat peran dan pengelolaan akun
-
-### ⭐ Nilai Inti
-- ✅ **Satu Design System** - Warna, tipografi, spasi, radius, shadow, dan transisi dikelola lewat design tokens terpusat
-- ✅ **Galeri Imersif** - Alur tiga tahap: Spiral → Fokus → Detail, dengan animasi yang halus
-- ✅ **Otorisasi di Server** - Setiap route API memeriksa peran pengguna, bukan hanya menyembunyikan tombol
-- ✅ **Tanpa Penyimpanan Berkas** - Semua gambar tersimpan di PostgreSQL, tanpa folder `uploads`
-- ✅ **Responsif** - Dirancang untuk desktop, tablet, dan mobile
-
----
-
-## 🖼 Tampilan
-
-| Beranda | Gallery (halaman pertama) |
-|---|---|
-| ![Beranda](docs/screenshots/beranda.jpg) | ![Gallery](docs/screenshots/gallery.jpg) |
-
-| Detail karya | Challenge |
-|---|---|
-| ![Detail karya](docs/screenshots/detail.jpg) | ![Challenge](docs/screenshots/challenge.jpg) |
-
-| My Artwork | User Management |
-|---|---|
-| ![My Artwork](docs/screenshots/my-artwork.jpg) | ![User Management](docs/screenshots/user-management.jpg) |
 
 ---
 
