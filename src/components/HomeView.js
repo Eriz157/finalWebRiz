@@ -161,7 +161,7 @@ export default function HomeView({ stats, popular, newest, calls, joinedIds }) {
     : role === 'curator' ? <Link className="btn text" href="/overview">Buat challenge</Link>
     : role === 'admin' ? <Link className="btn text" href="/users">Kelola akun</Link>
     : <Link className="btn text" href="/profile">Profil saya</Link>;
-  const cta = !u ? <><Link className="btn primary" href="/login">Gabung sekarang <Icon n="arrow" /></Link><Link className="btn line" style={{ borderColor: '#f3efe5', color: '#f3efe5' }} href="/gallery">Jelajahi dulu</Link></>
+  const cta = !u ? <><Link className="btn primary" href="/login">Gabung sekarang <Icon n="arrow" /></Link><Link className="btn line" style={{ borderColor: 'var(--on-dark-2)', color: 'var(--on-dark-2)' }} href="/gallery">Jelajahi dulu</Link></>
     : role === 'member' ? <Link className="btn primary" href="/my-artwork">Daftarkan karya baru <Icon n="arrow" /></Link>
     : role === 'curator' ? <Link className="btn primary" href="/overview">Buat challenge <Icon n="arrow" /></Link>
     : role === 'admin' ? <Link className="btn primary" href="/users">Buka user management <Icon n="arrow" /></Link>
