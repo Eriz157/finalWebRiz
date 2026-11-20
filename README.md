@@ -15,14 +15,10 @@
 Galeri digital untuk memamerkan, menemukan, dan membahas karya seni, lengkap dengan challenge dan komentar.
 </h3>
 
-<div align="center">
-  [![Features](https://img.shields.io/badge/📋-Fitur-blue?style=flat-square)](#fitur) • [![Installation](https://img.shields.io/badge/🚀-Instalasi-green?style=flat-square)](#instalasi) • [![Contributing](https://img.shields.io/badge/🤝-Kontribusi-orange?style=flat-square)](#kontribusi)
-</div>
-
 <p align="center">
-  <a href="#fitur">📋 Fitur</a> ·
-  <a href="#instalasi">🚀 Instalasi</a> ·
-  <a href="#kontribusi">🤝 Kontribusi</a>
+  <a href="#-fitur"><img src="https://img.shields.io/badge/📋-Fitur-2F80ED?style=for-the-badge" alt="Fitur"></a>
+  <a href="#-instalasi"><img src="https://img.shields.io/badge/🚀-Instalasi-6AA84F?style=for-the-badge" alt="Instalasi"></a>
+  <a href="#-kontribusi"><img src="https://img.shields.io/badge/🤝-Kontribusi-E07B39?style=for-the-badge" alt="Kontribusi"></a>
 </p>
 
 <hr>
