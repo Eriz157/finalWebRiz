@@ -246,8 +246,8 @@ export function createGallery(env) {
   });
   on(byId('btnBack'), 'click', () => { if (busy) return; setView('home'); });
   on(byId('fBack'), 'click', () => closeFocus());
-  on(byId('btnOpenFocus'), 'click', () => { const a = current(); if (a) openFocus(a.id); });
-  on(byId('btnDetail'), 'click', () => toDetail());
+  on(byId('btnOpenFocus'), 'click', () => toDetail(true));
+  on(byId('btnDetail'), 'click', () => toDetail(false));
   // Tautan internal (profil kreator) memakai router Next.
   on(byId('p-galeri'), 'click', (e) => { const a = e.target.closest('a[data-nav]'); if (a) { e.preventDefault(); env.ui().router.push(a.getAttribute('href')); } });
 
@@ -383,18 +383,22 @@ export function createGallery(env) {
     o.style.cssText += 'left:' + (cx - R) + 'px;top:' + (cy - R) + 'px;width:' + (2 * R) + 'px;height:' + (2 * R) + 'px;background:radial-gradient(circle,' + rgb(lt) + ' 0,' + rgb(mid) + ' 36%,' + rgb(dk) + ' 96%,' + rgb(dk, 0) + ' 100%)';
     document.body.appendChild(o); return o;
   }
-  function toDetail() {
-    if (busy || state.view !== 'focus') return;
+  // fromHome=true: langsung dari spiral ke detail (melewati halaman kedua), dengan titik awal di karya yang sedang di tengah.
+  function toDetail(fromHome) {
+    if (busy || state.view !== (fromHome ? 'home' : 'focus')) return;
     const a = current(); if (!a) return;
+    const srcItem = fromHome ? items.get(a.id) : null;
     busy = true; resetTilt();
-    const W = innerWidth, H = innerHeight, r = fcard.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+    if (fromHome) { clearTimeout(sp.snap); sp.tgt = sp.pos = currentIndex(); paint(); }
+    const W = innerWidth, H = innerHeight, r = (fromHome ? thumbRect(a.id) : null) || fcard.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
     const col = artRGB(), glow = rgb(mixc(col, [255, 230, 170], 0.45)), gold = 'rgba(241,215,156,1)';
     const R = Math.hypot(Math.max(cx, W - cx), Math.max(cy, H - cy)) + 60, ds = byId('dslot');
     const ease = 'cubic-bezier(.45,0,.2,1)';
     const f = document.createElement('div'); f.className = 'fly dive';
-    f.style.cssText = 'left:' + r.left + 'px;top:' + r.top + 'px;width:' + r.width + 'px;height:' + r.height + 'px;border-radius:14px';
+    f.style.cssText = 'left:' + r.left + 'px;top:' + r.top + 'px;width:' + r.width + 'px;height:' + r.height + 'px;border-radius:' + (fromHome ? '3px' : '14px') + '';
     const im = new Image(); im.alt = ''; im.src = a.image; f.appendChild(im);
-    document.body.appendChild(f); fw.style.visibility = 'hidden'; focusEl.classList.add('leave');
+    document.body.appendChild(f);
+    if (fromHome) { if (srcItem) srcItem.style.visibility = 'hidden'; } else { fw.style.visibility = 'hidden'; focusEl.classList.add('leave'); }
     const S = Math.max(W / r.width, H / r.height) * 1.6;
     f.animate([
       { transform: 'scale(1)', opacity: 1 }, { transform: 'scale(1.05)', opacity: 1, offset: 0.16 },
@@ -408,7 +412,7 @@ export function createGallery(env) {
     const prepared = new Promise((res) => {
       later(() => {
         ds.style.setProperty('--art-glow', rgb(mixc(col, [255, 230, 170], 0.35), 0.4));
-        setView('detail'); fw.style.visibility = '';
+        setView('detail'); fw.style.visibility = ''; if (srcItem) srcItem.style.visibility = '';
         const im2 = $('.frame img', ds);
         (im2 && im2.decode ? im2.decode() : Promise.resolve()).catch(noop).then(res);
       }, RM ? 1 : aDelay + aDur * 0.72);

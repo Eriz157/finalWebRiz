@@ -88,7 +88,7 @@ export default function GalleryView({ arts: serverArts, initialId }) {
             <h2 id="pTitle" aria-hidden="true" /><p id="pBy" aria-hidden="true" />
             <div className="pdesc" id="pDescBox" hidden onPointerDown={(e) => e.stopPropagation()}>
               <p id="pDesc" />
-              <button type="button" className="pill solid sm" id="btnOpenFocus"><span>Ketuk karya, lihat selengkapnya!</span>{I('M4 12h15M13 6l6 6-6 6')}</button>
+              <button type="button" className="pill solid sm" id="btnOpenFocus"><span>Lihat selengkapnya!</span>{I('M4 12h15M13 6l6 6-6 6')}</button>
             </div>
           </div>
         </section>
