@@ -566,7 +566,7 @@ Kontribusi sangat diterima! Untuk berkontribusi:
 
 ---
 
-
+⭐Terima kasih sudah berkunjung!! jika anda menyukai website ini boleh berikan bintang yaa!!
 
 
 
