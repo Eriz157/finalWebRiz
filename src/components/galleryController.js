@@ -75,6 +75,7 @@ export function createGallery(env) {
     const c = ((Math.round(sp.pos) % N) + N) % N;
     if (c !== sp.c) {
       sp.c = c; byId('cIdx').textContent = pad2(c + 1); setTitle(state.arts[c]);
+      if (state.view === 'home' && railCmt) { railCmt = false; env.ui().closeComments(); }
       if (state.view === 'home') { state.centerId = state.arts[c].id; live('Karya ' + (c + 1) + ' dari ' + N + ': ' + state.arts[c].title); }
     }
   }
@@ -86,6 +87,7 @@ export function createGallery(env) {
   function setTitle(a) {
     const b = $('.ptitle'); if (!b) return;
     byId('pTitle').textContent = a ? a.title : ''; byId('pBy').textContent = a ? a.painter : '';
+    refreshRail(a);
     const box = byId('pDescBox'), dTxt = a ? briefOf(a) : '';
     if (box) { byId('pDesc').textContent = dTxt; box.hidden = !dTxt; }
     const fade = { duration: 420, easing: 'cubic-bezier(.2,.8,.2,1)' }, kf = [{ opacity: 0, transform: 'translateY(10px)' }, { opacity: 1, transform: 'none' }];
@@ -150,8 +152,19 @@ export function createGallery(env) {
     ds.appendChild(buildObject(a, true));
     fit();
   }
+  // Kolom aksi di tepi kanan halaman pertama (sukai, komentar, simpan) untuk karya yang sedang di tengah spiral.
+  function refreshRail(a) {
+    const r = byId('rail'); if (!r) return;
+    r.hidden = !a; if (!a) return;
+    byId('rLikeN').textContent = a.likes; byId('rCmtN').textContent = a.comments;
+    const l = byId('rLike'); l.classList.toggle('on', !!a.liked); l.setAttribute('aria-pressed', a.liked ? 'true' : 'false');
+    l.querySelector('.rl').textContent = a.liked ? 'Disukai' : 'Suka';
+    const f = byId('rFav'); f.classList.toggle('on', !!a.faved); f.setAttribute('aria-pressed', a.faved ? 'true' : 'false');
+    byId('rFavTxt').textContent = a.faved ? 'Tersimpan' : 'Simpan';
+  }
   function refreshInter() {
     const a = current(); if (!a) return;
+    refreshRail(a);
     const u = env.ui().user;
     byId('likeN').textContent = a.likes;
     const bl = byId('btnLike'); bl.classList.toggle('on', a.liked); bl.setAttribute('aria-pressed', a.liked ? 'true' : 'false');
@@ -209,6 +222,7 @@ export function createGallery(env) {
     stage.style.height = (state.view === 'detail' ? sh : H) + navH + 'px';
     canvas.style.width = cw + 'px'; canvas.style.height = ch + 'px';
     canvas.style.transform = 'translate(' + left + 'px,' + (top + navH) + 'px) scale(' + sc + ')';
+    canvas.style.setProperty('--ext', ((top + navH) / sc + 2).toFixed(1) + 'px'); canvas.style.setProperty('--ch', ch + 'px');
     geom();
   }
   const schedFit = () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(fit); };
@@ -434,24 +448,29 @@ export function createGallery(env) {
 
 
   /* interaksi */
-  on(byId('btnLike'), 'click', async () => {
+  async function doLike() {
     const a = current(); if (!a) return;
     if (env.ui().needLogin('Masuk atau gabung untuk menyukai karya ini.')) return;
     try { const r = await api(`/api/artworks/${a.id}/like`, { method: 'POST' }); a.liked = r.on; a.likes = r.count; refreshInter(); }
     catch (e) { env.ui().toast(e.message, 'err'); }
-  });
-  on(byId('btnFav'), 'click', async () => {
+  }
+  async function doFav() {
     const a = current(); if (!a) return;
     if (env.ui().needLogin('Masuk atau gabung untuk menyimpan karya ke favorit.')) return;
     try {
       const r = await api(`/api/artworks/${a.id}/favorite`, { method: 'POST' }); a.faved = r.on; refreshInter();
       env.ui().toast(r.on ? 'Ditambahkan ke favorit.' : 'Dihapus dari favorit.', r.on ? 'ok' : '');
     } catch (e) { env.ui().toast(e.message, 'err'); }
-  });
-  on(byId('btnCmt'), 'click', () => {
+  }
+  function doCmt() {
     const a = current(); if (!a) return;
-    env.ui().openComments(a, (n) => { a.comments = n; if (current() === a) byId('cmtN').textContent = n; });
-  });
+    railCmt = state.view === 'home';
+    env.ui().openComments(a, (n) => { a.comments = n; if (current() === a) { byId('cmtN').textContent = n; refreshRail(a); } });
+  }
+  let railCmt = false;
+  on(byId('btnLike'), 'click', doLike); on(byId('rLike'), 'click', doLike);
+  on(byId('btnFav'), 'click', doFav); on(byId('rFav'), 'click', doFav);
+  on(byId('btnCmt'), 'click', doCmt); on(byId('rCmt'), 'click', doCmt);
   on(byId('btnEdit'), 'click', () => { const a = current(); if (a) env.onEdit(a); });
   on(byId('btnDel'), 'click', async () => {
     const a = current(); if (!a) return;

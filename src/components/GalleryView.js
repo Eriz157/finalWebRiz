@@ -40,6 +40,7 @@ export default function GalleryView({ arts: serverArts, initialId }) {
       <div className="stage" id="stage" data-view="home">
         <div className="backdrop b1" aria-hidden="true" /><div className="backdrop b2" aria-hidden="true" />
         <div className="canvas" id="canvas" data-mode="landscape" data-view="home">
+          <div className="ext" aria-hidden="true"><div className="plate p1" /><div className="plate p2" /><div className="grade" /></div>
           <div className="bg" aria-hidden="true">
             <div className="scene"><div className="plate p1" /><div className="plate p2" /></div>
             <div className="grade" /><div className="veil" />
@@ -84,12 +85,15 @@ export default function GalleryView({ arts: serverArts, initialId }) {
             {q.trim() && <span className="gs-n" aria-live="polite">{shown.length} dari {arts.length} karya</span>}
           </div>
           <div className="sbar"><span className="n" aria-hidden="true"><b id="cIdx">00</b> / <span id="cTotal">00</span></span><p id="hint">Memuat koleksi…</p></div>
-          <div className="ptitle">
-            <h2 id="pTitle" aria-hidden="true" /><p id="pBy" aria-hidden="true" />
-            <div className="pdesc" id="pDescBox" hidden onPointerDown={(e) => e.stopPropagation()}>
-              <p id="pDesc" />
-              <button type="button" className="pill solid sm" id="btnOpenFocus"><span>Lihat selengkapnya!</span>{I('M4 12h15M13 6l6 6-6 6')}</button>
-            </div>
+          <div className="ptitle" aria-hidden="true"><h2 id="pTitle" /><p id="pBy" /></div>
+          <div className="pdesc" id="pDescBox" hidden onPointerDown={(e) => e.stopPropagation()}>
+            <p id="pDesc" />
+            <button type="button" className="pill solid sm" id="btnOpenFocus"><span>Lihat selengkapnya!</span>{I('M4 12h15M13 6l6 6-6 6')}</button>
+          </div>
+          <div className="rail" id="rail" hidden onPointerDown={(e) => e.stopPropagation()} role="group" aria-label="Aksi untuk karya terpilih">
+            <button type="button" className="rail-b" id="rLike" aria-pressed="false"><span className="rl">Suka</span><span className="rn" id="rLikeN">0</span><span className="ric">{I('M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.4A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z')}</span></button>
+            <button type="button" className="rail-b" id="rCmt"><span className="rl">Komentar</span><span className="rn" id="rCmtN">0</span><span className="ric">{I('M5 5h14v10H10l-4 3.5V15H5V5Z')}</span></button>
+            <button type="button" className="rail-b" id="rFav" aria-pressed="false"><span className="rl" id="rFavTxt">Simpan</span><span className="ric">{I('M7 4h10v16l-5-3.5L7 20V4Z')}</span></button>
           </div>
         </section>
         <section className="view focus is-off" id="focus" aria-label="Karya terpilih">
