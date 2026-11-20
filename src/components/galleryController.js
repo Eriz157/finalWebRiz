@@ -54,7 +54,7 @@ export function createGallery(env) {
   function aim(i) { const N = state.arts.length; if (!N) return; let d = i - sp.pos; d -= N * Math.round(d / N); sp.tgt = sp.pos + d; }
   function geom() {
     const W = stage.clientWidth || innerWidth, H = stage.clientHeight || innerHeight;
-    sp.ih = Math.round(Math.max(120, Math.min(H * 0.38, W * 0.66, 400)));
+    sp.ih = Math.round(Math.max(130, Math.min(H * 0.43, W * 0.46, 500)));
     sp.dy = Math.round(sp.ih * 1.14); sp.R = Math.round(Math.min(W * 0.28, 480));
     helix.style.setProperty('--ih', sp.ih + 'px');
     paint();
@@ -89,7 +89,7 @@ export function createGallery(env) {
     byId('pTitle').textContent = a ? a.title : ''; byId('pBy').textContent = a ? a.painter : '';
     refreshRail(a);
     const box = byId('pDescBox'), dTxt = a ? briefOf(a) : '';
-    if (box) { byId('pDesc').textContent = dTxt; box.hidden = !dTxt; }
+    if (box) { byId('pDesc').textContent = dTxt; box.hidden = !dTxt; box.dataset.size = dTxt.length <= 70 ? 'xl' : dTxt.length <= 140 ? 'lg' : 'md'; }
     const fade = { duration: 420, easing: 'cubic-bezier(.2,.8,.2,1)' }, kf = [{ opacity: 0, transform: 'translateY(10px)' }, { opacity: 1, transform: 'none' }];
     if (!RM && a && b.animate) b.animate(kf, fade);
   }
