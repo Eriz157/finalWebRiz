@@ -1,8 +1,10 @@
 import { route, json, readJson, requireUser, intParam, text, ApiError } from '@/lib/api';
 import { query } from '@/lib/db';
 import { getChallenge, canManageChallenge } from '@/lib/queries';
+import { CRITERIA, validPart, totalOf } from '@/lib/scoring';
 
-// Penilaian: hanya curator pemilik challenge (atau admin).
+// Penilaian 4 kriteria (1–100): hanya curator pemilik challenge (atau admin).
+// Total = kreativitas 30% + teknik 25% + orisinalitas 25% + estetika 20%.
 export const PATCH = route(async (req, ctx) => {
   const u = await requireUser(['curator', 'admin']);
   const id = intParam((await ctx.params).id);
@@ -11,9 +13,16 @@ export const PATCH = route(async (req, ctx) => {
   const ch = await getChallenge(s.challenge_id);
   if (!canManageChallenge(u, ch)) throw new ApiError(403, 'Kamu hanya dapat menilai challenge milikmu sendiri.');
   const b = await readJson(req);
-  const score = Number(b.score);
-  if (b.score === '' || b.score === null || !Number.isInteger(score) || score < 0 || score > 100) throw new ApiError(400, 'Nilai harus bilangan bulat 0–100.');
+  const v = {};
+  for (const c of CRITERIA) {
+    const raw = b[c.key];
+    const n = typeof raw === 'string' && raw.trim() === '' ? NaN : Number(raw);
+    if (raw === null || raw === undefined || !validPart(n)) throw new ApiError(400, `Nilai ${c.label.toLowerCase()} harus bilangan bulat 1–100.`);
+    v[c.key] = n;
+  }
   const note = text(b.note, 'Catatan', 0, 200, { optional: true });
-  await query('UPDATE submissions SET score=$2, note=$3 WHERE id=$1', [id, score, note]);
-  return json({ ok: true });
+  await query(
+    'UPDATE submissions SET score_creativity=$2, score_technique=$3, score_originality=$4, score_aesthetics=$5, score=$6, note=$7 WHERE id=$1',
+    [id, v.creativity, v.technique, v.originality, v.aesthetics, totalOf(v), note]);
+  return json({ ok: true, score: totalOf(v) });
 });

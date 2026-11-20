@@ -32,17 +32,18 @@ const ROOT = path.join(__dirname, '..');
     await c.query("UPDATE users SET instagram='https://instagram.com/rina.maharani', behance='https://behance.net/rinamaharani' WHERE id=$1", [U.rina]);
     await c.query("UPDATE users SET instagram='https://instagram.com/dimas.kurator' WHERE id=$1", [U.dimas]);
 
-    const owner = { 'c01-senja':'rizky','c02-fajar':'rina','c03-cincin':'rina','c04-danau':'bima','c05-garis':'bima','c06-bayangan':'sari','c07-bukit':'rizky' };
-    const painter = { 'c02-fajar':'Rina Maharani','c03-cincin':'Rina Maharani','c04-danau':'Bima Saputra','c05-garis':'Bima Saputra','c06-bayangan':'Sari Wulandari','c07-bukit':'Rizky Pratama' };
+    const owner = { 'c01-senja':'rizky','c02-fajar':'rina','c03-cincin':'rina','c04-danau':'bima','c05-garis':'bima','c06-bayangan':'sari','c07-bukit':'rizky','c08-ekspresi':'rina','c09-fragmen':'sari','c10-mercusuar':'bima' };
+    const painter = { 'c02-fajar':'Rina Maharani','c03-cincin':'Rina Maharani','c04-danau':'Bima Saputra','c05-garis':'Bima Saputra','c06-bayangan':'Sari Wulandari','c07-bukit':'Rizky Pratama','c08-ekspresi':'Rina Maharani','c09-fragmen':'Sari Wulandari','c10-mercusuar':'Bima Saputra' };
     const arts = JSON.parse(fs.readFileSync(path.join(ROOT, 'db/seed/arts.json'), 'utf8'));
     const A = {};
     let i = 0;
     for (const a of arts) {
-      const buf = fs.readFileSync(path.join(ROOT, 'db/seed/arts', a.file));
+      const file = 'demo-' + a.file; // gambar contoh ada di uploads/artworks/
+      if (!fs.existsSync(path.join(ROOT, 'uploads', 'artworks', file))) throw new Error('Gambar contoh tidak ditemukan: uploads/artworks/' + file);
       const mime = a.file.endsWith('.png') ? 'image/png' : 'image/jpeg';
-      const r = await c.query(`INSERT INTO artworks(owner_id,title,painter,synopsis,description,category,studio_url,image,image_mime,is_example,created_at)
+      const r = await c.query(`INSERT INTO artworks(owner_id,title,painter,synopsis,description,category,studio_url,image_file,image_mime,is_example,created_at)
         VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,true, now() - ($10 || ' days')::interval) RETURNING id`,
-        [U[owner[a.id]], a.title, painter[a.id] || a.painter, a.synopsis, a.description || '', a.category, a.studioUrl, buf, mime, String(100 - i)]);
+        [U[owner[a.id]], a.title, painter[a.id] || a.painter, a.synopsis, a.description || '', a.category, a.studioUrl, file, mime, String(100 - i)]);
       A[a.id] = r.rows[0].id; i++;
     }
     const likes = { 'c01-senja':['rina','bima','sari','pub','dimas'],'c02-fajar':['rizky','bima','pub'],'c03-cincin':['rizky','rina','bima','sari','pub','dimas'],'c04-danau':['rina'],'c05-garis':['sari','pub'],'c06-bayangan':['rizky','rina','pub'],'c07-bukit':['bima'] };
@@ -54,6 +55,14 @@ const ROOT = path.join(__dirname, '..');
       ['c03-cincin','bima','Pemisahan lapisannya rapi. Boleh tahu jarak lampunya?',2],
       ['c06-bayangan','rina','Bayangannya panjang dan dramatis.',1]])
       await c.query("INSERT INTO comments(artwork_id,user_id,body,created_at) VALUES($1,$2,$3, now() - ($4 || ' days')::interval)", [A[k], U[u], t, String(d)]);
+
+    // Contoh balasan dan suka komentar
+    const cm = async (art, user) => (await c.query('SELECT id FROM comments WHERE artwork_id=$1 AND user_id=$2 ORDER BY id LIMIT 1', [A[art], U[user]])).rows[0].id;
+    const askId = await cm('c03-cincin', 'bima'), praiseId = await cm('c01-senja', 'dimas');
+    await c.query("INSERT INTO comments(artwork_id,user_id,body,parent_id,created_at) VALUES($1,$2,$3,$4, now() - interval '36 hours')",
+      [A['c03-cincin'], U['rina'], 'Sekitar 80 cm dari bidang pertama, lampunya sejajar dengan mata penonton.', askId]);
+    for (const [cid, u] of [[askId,'pub'],[askId,'dimas'],[praiseId,'rina'],[praiseId,'pub']])
+      await c.query('INSERT INTO comment_likes(user_id,comment_id) VALUES($1,$2)', [U[u], cid]);
 
     const CH = {};
     const chs = [
@@ -67,14 +76,19 @@ const ROOT = path.join(__dirname, '..');
         VALUES($1,$2,$3,$4,$5, current_date + $6::int, current_date + $7::int) RETURNING id`, [U.dimas, title, desc, rules, prize, s, e]);
       CH[k] = r.rows[0].id;
     }
-    const sub = async (ch, art, user, score, note) => (await c.query('INSERT INTO submissions(challenge_id,artwork_id,user_id,score,note) VALUES($1,$2,$3,$4,$5) RETURNING id', [CH[ch], A[art], U[user], score, note])).rows[0].id;
+    // Nilai: [kreativitas, teknik, orisinalitas, estetika]; total = 30/25/25/20 persen.
+    const sub = async (ch, art, user, sc, note) => {
+      const total = sc ? (30 * sc[0] + 25 * sc[1] + 25 * sc[2] + 20 * sc[3]) / 100 : null;
+      return (await c.query('INSERT INTO submissions(challenge_id,artwork_id,user_id,score_creativity,score_technique,score_originality,score_aesthetics,score,note) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING id',
+        [CH[ch], A[art], U[user], ...(sc || [null, null, null, null]), total, note])).rows[0].id;
+    };
     await sub('cahaya','c01-senja','rizky',null,'');
     await sub('ilusi','c03-cincin','rina',null,'');
     await sub('ilusi','c05-garis','bima',null,'');
     await sub('ilusi','c06-bayangan','sari',null,'');
-    const w1 = await sub('lanskap','c04-danau','bima',92,'Nuansa malamnya tenang dan dalam.');
-    const w2 = await sub('lanskap','c07-bukit','rizky',86,'Lapisan bukit terbaca jelas.');
-    const w3 = await sub('lanskap','c02-fajar','rina',81,'Udara pagi terasa, warna bisa lebih berani.');
+    const w1 = await sub('lanskap','c04-danau','bima',[95,90,90,90],'Nuansa malamnya tenang dan dalam.');
+    const w2 = await sub('lanskap','c07-bukit','rizky',[88,84,86,85],'Lapisan bukit terbaca jelas.');
+    const w3 = await sub('lanskap','c02-fajar','rina',[80,82,82,81],'Udara pagi terasa, warna bisa lebih berani.');
     await c.query('INSERT INTO winners(challenge_id,rank,submission_id) VALUES($1,1,$2),($1,2,$3),($1,3,$4)', [CH.lanskap, w1, w2, w3]);
     await c.query('UPDATE challenges SET announced_at = now() - interval \'9 days\' WHERE id=$1', [CH.lanskap]);
     await c.query('COMMIT');

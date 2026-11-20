@@ -1,6 +1,7 @@
 import { route, json, readJson, requireUser, intParam, text, urlOf, ApiError } from '@/lib/api';
-import { query, ensureArtworkSchema } from '@/lib/db';
+import { query } from '@/lib/db';
 import { canManageArtwork } from '@/lib/queries';
+import { removeArtworkImages } from '@/lib/files';
 
 async function load(ctx) {
   const id = intParam((await ctx.params).id);
@@ -12,7 +13,6 @@ export const PATCH = route(async (req, ctx) => {
   const u = await requireUser();
   const a = await load(ctx);
   if (!canManageArtwork(u, a.owner_id)) throw new ApiError(403, 'Kamu tidak memiliki izin untuk karya ini.');
-  await ensureArtworkSchema();
   const b = await readJson(req);
   const title = text(b.title, 'Judul karya', 1, 120), painter = text(b.painter, 'Nama seniman', 1, 80), synopsis = text(b.synopsis, 'Sinopsis karya', 1, 1200);
   const description = text(b.description, 'Deskripsi karya', 1, 240);
@@ -26,6 +26,7 @@ export const DELETE = route(async (req, ctx) => {
   const u = await requireUser();
   const a = await load(ctx);
   if (!canManageArtwork(u, a.owner_id)) throw new ApiError(403, 'Kamu tidak memiliki izin untuk karya ini.');
-  await query('DELETE FROM artworks WHERE id=$1', [a.id]);
+  const f = (await query('DELETE FROM artworks WHERE id=$1 RETURNING image_file', [a.id])).rows[0];
+  if (f) await removeArtworkImages([f.image_file]);
   return json({ ok: true });
 });

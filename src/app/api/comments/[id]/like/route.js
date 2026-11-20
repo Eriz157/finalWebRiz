@@ -1,8 +1,7 @@
 import { route, json, requireUser, intParam, ApiError } from '@/lib/api';
-import { query, ensureCommentSchema } from '@/lib/db';
+import { query } from '@/lib/db';
 
 export const POST = route(async (req, ctx) => {
-  await ensureCommentSchema();
   const u = await requireUser();
   const id = intParam((await ctx.params).id);
   if (!(await query('SELECT 1 FROM comments WHERE id=$1', [id])).rowCount) throw new ApiError(404, 'Komentar tidak ditemukan.');

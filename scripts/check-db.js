@@ -1,6 +1,6 @@
 // Memeriksa apakah struktur database Anda sama dengan db/schema.sql, lalu menjalankan query yang dipakai halaman.
 // Pemakaian: npm run db:check
-const { Client } = require('pg');
+const fs = require('fs'), path = require('path'), { Client } = require('pg');
 const EXPECTED = {
  "artworks": {
   "id": "integer",
@@ -11,7 +11,7 @@ const EXPECTED = {
   "description": "character varying",
   "category": "character varying",
   "studio_url": "text",
-  "image": "bytea",
+  "image_file": "character varying",
   "image_mime": "character varying",
   "is_example": "boolean",
   "created_at": "timestamp with time zone"
@@ -59,7 +59,11 @@ const EXPECTED = {
   "challenge_id": "integer",
   "artwork_id": "integer",
   "user_id": "integer",
-  "score": "smallint",
+  "score_creativity": "smallint",
+  "score_technique": "smallint",
+  "score_originality": "smallint",
+  "score_aesthetics": "smallint",
+  "score": "numeric",
   "note": "character varying",
   "created_at": "timestamp with time zone"
  },
@@ -103,12 +107,20 @@ const EXPECTED = {
     'daftar karya (Gallery, My Artwork)': "SELECT a.id,a.owner_id,a.title,a.painter,a.synopsis,a.description,a.category,a.studio_url,a.is_example,a.created_at,(SELECT count(*) FROM likes l WHERE l.artwork_id=a.id) AS likes,(SELECT count(*) FROM comments c WHERE c.artwork_id=a.id) AS comments,EXISTS(SELECT 1 FROM likes l WHERE l.artwork_id=a.id AND l.user_id=0) AS liked,EXISTS(SELECT 1 FROM favorites f WHERE f.artwork_id=a.id AND f.user_id=0) AS faved FROM artworks a WHERE a.owner_id=1 ORDER BY a.created_at,a.id",
     'jumlah submisi member': 'SELECT count(*) AS n FROM submissions WHERE user_id=1',
     'daftar challenge': "SELECT c.id,u.name,(SELECT count(*) FROM submissions s WHERE s.challenge_id=c.id) AS participants FROM challenges c JOIN users u ON u.id=c.owner_id",
-    'gambar karya': 'SELECT image, image_mime FROM artworks LIMIT 1',
+    'gambar karya': 'SELECT image_file, image_mime FROM artworks LIMIT 1',
     'pengguna': 'SELECT * FROM users LIMIT 1',
   };
   for (const [name, sql] of Object.entries(tests)) {
     try { await c.query(sql); console.log('  ok: ' + name); } catch (e) { bad('Query "' + name + '" gagal: ' + e.message); }
   }
+  console.log('3. Memeriksa berkas gambar karya di folder uploads/artworks...');
+  const dir = path.join(process.env.UPLOAD_DIR ? path.resolve(process.env.UPLOAD_DIR) : path.join(__dirname, '..', 'uploads'), 'artworks');
+  try {
+    const files = (await c.query('SELECT id,title,image_file FROM artworks')).rows;
+    const missing = files.filter((f) => !fs.existsSync(path.join(dir, f.image_file)));
+    missing.forEach((f) => bad('Gambar karya #' + f.id + ' ("' + f.title + '") tidak ada: ' + path.join(dir, f.image_file)));
+    if (!missing.length) console.log('  ok: ' + files.length + ' berkas gambar ditemukan');
+  } catch (e) { bad('Pemeriksaan berkas gambar gagal: ' + e.message); }
   console.log(problems ? '\nDitemukan ' + problems + ' masalah. Perbaiki, lalu jalankan lagi.' : '\nSemua sesuai. Struktur database Anda cocok dengan aplikasi.');
   await c.end();
 })();

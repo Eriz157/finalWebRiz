@@ -6,6 +6,7 @@ import { api } from '@/lib/client';
 import { Icon, Void } from './ui';
 import { ChallengeForm, useChallengeActions } from './challengeParts';
 import { CH_LABEL, fmtDate } from '@/lib/format';
+import { standings, autoWinners, validateWinners, cmpSubs, fmtScore } from '@/lib/scoring';
 
 function WinnerPanel({ challenges, subs }) {
   const { toast, refresh } = useApp();
@@ -13,26 +14,49 @@ function WinnerPanel({ challenges, subs }) {
   const [sel, setSel] = useState(null);
   const c = ended.find((x) => x.id === sel) || ended[0];
   const list = c ? subs[c.id] || [] : [];
-  const init = () => { const w = {}; list.forEach((s) => { if (s.rank && c.announcedAt) w[s.rank] = s.id; }); return w; };
+  const init = () => { const w = { 1: [], 2: [], 3: [] }; list.forEach((s) => { if (s.rank && c.announcedAt) w[s.rank].push(s.id); }); return w; };
   const [w, setW] = useState(init);
   const [err, setErr] = useState('');
   const [pickKey, setPickKey] = useState(c?.id);
-  if (c && pickKey !== c.id) { setPickKey(c.id); setW(init()); }
+  if (c && pickKey !== c.id) { setPickKey(c.id); setW(init()); setErr(''); }
 
   if (!ended.length) return <Void title="Belum ada challenge yang berakhir"><p style={{ margin: 0 }}>Pemenang dapat diumumkan setelah tanggal selesai terlewati, atau setelah kamu mengakhiri challenge lebih awal.</p></Void>;
-  const ordered = [...list].sort((a, b) => (b.score ?? -1) - (a.score ?? -1));
+  const st = standings(list);
+  const byId = new Map(list.map((x) => [x.id, x]));
+  const unrated = list.length - st.order.length;
+  const tied = (p) => [...st.place.values()].filter((x) => x === p).length > 1;
+  const used = new Set(Object.values(w).flat());
+  const label = (s) => `${s.title} — ${s.painter} (nilai ${fmtScore(s.score)})`;
+  const set = (r, arr) => { setErr(''); setW({ ...w, [r]: arr }); };
+  const change = (r, i, v) => {
+    const arr = [...w[r]];
+    if (!v) arr.splice(i, 1); else if (i >= arr.length) arr.push(Number(v)); else arr[i] = Number(v);
+    set(r, arr);
+  };
   const auto = () => {
-    const top = list.filter((x) => x.score != null).sort((a, b) => b.score - a.score).slice(0, 3);
-    if (!top.length) return toast('Belum ada submisi yang dinilai.', 'err');
-    setW({ 1: top[0]?.id, 2: top[1]?.id, 3: top[2]?.id });
+    if (!st.order.length) return toast('Belum ada submisi yang dinilai lengkap.', 'err');
+    setErr(''); setW(autoWinners(list));
   };
   const submit = async (e) => {
     e.preventDefault(); setErr('');
-    const used = new Set(); const out = {};
-    for (const r of [1, 2, 3]) { const v = w[r]; if (v) { if (used.has(v)) return setErr('Satu karya hanya boleh mendapat satu peringkat.'); used.add(v); out[r] = v; } }
-    if (!out[1]) return setErr('Pilih setidaknya Juara 1.');
-    if (out[3] && !out[2]) return setErr('Juara 3 tidak dapat diisi tanpa Juara 2.');
-    try { await api(`/api/challenges/${c.id}/winners`, { method: 'POST', json: { winners: out } }); toast('Pemenang diumumkan.', 'ok'); refresh(); } catch (x) { setErr(x.message); }
+    const m = validateWinners(w, list);
+    if (m) return setErr(m);
+    try { await api(`/api/challenges/${c.id}/winners`, { method: 'POST', json: { winners: w } }); toast('Pemenang diumumkan.', 'ok'); refresh(); } catch (x) { setErr(x.message); }
+  };
+  const slot = (r, i) => {
+    const first = byId.get(w[r][0]);
+    const cur = w[r][i];
+    const opts = st.order.filter((s) => (s.id === cur || !used.has(s.id)) && (i === 0 || (first && cmpSubs(s, first) === 0)));
+    const off = i === 0 && !cur && 1 + [1, 2, 3].filter((x) => x < r).reduce((n, x) => n + w[x].length, 0) !== r;
+    return (
+      <select className="in" key={r + '-' + i} disabled={off} aria-label={i === 0 ? `Juara ${r}` : `Juara ${r} bersama`} id={i === 0 ? 'w' + r : undefined} value={cur || ''} onChange={(e) => change(r, i, e.target.value)}>
+        <option value="">{off ? 'Tidak tersedia (mengikuti jumlah juara di atasnya)' : i === 0 ? '— Tidak ada —' : '+ Tambah juara bersama (nilai sama persis)'}</option>
+        {opts.map((s) => <option key={s.id} value={s.id}>{label(s)}</option>)}
+      </select>);
+  };
+  const canAddJoint = (r) => {
+    const first = byId.get(w[r][0]); if (!first) return false;
+    return st.order.some((s) => !used.has(s.id) && cmpSubs(s, first) === 0);
   };
   return (
     <>
@@ -40,12 +64,19 @@ function WinnerPanel({ challenges, subs }) {
         <select className="in" id="winCh" value={c.id} onChange={(e) => setSel(Number(e.target.value))}>{ended.map((x) => <option key={x.id} value={x.id}>{x.title}</option>)}</select></div>
       {!list.length ? <Void><p style={{ margin: 0 }}>Challenge ini tidak memiliki submisi.</p></Void> : (
         <form onSubmit={submit} noValidate>
+          <div className="standings" aria-label="Peringkat berdasarkan nilai">
+            <div className="st-h"><b>Peringkat nilai</b><span className="small mute">Total berbobot; seri: kreativitas → orisinalitas → teknik → estetika</span></div>
+            {st.order.length ? <ol>{st.order.map((s) => { const p = st.place.get(s.id); return (
+              <li key={s.id}><span className="pl">{p}</span><span className="tt">{s.title}<small>{s.painter}</small></span>
+                {tied(p) && <span className="badge curator">sama persis</span>}<b>{fmtScore(s.score)}</b></li>); })}</ol> : <p className="small mute" style={{ margin: 0 }}>Belum ada submisi yang dinilai lengkap.</p>}
+            {unrated > 0 && <p className="small mute" style={{ margin: '8px 0 0' }}>{unrated} karya belum dinilai lengkap dan tidak dapat dipilih.</p>}
+          </div>
           <div className="win-pick">{[1, 2, 3].map((r) => (
-            <div className="r" key={r}><label htmlFor={'w' + r}>Juara {r}</label>
-              <select className="in" id={'w' + r} value={w[r] || ''} onChange={(e) => setW({ ...w, [r]: e.target.value ? Number(e.target.value) : undefined })}>
-                <option value="">— Tidak ada —</option>
-                {ordered.map((s) => <option key={s.id} value={s.id}>{s.title} — {s.painter}{s.score != null ? ` (nilai ${s.score})` : ''}</option>)}
-              </select></div>))}</div>
+            <div className="r" key={r}><span className="rl">Juara {r}</span>
+              <div className="slots">
+                {w[r].map((id, i) => slot(r, i))}
+                {(w[r].length === 0 || canAddJoint(r)) && slot(r, w[r].length)}
+              </div></div>))}</div>
           {c.announcedAt && <p className="small mute" style={{ margin: '0 0 12px' }}>Diumumkan pada {fmtDate(c.announcedAt)}. Kamu dapat memperbaruinya.</p>}
           <p className="msg-err" role="alert">{err}</p>
           <div className="btn-row"><button type="button" className="btn line sm" onClick={auto}>Isi dari nilai tertinggi</button>
@@ -88,7 +119,7 @@ export default function OverviewView({ challenges, subs }) {
                   </div>
                 </div>);
             })}</div></div>
-          <div className="panel"><h3>Umumkan pemenang</h3><p className="sub">Pilih maksimal tiga karya. Satu peringkat hanya untuk satu karya.</p><WinnerPanel challenges={challenges} subs={subs} /></div>
+          <div className="panel"><h3>Umumkan pemenang</h3><p className="sub">Satu karya hanya mendapat satu peringkat. Dua karya boleh berbagi peringkat hanya jika semua nilainya sama persis.</p><WinnerPanel challenges={challenges} subs={subs} /></div>
         </div>
       </div>
     </div></div>

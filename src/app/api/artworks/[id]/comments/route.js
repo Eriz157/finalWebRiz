@@ -1,5 +1,5 @@
 import { route, json, readJson, requireUser, intParam, text, ApiError } from '@/lib/api';
-import { query, ensureCommentSchema } from '@/lib/db';
+import { query } from '@/lib/db';
 import { getUser } from '@/lib/auth';
 
 const SEL = `SELECT c.id,c.user_id,c.body,c.created_at,c.parent_id,u.name,u.role,u.avatar,
@@ -9,14 +9,12 @@ const SEL = `SELECT c.id,c.user_id,c.body,c.created_at,c.parent_id,u.name,u.role
 const map = (r) => ({ id: r.id, userId: r.user_id, userName: r.name, userRole: r.role, avatar: r.avatar, body: r.body, parentId: r.parent_id, likes: Number(r.likes), liked: r.liked, createdAt: new Date(r.created_at).toISOString() });
 
 export const GET = route(async (req, ctx) => {
-  await ensureCommentSchema();
   const id = intParam((await ctx.params).id);
   const me = await getUser();
   const r = await query(`${SEL} WHERE c.artwork_id=$1 ORDER BY c.created_at, c.id`, [id, me ? me.id : 0]);
   return json({ comments: r.rows.map(map) });
 });
 export const POST = route(async (req, ctx) => {
-  await ensureCommentSchema();
   const u = await requireUser();
   const id = intParam((await ctx.params).id);
   const b = await readJson(req);

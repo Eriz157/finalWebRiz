@@ -1,5 +1,6 @@
 import bcrypt from 'bcryptjs';
 import { route, json, readJson, requireUser, intParam, text, emailOf, ApiError } from '@/lib/api';
+import { removeArtworkImages } from '@/lib/files';
 import { query } from '@/lib/db';
 
 export const PATCH = route(async (req, ctx) => {
@@ -38,6 +39,8 @@ export const DELETE = route(async (req, ctx) => {
   const t = (await query('SELECT role FROM users WHERE id=$1', [id])).rows[0];
   if (!t) throw new ApiError(404, 'Akun tidak ditemukan.');
   if (t.role === 'admin' || id === admin.id) throw new ApiError(403, 'Akun admin tidak dapat dihapus.');
+  const files = (await query('SELECT image_file FROM artworks WHERE owner_id=$1', [id])).rows.map((r) => r.image_file);
   await query('DELETE FROM users WHERE id=$1', [id]);
+  await removeArtworkImages(files);
   return json({ ok: true });
 });

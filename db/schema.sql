@@ -30,7 +30,7 @@ CREATE TABLE artworks (
   description varchar(240) NOT NULL DEFAULT '',
   category    varchar(40)  NOT NULL REFERENCES categories(slug),
   studio_url  text         NOT NULL DEFAULT '',
-  image       bytea        NOT NULL,
+  image_file  varchar(80)  NOT NULL,  -- nama berkas di folder uploads/artworks
   image_mime  varchar(30)  NOT NULL,
   is_example  boolean      NOT NULL DEFAULT false,
   created_at  timestamptz  NOT NULL DEFAULT now()
@@ -88,7 +88,11 @@ CREATE TABLE submissions (
   challenge_id  integer NOT NULL REFERENCES challenges(id) ON DELETE CASCADE,
   artwork_id    integer NOT NULL REFERENCES artworks(id)   ON DELETE CASCADE,
   user_id       integer NOT NULL REFERENCES users(id)      ON DELETE CASCADE,
-  score         smallint CHECK (score BETWEEN 0 AND 100),
+  score_creativity  smallint CHECK (score_creativity  BETWEEN 1 AND 100),
+  score_technique   smallint CHECK (score_technique   BETWEEN 1 AND 100),
+  score_originality smallint CHECK (score_originality BETWEEN 1 AND 100),
+  score_aesthetics  smallint CHECK (score_aesthetics  BETWEEN 1 AND 100),
+  score         numeric(5,2) CHECK (score BETWEEN 0 AND 100),  -- total berbobot 30/25/25/20
   note          varchar(200) NOT NULL DEFAULT '',
   created_at    timestamptz NOT NULL DEFAULT now(),
   UNIQUE (challenge_id, user_id)
@@ -99,6 +103,5 @@ CREATE TABLE winners (
   challenge_id   integer  NOT NULL REFERENCES challenges(id)  ON DELETE CASCADE,
   rank           smallint NOT NULL CHECK (rank BETWEEN 1 AND 3),
   submission_id  integer  NOT NULL REFERENCES submissions(id) ON DELETE CASCADE,
-  PRIMARY KEY (challenge_id, rank),
-  UNIQUE (challenge_id, submission_id)
+  PRIMARY KEY (challenge_id, submission_id)  -- satu karya satu peringkat; boleh beberapa karya sama peringkat (juara bersama)
 );

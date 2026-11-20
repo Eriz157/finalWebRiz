@@ -2,6 +2,7 @@ import pg from 'pg';
 
 // Tanggal (DATE) dikembalikan apa adanya sebagai 'YYYY-MM-DD', dan COUNT sebagai angka biasa.
 pg.types.setTypeParser(1082, (v) => v);
+pg.types.setTypeParser(1700, (v) => parseFloat(v));
 pg.types.setTypeParser(20, (v) => parseInt(v, 10));
 
 const g = globalThis;
@@ -30,29 +31,4 @@ export async function tx(fn) {
 export function todayStr() {
   const tz = process.env.APP_TZ || 'Asia/Makassar';
   return new Intl.DateTimeFormat('en-CA', { timeZone: tz }).format(new Date());
-}
-
-// Memastikan kolom/tabel untuk sukai & balas komentar ada (aman dipanggil berulang; dijalankan sekali per proses).
-// Memastikan kolom "deskripsi" karya ada (aman dipanggil berulang; dijalankan sekali per proses).
-export function ensureArtworkSchema() {
-  if (!g.__artworkSchema) {
-    g.__artworkSchema = pool
-      .query("ALTER TABLE artworks ADD COLUMN IF NOT EXISTS description varchar(240) NOT NULL DEFAULT ''")
-      .catch((e) => { g.__artworkSchema = null; throw e; });
-  }
-  return g.__artworkSchema;
-}
-
-export function ensureCommentSchema() {
-  if (!g.__commentSchema) {
-    g.__commentSchema = pool.query(
-      `ALTER TABLE comments ADD COLUMN IF NOT EXISTS parent_id integer REFERENCES comments(id) ON DELETE CASCADE;
-       CREATE TABLE IF NOT EXISTS comment_likes (
-         user_id integer NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-         comment_id integer NOT NULL REFERENCES comments(id) ON DELETE CASCADE,
-         created_at timestamptz NOT NULL DEFAULT now(),
-         PRIMARY KEY (user_id, comment_id));`
-    ).catch((e) => { g.__commentSchema = null; throw e; });
-  }
-  return g.__commentSchema;
 }
