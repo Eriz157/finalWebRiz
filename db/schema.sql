@@ -11,6 +11,10 @@ CREATE TABLE users (
   instagram       text         NOT NULL DEFAULT '',
   behance         text         NOT NULL DEFAULT '',
   website         text         NOT NULL DEFAULT '',
+  suspended_at    timestamptz,                   -- terisi = akun ditangguhkan
+  suspended_until timestamptz,                   -- batas penangguhan; NULL (bila suspended_at terisi) = tanpa batas waktu
+  failed_logins   smallint     NOT NULL DEFAULT 0, -- salah kata sandi berturut-turut
+  locked_until    timestamptz,                   -- diblokir sementara (60 detik setelah 3x salah)
   created_at      timestamptz  NOT NULL DEFAULT now()
 );
 CREATE UNIQUE INDEX users_email_key ON users (lower(email));

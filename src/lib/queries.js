@@ -1,5 +1,6 @@
 import { query, todayStr } from './db';
 import { mapUser } from './auth';
+import { isSuspended } from './suspension';
 
 /* ---------- kategori ---------- */
 export async function listCategories() {
@@ -43,7 +44,8 @@ export async function getPublicUser(id, viewer) {
 }
 export async function listUsers() {
   const r = await query(`SELECT u.*, (SELECT count(*) FROM artworks a WHERE a.owner_id=u.id) AS art_count, (SELECT count(*) FROM account_requests r WHERE r.user_id=u.id AND r.status='pending') AS req_pending FROM users u ORDER BY u.created_at, u.id`);
-  return r.rows.map((x) => ({ ...mapUser(x), artCount: x.art_count, reqPending: Number(x.req_pending) }));
+  return r.rows.map((x) => ({ ...mapUser(x), artCount: x.art_count, reqPending: Number(x.req_pending),
+    suspended: isSuspended(x), suspendedUntil: x.suspended_until ? new Date(x.suspended_until).toISOString() : null }));
 }
 
 /* ---------- challenge ---------- */

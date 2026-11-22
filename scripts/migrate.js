@@ -32,6 +32,9 @@ async function moveImagesToFolder(c) {
   }
   const exists = await c.query("SELECT to_regclass('public.users') AS t");
   if (exists.rows[0].t) {
+    await c.query(`ALTER TABLE users
+      ADD COLUMN IF NOT EXISTS suspended_at timestamptz, ADD COLUMN IF NOT EXISTS suspended_until timestamptz,
+      ADD COLUMN IF NOT EXISTS failed_logins smallint NOT NULL DEFAULT 0, ADD COLUMN IF NOT EXISTS locked_until timestamptz`);
     if (!(await c.query("SELECT to_regclass('public.account_requests') AS t")).rows[0].t) {
       const sql = fs.readFileSync(path.join(__dirname, '..', 'db', 'schema.sql'), 'utf8');
       await c.query(sql.slice(sql.indexOf('-- @account_requests')));

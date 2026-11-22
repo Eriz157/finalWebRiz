@@ -30,7 +30,89 @@ function RequestChange({ u }) {
   );
 }
 
-const status = (u) => u.reqPending > 0 ? <span className="badge pending">Menunggu persetujuan</span> : u.curatorStatus === 'pending' ? <span className="badge pending">Pending curator</span>
+// Kolom verifikasi (kata sandi + OTP). Panduan ditampilkan agar juri mudah mencoba fungsinya.
+function Verify({ f, setF, guide }) {
+  return (
+    <>
+      <div className="guide" role="note">
+        <b>Panduan juri</b>
+        <p>{guide.passLabel} : <code>{guide.password}</code></p>
+        <p>{guide.otpLabel} : <code>{guide.otp}</code></p>
+        <p className="small mute">Seharusnya kode OTP dikirim ke Gmail admin. Karena proyek ini masih berstatus demo, dipakai kode OTP universal di atas.</p>
+      </div>
+      <div className="fld"><label htmlFor="vpw">Kata sandi verifikasi</label><input className="in" id="vpw" type="password" autoComplete="off" value={f.password} onChange={(e) => setF({ ...f, password: e.target.value })} /></div>
+      <div className="fld"><label htmlFor="votp">Kode OTP (6 digit)</label><input className="in" id="votp" inputMode="numeric" maxLength={6} autoComplete="off" value={f.otp} onChange={(e) => setF({ ...f, otp: e.target.value.replace(/\D/g, '') })} /></div>
+    </>
+  );
+}
+
+function DeleteAccount({ u }) {
+  const { closeModal, toast, refresh } = useApp();
+  const [f, setF] = useState({ password: '', otp: '' });
+  const [err, setErr] = useState('');
+  const [busy, setBusy] = useState(false);
+  const submit = async (e) => {
+    e.preventDefault(); setErr('');
+    if (!f.password) return setErr('Masukkan kata sandi hapus akun.');
+    if (f.otp.length !== 6) return setErr('Kode OTP terdiri dari 6 digit.');
+    setBusy(true);
+    try { await api(`/api/users/${u.id}`, { method: 'DELETE', json: f }); closeModal(); toast('Akun dihapus.', 'ok'); refresh(); }
+    catch (x) { setErr(x.message); setBusy(false); }
+  };
+  return (
+    <>
+      <h2>Hapus akun {u.name}?</h2>
+      <p className="lead2">Ikut terhapus: {u.artCount} karya, challenge, komentar, dan submisi milik akun ini. Tindakan ini permanen dan tidak dapat dibatalkan.</p>
+      <form onSubmit={submit} noValidate>
+        <Verify f={f} setF={setF} guide={{ passLabel: 'pass hapus akun', password: 'hard_delete123', otpLabel: 'otp hapus akun', otp: '010507' }} />
+        <p className="msg-err" role="alert">{err}</p>
+        <div className="mdl-actions"><button type="button" className="btn line" onClick={() => closeModal()}>Batal</button><button type="submit" className="btn danger" disabled={busy}>Hapus permanen</button></div>
+      </form>
+    </>
+  );
+}
+
+function SuspendAccount({ u }) {
+  const { closeModal, toast, refresh } = useApp();
+  const [f, setF] = useState({ password: '', otp: '' });
+  const [dur, setDur] = useState('1d');
+  const [amount, setAmount] = useState('1');
+  const [unit, setUnit] = useState('days');
+  const [err, setErr] = useState('');
+  const [busy, setBusy] = useState(false);
+  const submit = async (e) => {
+    e.preventDefault(); setErr('');
+    if (dur === 'custom' && !(Number.isInteger(Number(amount)) && Number(amount) >= 1 && Number(amount) <= 9999)) return setErr('Durasi kustom harus 1–9999.');
+    if (!f.password) return setErr('Masukkan kata sandi tangguhkan akun.');
+    if (f.otp.length !== 6) return setErr('Kode OTP terdiri dari 6 digit.');
+    setBusy(true);
+    try { await api(`/api/users/${u.id}/suspend`, { method: 'POST', json: { ...f, duration: dur, amount: Number(amount), unit } }); closeModal(); toast(`${u.name} ditangguhkan.`, 'ok'); refresh(); }
+    catch (x) { setErr(x.message); setBusy(false); }
+  };
+  return (
+    <>
+      <h2>Tangguhkan akun {u.name}</h2>
+      <p className="lead2">Selama masa penangguhan, akun ini tidak dapat masuk. Penangguhan dapat dicabut kapan saja.</p>
+      <form onSubmit={submit} noValidate>
+        <div className="fld"><label htmlFor="sdur">Lama penangguhan</label>
+          <select className="in" id="sdur" value={dur} onChange={(e) => setDur(e.target.value)}>
+            <option value="1d">1 hari</option><option value="1m">1 bulan</option><option value="1y">1 tahun</option>
+            <option value="custom">Kustom</option><option value="forever">Tanpa batas waktu</option></select></div>
+        {dur === 'custom' && (
+          <div className="fld"><label htmlFor="samt">Durasi kustom</label>
+            <div style={{ display: 'flex', gap: 10 }}>
+              <input className="in" id="samt" type="number" min="1" max="9999" value={amount} onChange={(e) => setAmount(e.target.value)} />
+              <select className="in" aria-label="Satuan" value={unit} onChange={(e) => setUnit(e.target.value)}><option value="minutes">menit</option><option value="hours">jam</option><option value="days">hari</option></select></div></div>)}
+        <Verify f={f} setF={setF} guide={{ passLabel: 'pass tangguhkan akun', password: 'soft_delete123', otpLabel: 'otp tangguhkan akun', otp: '301006' }} />
+        <p className="msg-err" role="alert">{err}</p>
+        <div className="mdl-actions"><button type="button" className="btn line" onClick={() => closeModal()}>Batal</button><button type="submit" className="btn primary" disabled={busy}>Tangguhkan</button></div>
+      </form>
+    </>
+  );
+}
+
+const fmtUntil = (iso) => new Date(iso).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' });
+const status = (u) => u.suspended ? <><span className="badge rejected">Ditangguhkan</span><div className="small mute">{u.suspendedUntil ? `s.d. ${fmtUntil(u.suspendedUntil)}` : 'tanpa batas waktu'}</div></> : u.reqPending > 0 ? <span className="badge pending">Menunggu persetujuan</span> : u.curatorStatus === 'pending' ? <span className="badge pending">Pending curator</span>
   : u.curatorStatus === 'rejected' ? <span className="badge rejected">Ditolak</span> : <span className="badge active"><i className="dotc" />Aktif</span>;
 
 export default function UsersView({ users, artTotal }) {
@@ -51,9 +133,9 @@ export default function UsersView({ users, artTotal }) {
     run(() => api(`/api/users/${u.id}/requests`, { method: 'POST', json: { kind: 'password_reset' } }), 'Permintaan reset dikirim. Menunggu persetujuan pemilik akun.');
   };
   const cancelReq = (u) => run(() => api(`/api/users/${u.id}/requests`, { method: 'DELETE' }), 'Permintaan dibatalkan.');
-  const del = async (u) => {
-    if (!(await confirm({ title: `Hapus akun ${u.name}?`, text: `Ikut terhapus: ${u.artCount} karya, challenge, komentar, dan submisi milik akun ini. Tindakan ini tidak dapat dibatalkan.`, ok: 'Hapus akun', danger: true }))) return;
-    run(() => api(`/api/users/${u.id}`, { method: 'DELETE' }), 'Akun dihapus.');
+  const unsuspend = async (u) => {
+    if (!(await confirm({ title: `Cabut penangguhan ${u.name}?`, text: 'Akun dapat langsung masuk kembali.', ok: 'Cabut penangguhan' }))) return;
+    run(() => api(`/api/users/${u.id}/suspend`, { method: 'DELETE' }), 'Penangguhan dicabut.');
   };
   return (
     <div className="page" id="p-users"><div className="wrap">
@@ -95,7 +177,9 @@ export default function UsersView({ users, artTotal }) {
                     <button type="button" className="btn line xs" onClick={() => openModal(<RequestChange u={u} />)}><Icon n="edit" /> Ajukan ubah</button>
                     <button type="button" className="btn line xs" onClick={() => resetPw(u)}>Reset sandi</button>
                     {u.reqPending > 0 && <button type="button" className="btn soft xs" onClick={() => cancelReq(u)}>Batalkan</button>}
-                    <button type="button" className="btn danger xs" aria-label={`Hapus ${u.name}`} onClick={() => del(u)}><Icon n="trash" /></button></>}
+                    {u.suspended ? <button type="button" className="btn soft xs" onClick={() => unsuspend(u)}>Cabut tangguhan</button>
+                      : <button type="button" className="btn line xs" onClick={() => openModal(<SuspendAccount u={u} />)}>Tangguhkan</button>}
+                    <button type="button" className="btn danger xs" aria-label={`Hapus ${u.name}`} onClick={() => openModal(<DeleteAccount u={u} />)}><Icon n="trash" /></button></>}
                 </div>
               </div>);
           })}

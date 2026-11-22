@@ -91,7 +91,11 @@ const EXPECTED = {
   "instagram": "text",
   "behance": "text",
   "website": "text",
-  "created_at": "timestamp with time zone"
+  "created_at": "timestamp with time zone",
+  "suspended_at": "timestamp with time zone",
+  "suspended_until": "timestamp with time zone",
+  "failed_logins": "smallint",
+  "locked_until": "timestamp with time zone"
  },
  "winners": {
   "challenge_id": "integer",

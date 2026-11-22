@@ -1,6 +1,7 @@
 import { SignJWT, jwtVerify } from 'jose';
 import { cookies } from 'next/headers';
 import { query } from './db';
+import { isSuspended } from './suspension';
 
 const COOKIE = 'aa_session';
 const key = () => new TextEncoder().encode(process.env.AUTH_SECRET || 'dev-only-secret-ganti-di-env-minimal-32-karakter');
@@ -32,6 +33,7 @@ export async function getUser() {
   try {
     const { payload } = await jwtVerify(token, key());
     const r = await query('SELECT * FROM users WHERE id=$1', [payload.uid]);
-    return r.rows[0] ? mapUser(r.rows[0]) : null;
+    if (!r.rows[0] || isSuspended(r.rows[0])) return null; // akun ditangguhkan = dianggap belum masuk
+    return mapUser(r.rows[0]);
   } catch { return null; }
 }

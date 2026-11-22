@@ -1058,3 +1058,8 @@ html:has(.b-pin){--nav-h:0px}
 .note-card{display:flex;gap:var(--s-16);align-items:center;justify-content:space-between;flex-wrap:wrap;padding:var(--s-16) var(--s-20);background:#f6ecd0;border:1px solid #e5d49f}
 .note-card .small{margin-top:4px}
 .note-card .pw{font-family:ui-monospace,Menlo,monospace;background:var(--paper);border:1px solid var(--line);padding:2px 8px;letter-spacing:.04em}
+
+/* panduan juri di dialog verifikasi admin */
+.guide{background:#f6ecd0;border:1px solid #e5d49f;padding:var(--s-12) var(--s-16);margin:var(--s-16) 0}
+.guide p{margin:4px 0 0}
+.guide code{font-family:ui-monospace,Menlo,monospace;background:var(--paper);border:1px solid var(--line);padding:1px 6px}
