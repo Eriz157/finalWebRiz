@@ -105,3 +105,19 @@ CREATE TABLE winners (
   submission_id  integer  NOT NULL REFERENCES submissions(id) ON DELETE CASCADE,
   PRIMARY KEY (challenge_id, submission_id)  -- satu karya satu peringkat; boleh beberapa karya sama peringkat (juara bersama)
 );
+
+-- @account_requests (tabel terakhir; migrate.js membuatnya sendiri pada database lama)
+-- Permintaan admin yang harus disetujui pemilik akun: ubah nama/email, atau reset kata sandi ke bawaan.
+CREATE TABLE account_requests (
+  id          integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  user_id     integer NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  admin_id    integer REFERENCES users(id) ON DELETE SET NULL,
+  kind        varchar(16) NOT NULL CHECK (kind IN ('profile','password_reset')),
+  new_name    varchar(60),
+  new_email   varchar(190),
+  status      varchar(10) NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','approved','rejected','dismissed')),
+  revealed    boolean NOT NULL DEFAULT false,  -- kata sandi bawaan sudah dilihat pemilik akun
+  created_at  timestamptz NOT NULL DEFAULT now(),
+  decided_at  timestamptz
+);
+CREATE INDEX account_requests_user_idx ON account_requests (user_id);

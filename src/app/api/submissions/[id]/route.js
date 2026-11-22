@@ -1,17 +1,17 @@
 import { route, json, readJson, requireUser, intParam, text, ApiError } from '@/lib/api';
 import { query } from '@/lib/db';
-import { getChallenge, canManageChallenge } from '@/lib/queries';
+import { getChallenge, canJudgeChallenge } from '@/lib/queries';
 import { CRITERIA, validPart, totalOf } from '@/lib/scoring';
 
-// Penilaian 4 kriteria (1–100): hanya curator pemilik challenge (atau admin).
+// Penilaian 4 kriteria (1–100): hanya curator pemilik challenge (admin tidak dapat menilai).
 // Total = kreativitas 30% + teknik 25% + orisinalitas 25% + estetika 20%.
 export const PATCH = route(async (req, ctx) => {
-  const u = await requireUser(['curator', 'admin']);
+  const u = await requireUser(['curator']);
   const id = intParam((await ctx.params).id);
   const s = (await query('SELECT id,challenge_id FROM submissions WHERE id=$1', [id])).rows[0];
   if (!s) throw new ApiError(404, 'Submisi tidak ditemukan.');
   const ch = await getChallenge(s.challenge_id);
-  if (!canManageChallenge(u, ch)) throw new ApiError(403, 'Kamu hanya dapat menilai challenge milikmu sendiri.');
+  if (!canJudgeChallenge(u, ch)) throw new ApiError(403, 'Kamu hanya dapat menilai challenge milikmu sendiri.');
   const b = await readJson(req);
   const v = {};
   for (const c of CRITERIA) {

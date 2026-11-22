@@ -41,7 +41,7 @@ export default function ChallengeDetailView({ challenge: c, submissions, myArts 
   const { user: u, router } = useApp();
   const act = useChallengeActions(myArts);
   const s = c.status;
-  const canJudge = u && (u.role === 'admin' || (u.role === 'curator' && c.ownerId === u.id));
+  const canJudge = !!u && u.role === 'curator' && c.ownerId === u.id;
   const mine = u ? submissions.find((x) => x.userId === u.id) : null;
   const back = u && ['curator', 'member', 'admin'].includes(u.role) ? '/challenges' : '/';
   const att = c.attachment;

@@ -271,7 +271,7 @@ export default function ChallengesView({ challenges, joinedIds, myArts }) {
   const addBtn = u.role === 'admin'
     ? <button type="button" className="sp-add" onClick={act.create}><Icon n="plus" /> Tambah challenge</button>
     : u.role === 'curator' ? <Link className="sp-add" href="/overview"><Icon n="plus" /> Buat di Overview</Link> : null;
-  const note = u.role === 'member' ? 'Pilih challenge yang masih aktif, lalu daftarkan salah satu karyamu.' : u.role === 'curator' ? 'Kamu hanya dapat mengelola dan menilai challenge milikmu sendiri.' : 'Sebagai admin, kamu dapat mengelola seluruh challenge.';
+  const note = u.role === 'member' ? 'Pilih challenge yang masih aktif, lalu daftarkan salah satu karyamu.' : u.role === 'curator' ? 'Kamu hanya dapat mengelola dan menilai challenge milikmu sendiri.' : 'Sebagai admin, kamu dapat mengelola challenge, tetapi penilaian dan pemenang hanya oleh curator pemilik challenge.';
 
   return (
     <div className="sp-page" ref={pageRef} id="p-challenge">
@@ -338,7 +338,7 @@ export default function ChallengesView({ challenges, joinedIds, myArts }) {
                           {c.status !== 'ended' && <button type="button" className="sp-cta ghost" onClick={() => act.withdraw(c)}>Tarik submisi</button>}
                         </>
                         : c.status === 'active' && <button type="button" className="sp-cta" onClick={() => act.join(c)}>Ikuti challenge <span aria-hidden="true">→</span></button>)}
-                      <Link className={u.role === 'member' ? 'sp-cta ghost' : 'sp-cta'} href={`/challenges/${c.id}`}>{manage ? 'Kelola & nilai' : 'Lihat halaman lengkap'} <span aria-hidden="true">→</span></Link>
+                      <Link className={u.role === 'member' ? 'sp-cta ghost' : 'sp-cta'} href={`/challenges/${c.id}`}>{manage ? (u.role === 'curator' ? 'Kelola & nilai' : 'Kelola') : 'Lihat halaman lengkap'} <span aria-hidden="true">→</span></Link>
                       {manage && <>
                         <button type="button" className="sp-cta ghost" onClick={() => act.edit(c)}>Edit</button>
                         {c.status === 'active' && <button type="button" className="sp-cta ghost" onClick={() => act.close(c)}>Akhiri sekarang</button>}

@@ -4,7 +4,7 @@
     "title": "Senja di Ujung Dunia",
     "painter": "Rizky Pratama",
     "category": "classic",
-    "studioUrl": "",
+    "studioUrl": "https://example.com/studio-view",
     "synopsis": "Ketika matahari mulai tenggelam, dunia seakan berhenti sejenak. Karya ini menangkap keindahan momen senja sebagai simbol harapan di penghujung perjalanan.",
     "description": "Siluet senja yang tenang: langit jingga perlahan menelan hari, mengajak kita berhenti sejenak dan bernapas.",
     "file": "c01-senja.jpg"
@@ -24,7 +24,7 @@
     "title": "Cincin Warna",
     "painter": "Karya contoh",
     "category": "anamorphic-color",
-    "studioUrl": "",
+    "studioUrl": "https://example.com/studio-view",
     "synopsis": "Contoh karya anamorphic color. Lingkaran-lingkaran warna yang saling tumpang tindih menjadi satu bentuk utuh dari sudut pandang tertentu.",
     "description": "Lingkaran warna yang saling tumpang tindih; dari satu sudut pandang yang tepat, semuanya menyatu menjadi bentuk utuh.",
     "file": "c03-cincin.jpg"
@@ -74,7 +74,7 @@
     "title": "Ekspresi dalam Warna",
     "painter": "Rina Maharani",
     "category": "anamorphic-color",
-    "studioUrl": "https://eriz157.github.io/studioView/anamorphic/senyum-paripurna.html",
+    "studioUrl": "",
     "synopsis": "Menggambarkan keberagaman emosi dan identitas manusia melalui perpaduan warna yang berani dan ekspresif.",
     "description": "Potret wajah bergaya Pop Art dengan kombinasi warna cerah dan kontras. Setiap bidang warna merepresentasikan keunikan serta kompleksitas karakter manusia.",
     "file": "c08-ekspresi.jpg"
@@ -84,7 +84,7 @@
     "title": "Fragmen Keabadian",
     "painter": "Sari Wulandari",
     "category": "anamorphic-shadow",
-    "studioUrl": "https://eriz157.github.io/studioView/pointilist/nostradamus.html",
+    "studioUrl": "",
     "synopsis": "Menggambarkan keindahan yang tetap memiliki makna meskipun telah mengalami kerusakan dan perubahan oleh waktu.",
     "description": "Ilustrasi patung klasik yang terfragmentasi dengan teknik stippling hitam putih. Retakan dan detail titik-titik menciptakan kesan klasik sekaligus misterius.",
     "file": "c09-fragmen.jpg"
@@ -94,7 +94,7 @@
     "title": "Cahaya di Balik Badai",
     "painter": "Bima Saputra",
     "category": "agamograph",
-    "studioUrl": "https://eriz157.github.io/studioView/agamograph/the-scary-of-the-sea.html",
+    "studioUrl": "",
     "synopsis": "Melambangkan harapan dan keteguhan dalam menghadapi berbagai tantangan kehidupan.",
     "description": "Sebuah mercusuar berdiri kokoh di tengah awan gelap dengan pancaran cahaya keemasan. Kontras gelap dan terang menggambarkan harapan di tengah kesulitan.",
     "file": "c10-mercusuar.jpg"

@@ -2,6 +2,18 @@
 // Pemakaian: npm run db:check
 const fs = require('fs'), path = require('path'), { Client } = require('pg');
 const EXPECTED = {
+ "account_requests": {
+  "id": "integer",
+  "user_id": "integer",
+  "admin_id": "integer",
+  "kind": "character varying",
+  "new_name": "character varying",
+  "new_email": "character varying",
+  "status": "character varying",
+  "revealed": "boolean",
+  "created_at": "timestamp with time zone",
+  "decided_at": "timestamp with time zone"
+ },
  "artworks": {
   "id": "integer",
   "owner_id": "integer",

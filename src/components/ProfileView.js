@@ -57,6 +57,51 @@ function ProfileForm({ u }) {
   );
 }
 
+
+function RequestsPanel({ requests, u }) {
+  const { toast, refresh, confirm } = useApp();
+  const [shown, setShown] = useState({});
+  if (!requests.length) return null;
+  const act = async (r, action, okMsg) => {
+    try { const d = await api(`/api/me/requests/${r.id}`, { method: 'POST', json: { action } }); if (action === 'reveal') setShown((x) => ({ ...x, [r.id]: d.password })); if (okMsg) toast(okMsg, 'ok'); refresh(); }
+    catch (x) { toast(x.message, 'err'); }
+  };
+  const decide = async (r, ok) => {
+    const what = r.kind === 'password_reset' ? 'reset kata sandi' : 'perubahan data akun';
+    if (!(await confirm({ title: ok ? 'Setujui permintaan?' : 'Tolak permintaan?', text: ok ? (r.kind === 'password_reset' ? 'Kata sandimu akan langsung diganti menjadi kata sandi default. Kamu akan diberi tahu cara melihatnya.' : `Data akunmu akan diperbarui sesuai ${what} dari ${r.adminName}.`) : `Permintaan ${what} dari ${r.adminName} akan ditolak dan tidak ada yang berubah.`, ok: ok ? 'Setujui' : 'Tolak', danger: !ok }))) return;
+    act(r, ok ? 'approve' : 'reject', ok ? 'Permintaan disetujui.' : 'Permintaan ditolak.');
+  };
+  return (
+    <div className="notes" aria-label="Notifikasi akun">
+      {requests.map((r) => (
+        <div className="note-card" key={r.id}>
+          {r.status === 'pending' && r.kind === 'profile' && (
+            <>
+              <div><b>{r.adminName} mengajukan perubahan data akunmu</b>
+                {r.newName && <div className="small">Nama: <span className="mute">{u.name}</span> → <b>{r.newName}</b></div>}
+                {r.newEmail && <div className="small">Email: <span className="mute">{u.email}</span> → <b>{r.newEmail}</b></div>}
+                <div className="small mute">Perubahan baru berlaku bila kamu menyetujuinya.</div></div>
+              <div className="btn-row"><button type="button" className="btn primary sm" onClick={() => decide(r, true)}>Setujui</button><button type="button" className="btn line sm" onClick={() => decide(r, false)}>Tolak</button></div>
+            </>)}
+          {r.status === 'pending' && r.kind === 'password_reset' && (
+            <>
+              <div><b>{r.adminName} meminta reset kata sandi akunmu</b>
+                <div className="small mute">Bila disetujui, kata sandimu menjadi kata sandi default. Admin tidak pernah dapat mengganti kata sandi tanpa persetujuanmu.</div></div>
+              <div className="btn-row"><button type="button" className="btn primary sm" onClick={() => decide(r, true)}>Setujui reset</button><button type="button" className="btn line sm" onClick={() => decide(r, false)}>Tolak</button></div>
+            </>)}
+          {r.status === 'approved' && r.kind === 'password_reset' && (
+            <>
+              <div><b>Kata sandimu sudah direset</b>
+                <div className="small">Kata sandi default: <code className="pw">{shown[r.id] || '••••••••••••••'}</code></div>
+                <div className="small mute">Tekan Lihat untuk melihatnya, lalu ganti segera lewat tab Akun.</div></div>
+              <div className="btn-row"><button type="button" className="btn primary sm" onClick={() => act(r, 'reveal')}>Lihat</button>
+                {r.revealed && <button type="button" className="btn line sm" onClick={() => act(r, 'dismiss')}>Oke</button>}</div>
+            </>)}
+        </div>))}
+    </div>
+  );
+}
+
 function AccountTab({ u }) {
   const { toast, refresh, confirm, router } = useApp();
   const [email, setEmail] = useState(u.email), [oldP, setOldP] = useState(''), [newP, setNewP] = useState(''), [err, setErr] = useState('');
@@ -94,7 +139,7 @@ function AccountTab({ u }) {
   );
 }
 
-export default function ProfileView({ profile: u, own, arts, favorites, subs, challenges }) {
+export default function ProfileView({ profile: u, own, arts, favorites, subs, challenges, requests = [] }) {
   const sp = useSearchParams();
   const tabs = [['profil', 'Profil publik'], ['favorit', 'Favorit'], ['akun', 'Akun']];
   if (u.role === 'member') tabs.splice(2, 0, ['submisi', 'Submisi']);
@@ -129,6 +174,7 @@ export default function ProfileView({ profile: u, own, arts, favorites, subs, ch
     else body = <ProfileForm u={u} />;
     right = (
       <>
+        <RequestsPanel requests={requests} u={u} />
         {u.curatorStatus === 'pending' && <div className="banner"><div><b>Pengajuan Curator sedang ditinjau</b>Admin akan memeriksa pengajuanmu. Selama menunggu, kamu tetap dapat menjelajah sebagai Public.</div></div>}
         {u.curatorStatus === 'rejected' && <div className="banner rej"><div><b>Pengajuan Curator ditolak</b>Admin menolak pengajuanmu. Kamu tetap dapat memakai akun ini sebagai Public.</div></div>}
         <div className="tabs" role="tablist">{tabs.map(([k, t]) => <button key={k} type="button" className="tab" role="tab" aria-selected={tab === k} onClick={() => setTab(k)}>{t}</button>)}</div>

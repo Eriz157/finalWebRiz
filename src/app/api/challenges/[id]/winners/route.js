@@ -1,16 +1,16 @@
 import { route, json, readJson, requireUser, intParam, ApiError } from '@/lib/api';
 import { query, tx } from '@/lib/db';
-import { getChallenge, canManageChallenge } from '@/lib/queries';
+import { getChallenge, canJudgeChallenge } from '@/lib/queries';
 import { CRITERIA, validateWinners } from '@/lib/scoring';
 
 // Pemenang hanya dapat diumumkan setelah challenge berakhir (validasi waktu di server).
 // Format: { winners: { 1: [id, ...], 2: [id], 3: [id] } }. Satu karya satu peringkat;
 // beberapa karya hanya boleh berbagi peringkat bila seluruh nilainya sama persis.
 export const POST = route(async (req, ctx) => {
-  const u = await requireUser(['curator', 'admin']);
+  const u = await requireUser(['curator']);
   const ch = await getChallenge(intParam((await ctx.params).id));
   if (!ch) throw new ApiError(404, 'Challenge tidak ditemukan.');
-  if (!canManageChallenge(u, ch)) throw new ApiError(403, 'Kamu hanya dapat mengelola challenge milikmu sendiri.');
+  if (!canJudgeChallenge(u, ch)) throw new ApiError(403, 'Pemenang hanya dapat ditetapkan oleh curator pemilik challenge.');
   if (ch.status !== 'ended') throw new ApiError(400, 'Pemenang hanya dapat diumumkan setelah challenge berakhir.');
   const b = await readJson(req);
   const w = {};

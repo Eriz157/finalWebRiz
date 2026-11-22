@@ -32,6 +32,11 @@ async function moveImagesToFolder(c) {
   }
   const exists = await c.query("SELECT to_regclass('public.users') AS t");
   if (exists.rows[0].t) {
+    if (!(await c.query("SELECT to_regclass('public.account_requests') AS t")).rows[0].t) {
+      const sql = fs.readFileSync(path.join(__dirname, '..', 'db', 'schema.sql'), 'utf8');
+      await c.query(sql.slice(sql.indexOf('-- @account_requests')));
+      console.log('Tabel account_requests ditambahkan.');
+    }
     const moved = await moveImagesToFolder(c);
     if (moved) console.log(moved + ' gambar karya dipindahkan dari database ke folder uploads/artworks.');
     console.log('Tabel sudah ada: data tidak diubah. Jalankan npm run db:check untuk memastikan strukturnya cocok dengan db/schema.sql.');

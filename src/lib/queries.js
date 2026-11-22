@@ -42,8 +42,8 @@ export async function getPublicUser(id, viewer) {
   return mapUser(r.rows[0], !!self);
 }
 export async function listUsers() {
-  const r = await query(`SELECT u.*, (SELECT count(*) FROM artworks a WHERE a.owner_id=u.id) AS art_count FROM users u ORDER BY u.created_at, u.id`);
-  return r.rows.map((x) => ({ ...mapUser(x), artCount: x.art_count }));
+  const r = await query(`SELECT u.*, (SELECT count(*) FROM artworks a WHERE a.owner_id=u.id) AS art_count, (SELECT count(*) FROM account_requests r WHERE r.user_id=u.id AND r.status='pending') AS req_pending FROM users u ORDER BY u.created_at, u.id`);
+  return r.rows.map((x) => ({ ...mapUser(x), artCount: x.art_count, reqPending: Number(x.req_pending) }));
 }
 
 /* ---------- challenge ---------- */
@@ -72,6 +72,10 @@ export async function getChallenge(id) {
 }
 export function canManageChallenge(user, ch) {
   return !!user && (user.role === 'admin' || (user.role === 'curator' && ch.ownerId === user.id));
+}
+// Menilai karya dan menetapkan pemenang: hanya curator pemilik challenge (admin tidak termasuk).
+export function canJudgeChallenge(user, ch) {
+  return !!user && user.role === 'curator' && ch.ownerId === user.id;
 }
 export function canManageArtwork(user, ownerId) {
   return !!user && (user.role === 'admin' || (user.role === 'member' && ownerId === user.id));
@@ -109,4 +113,14 @@ export async function getStats() {
     (SELECT count(*) FROM likes) + (SELECT count(*) FROM comments) AS appreciation,
     (SELECT count(*) FROM challenges c WHERE NOT c.closed AND $1::date BETWEEN c.start_date AND c.end_date) AS active`, [todayStr()]);
   return r.rows[0];
+}
+
+/* ---------- permintaan admin ke pemilik akun ---------- */
+// Yang tampil di profil pemilik: permintaan yang menunggu keputusan dan notifikasi reset sandi yang belum ditutup.
+export async function listMyRequests(userId) {
+  const r = await query(`SELECT r.id,r.kind,r.new_name,r.new_email,r.status,r.revealed,r.created_at,a.name AS admin_name
+    FROM account_requests r LEFT JOIN users a ON a.id=r.admin_id
+    WHERE r.user_id=$1 AND (r.status='pending' OR (r.kind='password_reset' AND r.status='approved')) ORDER BY r.created_at DESC,r.id DESC`, [userId]);
+  return r.rows.map((x) => ({ id: x.id, kind: x.kind, newName: x.new_name, newEmail: x.new_email, status: x.status, revealed: x.revealed,
+    createdAt: new Date(x.created_at).toISOString(), adminName: x.admin_name || 'Admin' }));
 }

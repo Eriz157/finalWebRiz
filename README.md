@@ -58,7 +58,7 @@ Platform ini memiliki lima peran (guest, public, member, curator, admin) dengan 
 - ✅ **Satu Design System** - Warna, tipografi, spasi, radius, shadow, dan transisi dikelola lewat design tokens terpusat
 - ✅ **Galeri Imersif** - Alur tiga tahap: Spiral → Fokus → Detail, dengan animasi yang halus
 - ✅ **Otorisasi di Server** - Setiap route API memeriksa peran pengguna, bukan hanya menyembunyikan tombol
-- ✅ **Tanpa Penyimpanan Berkas** - Semua gambar tersimpan di PostgreSQL, tanpa folder `uploads`
+- ✅ **Gambar di Folder uploads** – Gambar karya disimpan sebagai berkas di uploads/artworks/; database hanya mencatat nama berkasnya, sehingga dump SQL tetap ringkas
 - ✅ **Responsif** - Dirancang untuk desktop, tablet, dan mobile
 
 ---
@@ -147,11 +147,16 @@ Platform ini memiliki lima peran (guest, public, member, curator, admin) dengan 
 - 🔎 Pencarian dan filter status
 - 📎 Lampiran brief dari curator
 - 📝 Member mengikuti atau menarik submisi; curator menilai dan mengumumkan pemenang
+- 🧮 Penilaian 4 kriteria (1–100): Kreativitas 30%, Teknik 25%, Orisinalitas 25%, Estetika 20%. Totalnya dihitung otomatis.
+- ⚖️ Pemecah seri berurutan: Kreativitas, lalu Orisinalitas, Teknik, Estetika. Bila masih sama persis, karya menjadi juara bersama (peringkat 1, 1, 3).
+- 🥇 Satu karya, satu peringkat: divalidasi di server.
+
 
 ### 👥 Peran dan Akun
 - 🔐 **Lima peran** - Guest, Public, Member, Curator, Admin
 - 📨 **Pengajuan Curator** - Public dapat mengajukan, admin menyetujui atau menolak
-- 🧑‍💼 **User Management** - Admin mengubah peran dan menghapus akun
+- 🧑‍💼 **User Management** – Admin menyetujui atau menolak pengajuan Curator dan menghapus akun. Admin tidak mengubah nama, email, kata sandi, atau peran secara langsung.
+- 🔔 **Persetujuan pemilik akun** – Perubahan nama atau email dan reset kata sandi (ke pass_default123) hanya berlaku setelah pemilik akun menyetujuinya lewat notifikasi di halaman Profil. Kata sandi default baru terlihat setelah menekan Lihat, lalu Oke menghapus notifikasinya.
 - 👤 **Profil** - Foto, bio, dan tautan Instagram, Behance, serta website
 
 ### 🎨 Karya Saya (Member)
