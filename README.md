@@ -342,34 +342,45 @@ Tersedia setelah menjalankan `db:reset` atau `db:seed`:
 ```
 art-archive-next/
 ├── db/
-│   ├── schema.sql                 # skema PostgreSQL
-│   ├── upgrade-comments.sql       # sukai & balas komentar
-│   ├── upgrade-description.sql    # kolom deskripsi karya
-│   ├── seed/arts.json             # data karya contoh
-│   └── seed-images/               # gambar contoh
+│   ├── schema.sql                 # skema PostgreSQL (10 tabel, tanpa ALTER)
+│   ├── data-demo.sql              # data dummy (gambar ada di uploads/)
+│   └── seed/
+│       └── arts.json              # data 10 karya contoh
+├── uploads/
+│   └── artworks/                  # gambar karya
+│       └── demo-c01-senja.jpg ... demo-c10-mercusuar.jpg   # 10 gambar contoh (ikut git)
+├── public/
+│   ├── hall/hall1.jpg, hall2.jpg  # latar ruang pamer
+│   ├── hall1.jpg, hall2.jpg
+│   └── vendor/                    # animasi 3D Beranda
+│       ├── starry-archive.js
+│       ├── art-scene-2.js
+│       ├── starry-plate.webp
+│       └── art-plate-2.webp
 ├── docs/
 │   ├── banner.png
-│   └── screenshots/
+│   └── screenshots/               # beranda, gallery, detail, challenge, my-artwork, user-management
 ├── scripts/
-│   ├── migrate.js
-│   ├── seed.js
-│   ├── create-admin.js
-│   └── check-db.js
+│   ├── migrate.js                 # buat tabel (--reset: kosongkan)
+│   ├── seed.js                    # isi data contoh
+│   ├── create-admin.js            # buat akun admin
+│   ├── check-db.js                # cek struktur database + berkas gambar
+│   └── db-setup.mjs               # tidak terpakai (sisa versi lama)
 ├── src/
 │   ├── app/
 │   │   ├── api/                   # 24 route API
 │   │   │   ├── artworks/          # CRUD karya, suka, favorit, komentar, gambar
 │   │   │   ├── challenges/        # CRUD challenge, ikut, tutup, pemenang, lampiran
 │   │   │   ├── comments/          # hapus & sukai komentar
-│   │   │   ├── submissions/
-│   │   │   ├── users/
+│   │   │   ├── submissions/       # simpan nilai 4 kriteria
+│   │   │   ├── users/             # ubah peran, hapus akun, setujui curator
 │   │   │   ├── me/                # profil, akun, pengajuan curator
 │   │   │   └── auth/              # login, register, logout
 │   │   ├── gallery/               # spiral → fokus → detail
-│   │   ├── challenges/
+│   │   ├── challenges/            # daftar + [id] (penilaian & podium)
 │   │   ├── my-artwork/
 │   │   ├── overview/              # dashboard curator
-│   │   ├── profile/
+│   │   ├── profile/               # profil sendiri + [id]
 │   │   ├── users/                 # user management (admin)
 │   │   ├── login/
 │   │   ├── globals.css            # design tokens + seluruh gaya
@@ -380,17 +391,36 @@ art-archive-next/
 │   │   ├── galleryController.js   # logika spiral, fokus, detail
 │   │   ├── CommentsDrawer.js
 │   │   ├── ChallengesView.js
+│   │   ├── ChallengeDetailView.js # halaman penilaian + podium
+│   │   ├── challengeParts.js      # formulir challenge
+│   │   ├── OverviewView.js        # dashboard curator + umumkan pemenang
 │   │   ├── HomeView.js
 │   │   ├── MyArtworkView.js
+│   │   ├── ArtForm.js             # formulir unggah/edit karya
 │   │   ├── ProfileView.js
 │   │   ├── UsersView.js
-│   │   └── Navbar.js
+│   │   ├── LoginView.js
+│   │   ├── Navbar.js
+│   │   ├── Providers.js           # notifikasi, dialog, user aktif
+│   │   ├── context.js
+│   │   └── ui.js                  # ikon & komponen kecil
 │   └── lib/
-│       ├── db.js
-│       ├── auth.js
-│       ├── guard.js
-│       └── queries.js
+│       ├── db.js                  # sambungan PostgreSQL
+│       ├── auth.js                # login, bcrypt, JWT
+│       ├── guard.js               # pagar halaman per peran
+│       ├── api.js                 # pembantu route API & validasi
+│       ├── queries.js             # query karya, challenge, nilai
+│       ├── profileData.js         # data profil
+│       ├── scoring.js             # nilai berbobot, seri, juara bersama
+│       ├── files.js               # simpan/baca gambar di uploads/
+│       ├── challengeForm.js       # validasi form challenge
+│       ├── client.js              # pembantu browser (API, kecilkan gambar)
+│       └── format.js              # format tanggal, waktu, inisial
 ├── .env.example
+├── .gitignore
+├── AGENTS.md
+├── jsconfig.json
+├── next.config.mjs
 ├── package.json
 └── README.md
 ```
