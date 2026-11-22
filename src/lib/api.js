@@ -1,7 +1,7 @@
 import { getUser } from './auth';
 
 export class ApiError extends Error {
-  constructor(status, message) { super(message); this.status = status; }
+  constructor(status, message, extra) { super(message); this.status = status; this.extra = extra; }
 }
 export const json = (data, status = 200) => Response.json(data, { status });
 
@@ -10,7 +10,7 @@ export function route(fn) {
   return async (req, ctx) => {
     try { return await fn(req, ctx); }
     catch (e) {
-      if (e instanceof ApiError) return json({ error: e.message }, e.status);
+      if (e instanceof ApiError) return json({ error: e.message, ...(e.extra || {}) }, e.status);
       if (e && e.code === '23505') return json({ error: 'Data tersebut sudah ada.' }, 409);
       console.error(e);
       return json({ error: 'Terjadi kesalahan pada server.' }, 500);

@@ -1,6 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { useEffect, useRef } from 'react';
+import { motion } from 'motion/react';
 import { useApp } from './context';
 import { ROLE_LABEL, initials, bannerStyle, patCircles, chWhen, fmtDate, CH_LABEL, pad2 } from '@/lib/format';
 
@@ -46,7 +47,7 @@ export function ArtCard({ a, footer }) {
   const { cats } = useApp();
   const c = cats[a.category] || { label: a.category, color: '#7a6648' };
   return (
-    <article className="art-card">
+    <motion.article className="art-card" initial={{ opacity: 0, y: 36 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '0px 0px -8% 0px' }} transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: Math.min(0, 3) * 0.06 }} whileHover={{ y: -6 }}>
       <div className="im">
         {a.example && <span className="badge">Contoh</span>}
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -61,7 +62,7 @@ export function ArtCard({ a, footer }) {
         <span title="Komentar"><Icon n="chat" />{a.comments}</span>
       </div>
       <div className="ft" style={footer ? undefined : { paddingBottom: 8 }}>{footer}</div>
-    </article>
+    </motion.article>
   );
 }
 
@@ -69,7 +70,7 @@ export function ChCard({ c, idx = 1, plain, joined, onJoin, onEdit, onDelete }) 
   const { user } = useApp();
   const manage = user && (user.role === 'admin' || (user.role === 'curator' && c.ownerId === user.id));
   return (
-    <article className="ch-card">
+    <motion.article className="ch-card" initial={{ opacity: 0, y: 36 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '0px 0px -8% 0px' }} transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: Math.min(idx % 4, 3) * 0.06 }} whileHover={{ y: -6 }}>
       <div className="ch-ban" style={bannerStyle(c)}>
         {!c.banner && (
           <svg className="pat" viewBox="0 0 400 170" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
@@ -92,10 +93,22 @@ export function ChCard({ c, idx = 1, plain, joined, onJoin, onEdit, onDelete }) 
           </>}
         </div>
       </div>
-    </article>
+    </motion.article>
   );
 }
 
 export function Foot({ children }) {
   return <footer className="foot"><Link className="brand" href="/">The <em>Art</em> Archive</Link><span>{children}</span></footer>;
+}
+
+// Notifikasi demo: menampilkan OTP acak yang seharusnya dikirim lewat email.
+export function OtpNote({ otp, onFill, expiresIn = 300 }) {
+  return (
+    <motion.div className="otp-note" role="status" key={otp} initial={{ opacity: 0, y: -14, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ type: 'spring', stiffness: 380, damping: 26 }}>
+      <div><span className="upper">Notifikasi demo: OTP masuk</span>
+        <p>Kode OTP kamu: <code>{otp}</code></p>
+        <small className="mute">Seharusnya dikirim ke email. Kode acak, berlaku {Math.round(expiresIn / 60)} menit dan hanya untuk tindakan ini.</small></div>
+      <button type="button" className="btn soft sm" onClick={onFill}>Isi otomatis</button>
+    </motion.div>
+  );
 }

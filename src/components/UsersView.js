@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { useApp } from './context';
 import { api } from '@/lib/client';
-import { Avatar, Badge, Icon, Void } from './ui';
+import { Avatar, Badge, Icon, OtpNote, Void } from './ui';
 import { fmtDate, ROLE_LABEL } from '@/lib/format';
 
 function RequestChange({ u }) {
@@ -31,16 +31,24 @@ function RequestChange({ u }) {
 }
 
 // Kolom verifikasi (kata sandi + OTP). Panduan ditampilkan agar juri mudah mencoba fungsinya.
-function Verify({ f, setF, guide }) {
+function Verify({ f, setF, guide, purpose, targetId }) {
+  const [otp, setOtp] = useState(null);
+  const [msg, setMsg] = useState('');
+  const send = async () => {
+    setMsg('');
+    try { const d = await api('/api/otp', { method: 'POST', json: { purpose, targetId } }); setOtp(d); setF({ ...f, otp: '', otpToken: d.otpToken }); }
+    catch (x) { setMsg(x.message); }
+  };
   return (
     <>
       <div className="guide" role="note">
         <b>Panduan juri</b>
         <p>{guide.passLabel} : <code>{guide.password}</code></p>
-        <p>{guide.otpLabel} : <code>{guide.otp}</code></p>
-        <p className="small mute">Seharusnya kode OTP dikirim ke Gmail admin. Karena proyek ini masih berstatus demo, dipakai kode OTP universal di atas.</p>
+        <p className="small mute">Kode OTP acak dan berbeda setiap kali diminta. Seharusnya dikirim ke Gmail admin; di mode demo ia tampil sebagai notifikasi setelah menekan <b>Kirim kode OTP</b>.</p>
       </div>
       <div className="fld"><label htmlFor="vpw">Kata sandi verifikasi</label><input className="in" id="vpw" type="password" autoComplete="off" value={f.password} onChange={(e) => setF({ ...f, password: e.target.value })} /></div>
+      <div className="fld"><button type="button" className="btn soft sm" onClick={send}>{otp ? 'Kirim ulang kode OTP' : 'Kirim kode OTP'}</button>{msg && <span className="msg-err"> {msg}</span>}</div>
+      {otp && <OtpNote otp={otp.otp} expiresIn={otp.expiresIn} onFill={() => setF({ ...f, otp: otp.otp, otpToken: otp.otpToken })} />}
       <div className="fld"><label htmlFor="votp">Kode OTP (6 digit)</label><input className="in" id="votp" inputMode="numeric" maxLength={6} autoComplete="off" value={f.otp} onChange={(e) => setF({ ...f, otp: e.target.value.replace(/\D/g, '') })} /></div>
     </>
   );
@@ -48,12 +56,13 @@ function Verify({ f, setF, guide }) {
 
 function DeleteAccount({ u }) {
   const { closeModal, toast, refresh } = useApp();
-  const [f, setF] = useState({ password: '', otp: '' });
+  const [f, setF] = useState({ password: '', otp: '', otpToken: '' });
   const [err, setErr] = useState('');
   const [busy, setBusy] = useState(false);
   const submit = async (e) => {
     e.preventDefault(); setErr('');
     if (!f.password) return setErr('Masukkan kata sandi hapus akun.');
+    if (!f.otpToken) return setErr('Tekan Kirim kode OTP terlebih dahulu.');
     if (f.otp.length !== 6) return setErr('Kode OTP terdiri dari 6 digit.');
     setBusy(true);
     try { await api(`/api/users/${u.id}`, { method: 'DELETE', json: f }); closeModal(); toast('Akun dihapus.', 'ok'); refresh(); }
@@ -64,7 +73,7 @@ function DeleteAccount({ u }) {
       <h2>Hapus akun {u.name}?</h2>
       <p className="lead2">Ikut terhapus: {u.artCount} karya, challenge, komentar, dan submisi milik akun ini. Tindakan ini permanen dan tidak dapat dibatalkan.</p>
       <form onSubmit={submit} noValidate>
-        <Verify f={f} setF={setF} guide={{ passLabel: 'pass hapus akun', password: 'hard_delete123', otpLabel: 'otp hapus akun', otp: '010507' }} />
+        <Verify f={f} setF={setF} guide={{ passLabel: 'pass hapus akun', password: 'hard_delete123' }} purpose="hardDelete" targetId={u.id} />
         <p className="msg-err" role="alert">{err}</p>
         <div className="mdl-actions"><button type="button" className="btn line" onClick={() => closeModal()}>Batal</button><button type="submit" className="btn danger" disabled={busy}>Hapus permanen</button></div>
       </form>
@@ -74,7 +83,7 @@ function DeleteAccount({ u }) {
 
 function SuspendAccount({ u }) {
   const { closeModal, toast, refresh } = useApp();
-  const [f, setF] = useState({ password: '', otp: '' });
+  const [f, setF] = useState({ password: '', otp: '', otpToken: '' });
   const [dur, setDur] = useState('1d');
   const [amount, setAmount] = useState('1');
   const [unit, setUnit] = useState('days');
@@ -84,6 +93,7 @@ function SuspendAccount({ u }) {
     e.preventDefault(); setErr('');
     if (dur === 'custom' && !(Number.isInteger(Number(amount)) && Number(amount) >= 1 && Number(amount) <= 9999)) return setErr('Durasi kustom harus 1–9999.');
     if (!f.password) return setErr('Masukkan kata sandi tangguhkan akun.');
+    if (!f.otpToken) return setErr('Tekan Kirim kode OTP terlebih dahulu.');
     if (f.otp.length !== 6) return setErr('Kode OTP terdiri dari 6 digit.');
     setBusy(true);
     try { await api(`/api/users/${u.id}/suspend`, { method: 'POST', json: { ...f, duration: dur, amount: Number(amount), unit } }); closeModal(); toast(`${u.name} ditangguhkan.`, 'ok'); refresh(); }
@@ -103,7 +113,7 @@ function SuspendAccount({ u }) {
             <div style={{ display: 'flex', gap: 10 }}>
               <input className="in" id="samt" type="number" min="1" max="9999" value={amount} onChange={(e) => setAmount(e.target.value)} />
               <select className="in" aria-label="Satuan" value={unit} onChange={(e) => setUnit(e.target.value)}><option value="minutes">menit</option><option value="hours">jam</option><option value="days">hari</option></select></div></div>)}
-        <Verify f={f} setF={setF} guide={{ passLabel: 'pass tangguhkan akun', password: 'soft_delete123', otpLabel: 'otp tangguhkan akun', otp: '301006' }} />
+        <Verify f={f} setF={setF} guide={{ passLabel: 'pass tangguhkan akun', password: 'soft_delete123' }} purpose="suspend" targetId={u.id} />
         <p className="msg-err" role="alert">{err}</p>
         <div className="mdl-actions"><button type="button" className="btn line" onClick={() => closeModal()}>Batal</button><button type="submit" className="btn primary" disabled={busy}>Tangguhkan</button></div>
       </form>

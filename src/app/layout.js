@@ -3,6 +3,7 @@ import { getUser } from '@/lib/auth';
 import { listCategories } from '@/lib/queries';
 import Providers from '@/components/Providers';
 import Navbar from '@/components/Navbar';
+import Animations from '@/components/Animations';
 
 export const metadata = { title: 'The Art Archive', description: 'Galeri digital tempat kreator memajang karya, bertukar kritik, dan mengikuti challenge.' };
 export const dynamic = 'force-dynamic';
@@ -20,6 +21,7 @@ export default async function RootLayout({ children }) {
       <body>
         <a className="sr" href="#app" id="skip">Lewati ke konten</a>
         <Providers user={user} categories={categories}>
+          <Animations />
           <Navbar />
           <main id="app">{children}</main>
           <div className="sr" id="live" aria-live="polite" />

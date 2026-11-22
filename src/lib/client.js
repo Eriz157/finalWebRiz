@@ -7,7 +7,7 @@ export async function api(path, { method = 'GET', json, form } = {}) {
     body: json ? JSON.stringify(json) : form,
   });
   const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(data.error || 'Terjadi kesalahan. Coba lagi.');
+  if (!res.ok) { const e = new Error(data.error || 'Terjadi kesalahan. Coba lagi.'); e.data = data; throw e; }
   return data;
 }
 

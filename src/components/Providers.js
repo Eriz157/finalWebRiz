@@ -1,6 +1,7 @@
 'use client';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { AnimatePresence, MotionConfig, motion } from 'motion/react';
 import { AppCtx } from './context';
 import CommentsDrawer from './CommentsDrawer';
 import { Icon } from './ui';
@@ -81,22 +82,28 @@ export default function Providers({ user, categories, children }) {
 
   return (
     <AppCtx.Provider value={value}>
+     <MotionConfig reducedMotion="user">
       {children}
       <div className={'scrim' + (drawer ? ' open' : '')} onClick={closeComments} />
       <aside className={'drawer' + (drawer ? ' open' : '')} aria-label="Komentar karya" aria-hidden={drawer ? 'false' : 'true'}>
         {drawer && <CommentsDrawer key={drawer.art.id} art={drawer.art} onCount={drawer.onCount} onClose={closeComments} />}
       </aside>
-      {modal && (
-        <div className="mdl" role="dialog" aria-modal="true" onMouseDown={(e) => { if (e.target === e.currentTarget) closeModal(false); }}>
-          <div className={'mdl-sheet' + (modal.wide ? ' wide' : '')}>
-            <button type="button" className="mdl-x" onClick={() => closeModal(false)} aria-label="Tutup">×</button>
-            {modal.node}
-          </div>
-        </div>
-      )}
+      <AnimatePresence>
+        {modal && (
+          <motion.div key="mdl" className="mdl" role="dialog" aria-modal="true" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.18 }} onMouseDown={(e) => { if (e.target === e.currentTarget) closeModal(false); }}>
+            <motion.div className={'mdl-sheet' + (modal.wide ? ' wide' : '')} initial={{ opacity: 0, y: 28, scale: 0.97 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 16, scale: 0.98 }} transition={{ type: 'spring', stiffness: 360, damping: 30 }}>
+              <button type="button" className="mdl-x" onClick={() => closeModal(false)} aria-label="Tutup">×</button>
+              {modal.node}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
       <div className="toasts" role="status" aria-live="polite">
-        {toasts.map((t) => <div key={t.id} className={'toast ' + t.kind}>{t.msg}</div>)}
+        <AnimatePresence>
+          {toasts.map((t) => <motion.div layout key={t.id} className={'toast ' + t.kind} initial={{ opacity: 0, y: 24, scale: 0.94 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, x: 40 }} transition={{ type: 'spring', stiffness: 420, damping: 28 }}>{t.msg}</motion.div>)}
+        </AnimatePresence>
       </div>
+     </MotionConfig>
     </AppCtx.Provider>
   );
 }

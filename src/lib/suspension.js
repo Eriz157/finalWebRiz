@@ -12,3 +12,4 @@ export function suspendedMessage(row) {
   if (!row.suspended_until) return 'Akun anda ditangguhkan selama batas waktu yang tidak ditentukan, mohon maaf atas ketidaknyamanannya.';
   return `Akun anda ditangguhkan selama ${fmtRemaining(new Date(row.suspended_until).getTime() - Date.now())}, mohon maaf atas ketidaknyamanannya.`;
 }
+export const remainingMs = (row) => (row.suspended_until ? Math.max(0, new Date(row.suspended_until).getTime() - Date.now()) : null);

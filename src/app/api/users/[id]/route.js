@@ -10,11 +10,11 @@ export const PATCH = route(async () => {
   throw new ApiError(403, 'Admin tidak dapat mengubah akun secara langsung. Ajukan permintaan agar disetujui pemilik akun.');
 });
 
-// Hapus permanen: butuh kata sandi hapus akun + OTP (lihat src/lib/adminActions.js).
+// Hapus permanen: butuh kata sandi hapus akun + OTP (OTP acak, lihat src/lib/otp.js).
 export const DELETE = route(async (req, ctx) => {
   const admin = await requireUser(['admin']);
-  verifyAction('hardDelete', await readJson(req));
   const id = intParam((await ctx.params).id);
+  await verifyAction('hardDelete', await readJson(req), `${admin.id}:${id}`);
   const t = (await query('SELECT role FROM users WHERE id=$1', [id])).rows[0];
   if (!t) throw new ApiError(404, 'Akun tidak ditemukan.');
   if (t.role === 'admin' || id === admin.id) throw new ApiError(403, 'Akun admin tidak dapat dihapus.');

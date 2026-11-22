@@ -1063,3 +1063,21 @@ html:has(.b-pin){--nav-h:0px}
 .guide{background:#f6ecd0;border:1px solid #e5d49f;padding:var(--s-12) var(--s-16);margin:var(--s-16) 0}
 .guide p{margin:4px 0 0}
 .guide code{font-family:ui-monospace,Menlo,monospace;background:var(--paper);border:1px solid var(--line);padding:1px 6px}
+
+/* ---- Login: hitung mundur, lupa sandi ---- */
+.notice{display:flex;gap:14px;align-items:center;margin:0 0 var(--s-12);padding:14px 16px;border:1px solid var(--err);border-radius:12px;background:color-mix(in srgb,var(--err) 9%,transparent)}
+.notice.susp{border-color:var(--ink-2)}
+.notice .cd{flex:none;width:56px;height:56px;border-radius:50%;display:grid;place-items:center;font:600 24px/1 var(--f-serif,Georgia,serif);color:var(--err);border:2px solid var(--err);font-variant-numeric:tabular-nums}
+.notice .nt{flex:1;min-width:0}.notice .nt p{margin:4px 0 0;font-size:var(--fs-14)}
+.notice .clock{font-variant-numeric:tabular-nums;font-size:1.15em;letter-spacing:.02em}
+.notice .bar{height:4px;margin-top:10px;border-radius:2px;background:color-mix(in srgb,var(--err) 18%,transparent);overflow:hidden}
+.notice .bar i{display:block;height:100%;background:var(--err);transform-origin:left;transition:transform .25s linear}
+.linkbtn{background:none;border:0;padding:0;font:inherit;color:var(--ink-2);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.otp-note{display:flex;gap:12px;align-items:center;justify-content:space-between;margin:0 0 16px;padding:12px 14px;border:1px dashed var(--ink-2);border-radius:12px;background:color-mix(in srgb,var(--ok) 10%,transparent)}
+.otp-note p{margin:2px 0}.otp-note code{font-size:1.15em;font-weight:600;letter-spacing:.12em}
+/* judul per kata (GSAP) */
+.w{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.12em;margin-bottom:-.12em}.wi{display:inline-block;will-change:transform}
+/* Motion mengatur transform kartu */
+.art-card,.ch-card{will-change:transform}
+.art-card:hover,.ch-card:hover{transform:none}
+@media (prefers-reduced-motion:reduce){.notice .bar i{transition:none}}

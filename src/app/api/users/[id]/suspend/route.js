@@ -16,7 +16,7 @@ export const POST = route(async (req, ctx) => {
   const admin = await requireUser(['admin']);
   const id = intParam((await ctx.params).id);
   const b = await readJson(req);
-  verifyAction('suspend', b);
+  await verifyAction('suspend', b, `${admin.id}:${id}`);
   await target(admin, id);
   let interval = null;
   if (b.duration === 'forever') interval = null;
