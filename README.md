@@ -562,8 +562,8 @@ Kontribusi sangat diterima! Untuk berkontribusi:
 
 ## 👤 Kontak
 
-![GitHub](https://img.shields.io/badge/GitHub-USERNAME--GITHUB--ANDA-181717?style=for-the-badge&logo=github&logoColor=white) [@USERNAME-GITHUB-ANDA](https://github.com/USERNAME-GITHUB-ANDA)
+![GitHub](https://img.shields.io/badge/GitHub-Eriz157-181717?style=for-the-badge&logo=github&logoColor=white) [@Eriz157](https://github.com/Eriz157)
 
-![Project](https://img.shields.io/badge/Project-Link-FF6B6B?style=for-the-badge&logo=link&logoColor=white) : [https://github.com/USERNAME-GITHUB-ANDA/NAMA-REPO](https://github.com/USERNAME-GITHUB-ANDA/NAMA-REPO)
+![Project](https://img.shields.io/badge/Project-Link-FF6B6B?style=for-the-badge&logo=link&logoColor=white) : [https://github.com/Eriz157/finalWebRiz](https://github.com/Eriz157/finalWebRiz)
 
 ---
