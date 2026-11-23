@@ -255,36 +255,36 @@ npm start
 
 Tersedia setelah menjalankan `db:reset` atau `db:seed`:
 
-| Peran | Email | Kata sandi |
-|---|---|---|
-| 👨‍💼 Admin | `admin@archive.id` | `admin123` |
-| 🧑‍🎨 Curator | `kurator@archive.id` | `kurator123` |
-| 🖌️ Member | `member@archive.id` | `member123` |
-| 👤 Public | `publik@archive.id` | `publik123` |
-| 👤 Public (pengajuan curator pending) | `nadia@archive.id` | `publik123` |
+|                 Peran                 |        Email         |  Kata sandi  |
+|---------------------------------------|----------------------|--------------|
+| 👨‍💼 Admin                              | `admin@archive.id`   | `admin123`   |
+| 🧑‍🎨 Curator                            | `kurator@archive.id` | `kurator123` |
+| 🖌️ Member                             | `member@archive.id`  | `member123`  |
+| 👤 Public                             | `publik@archive.id`  | `publik123`  |
+| 👤 Public (pengajuan curator pending) | `nadia@archive.id`   | `publik123`  |
 
 > 🔒 Untuk produksi, ganti seluruh kata sandi demo dan tambahkan `SHOW_DEMO_LOGIN=0` agar tombol akun demo di halaman login disembunyikan.
 
 ### Environment Variables
 
-| Variabel | Fungsi |
-|---|---|
-| `DATABASE_URL` | Alamat koneksi PostgreSQL |
-| `AUTH_SECRET` | Rahasia penanda tangan cookie sesi (minimal 32 karakter acak) |
-| `APP_TZ` | Zona waktu untuk menentukan status challenge (aktif atau selesai) |
-| `SHOW_DEMO_LOGIN` | Isi `0` untuk menyembunyikan tombol akun demo |
+|      Variabel     |                              Fungsi                               |
+|-------------------|-------------------------------------------------------------------|
+| `DATABASE_URL`.   | Alamat koneksi PostgreSQL                                         |
+| `AUTH_SECRET`     | Rahasia penanda tangan cookie sesi (minimal 32 karakter acak)     |
+| `APP_TZ`          | Zona waktu untuk menentukan status challenge (aktif atau selesai) |
+| `SHOW_DEMO_LOGIN` | Isi `0` untuk menyembunyikan tombol akun demo                     |
 
 ### Perintah npm
 
-| Perintah | Fungsi |
-|---|---|
-| `npm run dev` | Server pengembangan |
-| `npm run build` / `npm start` | Build dan jalankan produksi |
-| `npm run db:migrate` | Membuat tabel; pada database yang sudah ada tidak mengubah data (hanya memindahkan gambar lama ke folder `uploads/`) |
-| `npm run db:seed` | Mengisi data demo (hanya bila tabel `users` kosong) |
-| `npm run db:reset` | Hapus semua lalu migrate + seed |
-| `npm run db:admin -- email sandi nama` | Membuat kategori awal dan akun admin |
-| `npm run db:check` | Memeriksa struktur database dan query halaman |
+|                 Perintah               |                                                       Fungsi                                                         |
+|----------------------------------------|----------------------------------------------------------------------------------------------------------------------|
+| `npm run dev`                          | Server pengembangan                                                                                                  |
+| `npm run build` / `npm start`          | Build dan jalankan produksi                                                                                          |
+| `npm run db:migrate`                   | Membuat tabel; pada database yang sudah ada tidak mengubah data (hanya memindahkan gambar lama ke folder `uploads/`) |
+| `npm run db:seed`                      | Mengisi data demo (hanya bila tabel `users` kosong)                                                                  |
+| `npm run db:reset`                     | Hapus semua lalu migrate + seed                                                                                      |
+| `npm run db:admin -- email sandi nama` | Membuat kategori awal dan akun admin                                                                                 |
+| `npm run db:check`                     | Memeriksa struktur database dan query halaman                                                                        |
 
 ---
 
@@ -406,10 +406,10 @@ art-archive-next/
 
 Tindakan sensitif admin di **User Management** (hapus dan tangguhkan akun) meminta kata sandi verifikasi dan kode OTP. OTP-nya **acak 6 digit**, berbeda setiap kali diminta, berlaku 5 menit, dan hanya sah untuk admin dan akun target yang sama. Seharusnya OTP dikirim ke Gmail admin; karena proyek ini masih berstatus demo (gimmick), OTP tampil sebagai **notifikasi demo** (dengan tombol *Isi otomatis*) setelah menekan **Kirim kode OTP**.
 
-| Fungsi | Kata sandi verifikasi |
-|---|---|
-| Hapus akun permanen | `hard_delete123` |
-| Tangguhkan akun | `soft_delete123` |
+|        Fungsi       | Kata sandi verifikasi |
+|---------------------|-----------------------|
+| Hapus akun permanen | `hard_delete123`      |
+| Tangguhkan akun     | `soft_delete123`      |
 
 - pass hapus akun : `hard_delete123`
 - pass tangguhkan akun : `soft_delete123`
@@ -417,21 +417,20 @@ Tindakan sensitif admin di **User Management** (hapus dan tangguhkan akun) memin
 
 **Tangguhkan akun:** pilih lama penangguhan (1 hari, 1 bulan, 1 tahun, kustom dalam menit/jam/hari, atau tanpa batas waktu). Selama ditangguhkan, akun tidak dapat masuk dan melihat pesan: *"Akun anda ditangguhkan selama jam:menit:detik, mohon maaf atas ketidaknyamanannya"* (atau "...selama batas waktu yang tidak ditentukan..."). Admin dapat mencabutnya lewat tombol **Cabut tangguhan**.
 
-**Blokir login:** salah kata sandi 3 kali berturut-turut memblokir akun tersebut selama 60 detik. Sisa waktu blokir dan penangguhan tampil sebagai hitung mundur langsung di halaman login (60, 59, 58, ... atau jam:menit:detik).
-
-**Perubahan karya oleh admin:** admin tidak dapat mengedit karya secara langsung. Saat admin menekan Edit di Gallery, perubahannya dikirim sebagai permintaan (tabel `artwork_requests`) dan muncul sebagai notifikasi di halaman Profil pemilik karya (Setujui/Tolak, dengan perbandingan sebelum dan sesudah). Setelah disetujui, karya diperbarui, notifikasi berubah menjadi ringkasan bidang yang berubah (misalnya judul, deskripsi, sinopsis) dengan tombol **Lihat** (ke detail karya di Gallery) dan **Oke** (menutup notifikasi). Endpoint pemilik: `POST /api/me/artwork-requests/[id]`. Pada database lama jalankan `npm run db:migrate`.
+**Perubahan karya oleh admin:** admin tidak dapat mengedit karya secara langsung. Saat admin menekan Edit di Gallery, perubahannya dikirim sebagai permintaan (tabel `artwork_requests`) dan muncul sebagai notifikasi di halaman Profil pemilik karya (Setujui/Tolak, dengan perbandingan sebelum dan sesudah). Setelah disetujui, karya diperbarui, notifikasi berubah menjadi ringkasan bidang yang berubah (misalnya judul, deskripsi, sinopsis) dengan tombol **Lihat** (ke detail karya di Gallery) dan **Oke** (menutup notifikasi). Endpoint pemilik: `POST /api/me/artwork-requests/[id]`. 
 
 **Lupa email atau kata sandi:** di halaman login klik *Lupa email atau kata sandi?*, isi nama akun (atau email), lalu OTP acak (muncul sebagai notifikasi demo dengan tombol *Isi otomatis*), dan isi email dan/atau kata sandi baru. Endpoint: `POST /api/auth/recover`. Catatan: menampilkan OTP di layar hanya untuk demo; di produksi OTP harus dikirim ke email pemilik akun.
 
 ### 🛡️ Ringkasan Otoritas
 
-| Peran | Akses |
-|---|---|
-| **Guest** | Beranda, Gallery dan Challenge (lihat saja), Login/Join |
-| **Public** | + Profil; suka, favorit, komentar; mengajukan jadi Curator |
-| **Member** | + My Artwork (CRUD karya sendiri), ikut/tarik submisi challenge |
-| **Curator** | + Overview (buat challenge, umumkan pemenang), kelola challenge sendiri |
-| **Admin** | + User Management (persetujuan curator), menghapus karya dan challenge; tidak dapat mengubah karya secara langsung (hanya mengajukan perubahan yang harus disetujui pemilik karya), menilai, atau menetapkan pemenang |
+| Peran       |                                                                  Akses                                                                                |
+|-------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Guest**   | Beranda, Gallery dan Challenge (lihat saja), Login/Join                                                                                               |
+| **Public**  | + Profil; suka, favorit, komentar; mengajukan jadi Curator                                                                                            |
+| **Member**  | + My Artwork (CRUD karya sendiri), ikut/tarik submisi challenge                                                                                       |
+| **Curator** | + Overview (buat challenge, umumkan pemenang), kelola challenge sendiri                                                                               |
+| **Admin**   | + User Management (persetujuan curator), menghapus karya dan challenge; tidak dapat mengubah karya secara langsung (hanya mengajukan perubahan yang   |
+|             | harus disetujui pemilik karya), menilai, atau menetapkan pemenang                                                                                     |
 
 > Akun admin hanya dibuat lewat `npm run db:admin` atau SQL, tidak lewat pendaftaran.
 
@@ -441,31 +440,19 @@ Tindakan sensitif admin di **User Management** (hapus dan tangguhkan akun) memin
 
 ### 🗄️ Skema Database
 
-| Tabel | Isi |
-|---|---|
-| `users` | Akun, peran, status pengajuan curator, profil |
-| `categories` | Kategori karya |
-| `artworks` | Karya (termasuk `description`, `synopsis`, `studio_url`, nama berkas gambar `image_file`) |
-| `likes`, `favorites` | Suka dan favorit karya |
-| `comments` | Komentar (`parent_id` untuk balasan) |
-| `comment_likes` | Suka pada komentar |
-| `challenges` | Challenge dan lampirannya |
-| `submissions` | Karya yang diikutsertakan ke challenge |
-| `winners` | Pemenang challenge |
+|        Tabel         |                                              Isi                                          |
+|----------------------|-------------------------------------------------------------------------------------------|
+| `users`              | Akun, peran, status pengajuan curator, profil                                             |
+| `categories`         | Kategori karya                                                                            |
+| `artworks`           | Karya (termasuk `description`, `synopsis`, `studio_url`, nama berkas gambar `image_file`) |
+| `likes`, `favorites` | Suka dan favorit karya                                                                    |
+| `comments`           | Komentar (`parent_id` untuk balasan)                                                      |
+| `comment_likes`.     | Suka pada komentar                                                                        |
+| `challenges`         | Challenge dan lampirannya                                                                 |
+| `submissions`        | Karya yang diikutsertakan ke challenge                                                    |
+| `winners`            | Pemenang challenge                                                                        |
 
-Skema lengkap ada di `db/schema.sql`. `db/schema.sql` sudah mencakup semua tabel dan kolom terbaru (tanpa `ALTER`). Database lama yang strukturnya berbeda sebaiknya dibuat ulang dari skema ini lalu diisi `db/data-demo.sql`; `npm run db:check` menunjukkan bagian yang tidak cocok.
-
-Query manual untuk database lama:
-
-```sql
--- Atribut deskripsi karya
-ALTER TABLE artworks ADD COLUMN IF NOT EXISTS description varchar(240) NOT NULL DEFAULT '';
-
--- (Opsional) isi deskripsi karya lama dari cuplikan sinopsis
-UPDATE artworks
-SET description = CASE WHEN length(synopsis) > 150 THEN left(synopsis, 147) || '…' ELSE synopsis END
-WHERE description = '';
-```
+Skema lengkap ada di `db/schema.sql`. `db/schema.sql` sudah mencakup semua tabel dan kolom terbaru (tanpa `ALTER`). Data dummy tersimpan di `db/data-demo.sql`; `npm run db:check` menunjukkan bagian yang tidak cocok.
 
 ### 🖼️ Penyimpanan Gambar
 
@@ -483,28 +470,29 @@ Gambar dikecilkan di browser (maksimal sekitar 900 KB) sebelum diunggah, lalu di
 
 Seluruh gaya berada di `src/app/globals.css` dan memakai token pada `:root`:
 
-| Kelompok | Token |
-|---|---|
-| Warna | `--bg`, `--paper`, `--ink`, `--terra`, `--olive`, `--c-gold`, `--on-dark*` |
-| Tipografi | `--serif`, `--sans`, `--serif-scene`, skala `--fs-11` sampai `--fs-40` |
-| Spasi | `--s-4` sampai `--s-96` |
-| Radius | `--r-1`, `--r-2`, `--r-3`, `--r-4`, `--r-pill` |
-| Shadow | `--sh-sm`, `--sh-md`, `--sh-lg`, `--sh-scene` |
-| Transisi | `--t-1`, `--t-2`, `--t-3` |
+| Kelompok  |                                   Token                                    |
+|-----------|----------------------------------------------------------------------------|
+| Warna     | `--bg`, `--paper`, `--ink`, `--terra`, `--olive`, `--c-gold`, `--on-dark*` |
+| Tipografi | `--serif`, `--sans`, `--serif-scene`, skala `--fs-11` sampai `--fs-40`     |
+| Spasi     | `--s-4` sampai `--s-96`                                                    |
+| Radius    | `--r-1`, `--r-2`, `--r-3`, `--r-4`, `--r-pill`                             |
+| Shadow    | `--sh-sm`, `--sh-md`, `--sh-lg`, `--sh-scene`                              |
+| Transisi  | `--t-1`, `--t-2`, `--t-3`                                                  |
 
 Ubah nilai token di satu tempat untuk memperbarui seluruh halaman.
 
 ### 🔌 Ringkasan API
 
-| Area | Endpoint |
-|---|---|
-| Autentikasi | `POST /api/auth/login`, `/register`, `/logout` |
-| Karya | `POST /api/artworks`, `PATCH/DELETE /api/artworks/[id]`, `/like`, `/favorite`, `/comments` (daftar dan kirim komentar), `/image` |
-| Komentar | `DELETE /api/comments/[id]`, `POST /api/comments/[id]/like` |
-| Challenge | `POST /api/challenges`, `PATCH/DELETE /api/challenges/[id]`, `/join`, `/close`, `/winners`, `/attachment` |
-| Submisi | `/api/submissions/[id]` |
-| Pengguna | `/api/users/[id]` (hapus), `/api/users/[id]/curator`, `/api/users/[id]/requests` (ajuan admin), `/api/users/[id]/suspend` (tangguhkan/cabut), `/api/me/requests/[id]` (keputusan pemilik akun) |
-| Akun sendiri | `/api/me/profile`, `/me/account`, `/me/curator-request` (hapus akun mandiri dinonaktifkan; hanya admin yang dapat menghapus akun) |
+| Area         |                                                                         Endpoint                                                             |
+|--------------|----------------------------------------------------------------------------------------------------------------------------------------------|
+| Autentikasi  | `POST /api/auth/login`, `/register`, `/logout`                                                                                               |
+| Karya        | `POST /api/artworks`, `PATCH/DELETE /api/artworks/[id]`, `/like`, `/favorite`, `/comments` (daftar dan kirim komentar), `/image`             |
+| Komentar     | `DELETE /api/comments/[id]`, `POST /api/comments/[id]/like`                                                                                  |
+| Challenge    | `POST /api/challenges`, `PATCH/DELETE /api/challenges/[id]`, `/join`, `/close`, `/winners`, `/attachment`                                    |
+| Submisi      | `/api/submissions/[id]`                                                                                                                      |
+| Pengguna     | `/api/users/[id]` (hapus), `/api/users/[id]/curator`, `/api/users/[id]/requests` (ajuan admin), `/api/users/[id]/suspend` (tangguhkan/cabut),|
+|              | `/api/me/requests/[id]` (keputusan pemilik akun)                                                                                             |
+| Akun sendiri | `/api/me/profile`, `/me/account`, `/me/curator-request` (hapus akun mandiri dinonaktifkan; hanya admin yang dapat menghapus akun)            |
 
 ---
 
@@ -534,13 +522,14 @@ npm run build
 
 ## 🆘 Masalah Umum
 
-| Pesan | Penyebab dan solusi |
-|---|---|
-| `password authentication failed` | Kata sandi di `DATABASE_URL` salah |
-| `ECONNREFUSED` | PostgreSQL belum berjalan, atau port berbeda |
-| `database "..." does not exist` | Database belum dibuat, nama di URL berbeda, atau file `.env` tidak terbaca (periksa file `.env` berada di folder yang sama dengan `package.json`) |
-| `Cannot find module 'pg'` | Jalankan `npm install` |
-| `Internal Server Error` di satu halaman | Jalankan `npm run db:check`, lalu lihat pesan error di terminal tempat `npm run dev` berjalan |
+|                 Pesan                   |                                   Penyebab dan solusi                                           |
+|-----------------------------------------|-------------------------------------------------------------------------------------------------|
+| `password authentication failed`        | Kata sandi di `DATABASE_URL` salah                                                              |
+| `ECONNREFUSED`                          | PostgreSQL belum berjalan, atau port berbeda                                                    |
+| `database "..." does not exist`         | Database belum dibuat, nama di URL berbeda, atau file `.env` tidak terbaca (periksa file `.env` |
+|                                         | berada di folder yang sama dengan `package.json`)                                               |
+| `Cannot find module 'pg'`               | Jalankan `npm install`                                                                          |
+| `Internal Server Error` di satu halaman | Jalankan `npm run db:check`, lalu lihat pesan error di terminal tempat `npm run dev` berjalan   |
 
 > 💡 Jika nama database di pesan error sama dengan nama user komputer Anda, hampir pasti file `.env` belum terbaca.
 
@@ -567,3 +556,5 @@ Kontribusi sangat diterima! Untuk berkontribusi:
 ![Project](https://img.shields.io/badge/Project-Link-FF6B6B?style=for-the-badge&logo=link&logoColor=white) : [https://github.com/Eriz157/finalWebRiz](https://github.com/Eriz157/finalWebRiz)
 
 ---
+
+⭐⭐⭐⭐⭐ Jika anda menyukai repository ini berikan bintang yaaa!!!
