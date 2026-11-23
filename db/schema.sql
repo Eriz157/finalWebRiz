@@ -125,3 +125,18 @@ CREATE TABLE account_requests (
   decided_at  timestamptz
 );
 CREATE INDEX account_requests_user_idx ON account_requests (user_id);
+
+-- @artwork_requests (tabel terakhir; migrate.js membuatnya sendiri pada database lama)
+-- Permintaan admin untuk mengubah sebuah karya; baru berlaku setelah pemilik karya menyetujuinya.
+CREATE TABLE artwork_requests (
+  id          integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  artwork_id  integer NOT NULL REFERENCES artworks(id) ON DELETE CASCADE,
+  owner_id    integer NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  admin_id    integer REFERENCES users(id) ON DELETE SET NULL,
+  changes     jsonb NOT NULL,  -- { kolom: { from, to } } hanya untuk kolom yang berubah
+  status      varchar(10) NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','approved','rejected','dismissed')),
+  created_at  timestamptz NOT NULL DEFAULT now(),
+  decided_at  timestamptz
+);
+CREATE INDEX artwork_requests_owner_idx ON artwork_requests (owner_id);
+CREATE INDEX artwork_requests_artwork_idx ON artwork_requests (artwork_id);

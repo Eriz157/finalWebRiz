@@ -31,8 +31,8 @@ export default function ArtForm({ art }) {
     try {
       const studioUrl = f.studio ? f.url.trim() : '';
       if (edit) {
-        await api(`/api/artworks/${art.id}`, { method: 'PATCH', json: { title: f.title, painter: f.painter, synopsis: f.synopsis, description: f.description, category: f.category, studioUrl } });
-        toast('Karya diperbarui.', 'ok');
+        const d = await api(`/api/artworks/${art.id}`, { method: 'PATCH', json: { title: f.title, painter: f.painter, synopsis: f.synopsis, description: f.description, category: f.category, studioUrl } });
+        toast(d.pending ? 'Permintaan perubahan dikirim ke pemilik karya.' : 'Karya diperbarui.', 'ok');
       } else {
         const fd = new FormData();
         fd.append('title', f.title); fd.append('painter', f.painter); fd.append('synopsis', f.synopsis); fd.append('description', f.description); fd.append('category', f.category); fd.append('studioUrl', studioUrl);
@@ -46,7 +46,7 @@ export default function ArtForm({ art }) {
   return (
     <>
       <h2>{edit ? 'Edit karya' : 'Daftarkan karya'}</h2>
-      <p className="lead2">{edit ? 'Perbarui informasi karya. File gambar tidak dapat diganti; hapus dan unggah ulang bila perlu.' : 'Karya yang kamu daftarkan otomatis tampil di Gallery.'}</p>
+      <p className="lead2">{edit && user?.role === 'admin' ? 'Sebagai admin kamu tidak mengubah karya secara langsung. Usulanmu dikirim sebagai notifikasi ke pemilik karya dan baru berlaku setelah ia menyetujuinya.' : edit ? 'Perbarui informasi karya. File gambar tidak dapat diganti; hapus dan unggah ulang bila perlu.' : 'Karya yang kamu daftarkan otomatis tampil di Gallery.'}</p>
       <form onSubmit={submit} noValidate>
         <div className="fld"><label htmlFor="afTitle">Judul karya</label><input className="in" id="afTitle" maxLength={120} autoComplete="off" autoFocus placeholder="Contoh: Senja di Ujung Dunia" value={f.title} onChange={set('title')} /></div>
         <div className="fld"><label htmlFor="afPainter">Nama seniman</label><input className="in" id="afPainter" maxLength={80} autoComplete="off" placeholder="Nama lengkap atau nama panggung" value={f.painter} onChange={set('painter')} /></div>
@@ -73,7 +73,7 @@ export default function ArtForm({ art }) {
         <p className="msg-err" role="alert">{err}</p>
         <div className="mdl-actions">
           <button type="button" className="btn line" onClick={() => closeModal()}>Batal</button>
-          <button type="submit" className="btn primary" disabled={busy}>{busy ? 'Menyimpan…' : edit ? 'Simpan perubahan' : 'Tambahkan ke Gallery'}</button>
+          <button type="submit" className="btn primary" disabled={busy}>{busy ? 'Menyimpan…' : edit ? (user?.role === 'admin' ? 'Kirim permintaan' : 'Simpan perubahan') : 'Tambahkan ke Gallery'}</button>
         </div>
       </form>
     </>

@@ -1,6 +1,6 @@
 import { query, todayStr } from './db';
 import { fmtScore } from './scoring';
-import { getPublicUser, listArtworks, listChallenges, listMyRequests } from './queries';
+import { getPublicUser, listArtworks, listChallenges, listMyRequests, listMyArtworkRequests } from './queries';
 
 // Mengumpulkan semua data halaman profil (milik sendiri maupun orang lain).
 export async function loadProfile(viewer, id) {
@@ -28,5 +28,6 @@ export async function loadProfile(viewer, id) {
     }));
   }
   const requests = own ? await listMyRequests(id) : [];
-  return { profile, own, arts, favorites, subs, requests, challenges: chs.filter((c) => c.ownerId === id) };
+  const artRequests = own ? await listMyArtworkRequests(id) : [];
+  return { profile, own, arts, favorites, subs, requests, artRequests, challenges: chs.filter((c) => c.ownerId === id) };
 }

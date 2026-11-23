@@ -58,6 +58,43 @@ function ProfileForm({ u }) {
 }
 
 
+const clip = (t, n = 90) => (t && t.length > n ? t.slice(0, n) + '…' : t || '(kosong)');
+
+// Notifikasi: admin mengajukan perubahan karya. Pemilik menyetujui/menolak; setelah disetujui tampil ringkasan + Lihat / Oke.
+function ArtRequestsPanel({ items }) {
+  const { toast, refresh, confirm } = useApp();
+  if (!items.length) return null;
+  const act = async (r, action, okMsg) => {
+    try { await api(`/api/me/artwork-requests/${r.id}`, { method: 'POST', json: { action } }); if (okMsg) toast(okMsg, 'ok'); refresh(); }
+    catch (x) { toast(x.message, 'err'); }
+  };
+  const decide = async (r, ok) => {
+    if (!(await confirm({ title: ok ? 'Setujui perubahan karya?' : 'Tolak perubahan karya?', text: ok ? `Karya "${r.artTitle}" akan langsung diperbarui sesuai usulan ${r.adminName}.` : `Usulan perubahan dari ${r.adminName} akan ditolak dan karyamu tidak berubah.`, ok: ok ? 'Setujui' : 'Tolak', danger: !ok }))) return;
+    act(r, ok ? 'approve' : 'reject', ok ? 'Perubahan karya disetujui.' : 'Perubahan karya ditolak.');
+  };
+  return (
+    <div className="notes" aria-label="Notifikasi karya">
+      {items.map((r) => (
+        <div className="note-card" key={r.id}>
+          {r.status === 'pending' ? (
+            <>
+              <div><b>{r.adminName} mengajukan perubahan pada karya "{r.artTitle}"</b>
+                {r.changes.map((c) => <div className="small" key={c.key}>{c.label}: <span className="mute">{clip(c.from)}</span> → <b>{clip(c.to)}</b></div>)}
+                <div className="small mute">Perubahan baru berlaku bila kamu menyetujuinya.</div></div>
+              <div className="btn-row"><button type="button" className="btn primary sm" onClick={() => decide(r, true)}>Setujui</button><button type="button" className="btn line sm" onClick={() => decide(r, false)}>Tolak</button></div>
+            </>
+          ) : (
+            <>
+              <div><b>Karya "{r.artTitle}" telah diperbarui</b>
+                <div className="small">Yang berubah: {r.changes.map((c) => c.label.toLowerCase()).join(', ')}.</div>
+                <div className="small mute">Diajukan oleh {r.adminName} dan sudah kamu setujui.</div></div>
+              <div className="btn-row"><Link className="btn primary sm" href={`/gallery/${r.artworkId}`}>Lihat</Link><button type="button" className="btn line sm" onClick={() => act(r, 'dismiss')}>Oke</button></div>
+            </>)}
+        </div>))}
+    </div>
+  );
+}
+
 function RequestsPanel({ requests, u }) {
   const { toast, refresh, confirm } = useApp();
   const [shown, setShown] = useState({});
@@ -139,7 +176,7 @@ function AccountTab({ u }) {
   );
 }
 
-export default function ProfileView({ profile: u, own, arts, favorites, subs, challenges, requests = [] }) {
+export default function ProfileView({ profile: u, own, arts, favorites, subs, challenges, requests = [], artRequests = [] }) {
   const sp = useSearchParams();
   const tabs = [['profil', 'Profil publik'], ['favorit', 'Favorit'], ['akun', 'Akun']];
   if (u.role === 'member') tabs.splice(2, 0, ['submisi', 'Submisi']);
@@ -174,6 +211,7 @@ export default function ProfileView({ profile: u, own, arts, favorites, subs, ch
     else body = <ProfileForm u={u} />;
     right = (
       <>
+        <ArtRequestsPanel items={artRequests} />
         <RequestsPanel requests={requests} u={u} />
         {u.curatorStatus === 'pending' && <div className="banner"><div><b>Pengajuan Curator sedang ditinjau</b>Admin akan memeriksa pengajuanmu. Selama menunggu, kamu tetap dapat menjelajah sebagai Public.</div></div>}
         {u.curatorStatus === 'rejected' && <div className="banner rej"><div><b>Pengajuan Curator ditolak</b>Admin menolak pengajuanmu. Kamu tetap dapat memakai akun ini sebagai Public.</div></div>}

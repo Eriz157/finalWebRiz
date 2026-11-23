@@ -35,10 +35,15 @@ async function moveImagesToFolder(c) {
     await c.query(`ALTER TABLE users
       ADD COLUMN IF NOT EXISTS suspended_at timestamptz, ADD COLUMN IF NOT EXISTS suspended_until timestamptz,
       ADD COLUMN IF NOT EXISTS failed_logins smallint NOT NULL DEFAULT 0, ADD COLUMN IF NOT EXISTS locked_until timestamptz`);
+    const sql = fs.readFileSync(path.join(__dirname, '..', 'db', 'schema.sql'), 'utf8');
+    const a = sql.indexOf('-- @account_requests'), b = sql.indexOf('-- @artwork_requests');
     if (!(await c.query("SELECT to_regclass('public.account_requests') AS t")).rows[0].t) {
-      const sql = fs.readFileSync(path.join(__dirname, '..', 'db', 'schema.sql'), 'utf8');
-      await c.query(sql.slice(sql.indexOf('-- @account_requests')));
+      await c.query(sql.slice(a, b));
       console.log('Tabel account_requests ditambahkan.');
+    }
+    if (!(await c.query("SELECT to_regclass('public.artwork_requests') AS t")).rows[0].t) {
+      await c.query(sql.slice(b));
+      console.log('Tabel artwork_requests ditambahkan.');
     }
     const moved = await moveImagesToFolder(c);
     if (moved) console.log(moved + ' gambar karya dipindahkan dari database ke folder uploads/artworks.');

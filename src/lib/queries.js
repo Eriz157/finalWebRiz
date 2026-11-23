@@ -126,3 +126,15 @@ export async function listMyRequests(userId) {
   return r.rows.map((x) => ({ id: x.id, kind: x.kind, newName: x.new_name, newEmail: x.new_email, status: x.status, revealed: x.revealed,
     createdAt: new Date(x.created_at).toISOString(), adminName: x.admin_name || 'Admin' }));
 }
+
+/* ---------- permintaan admin: ubah karya, menunggu persetujuan pemilik karya ---------- */
+export const ART_FIELD_LABEL = { title: 'Judul', painter: 'Nama seniman', synopsis: 'Sinopsis', description: 'Deskripsi', category: 'Kategori', studio_url: 'Tautan Studio View' };
+export async function listMyArtworkRequests(userId) {
+  const r = await query(`SELECT r.id,r.artwork_id,r.changes,r.status,r.created_at,a.name AS admin_name,w.title AS art_title
+    FROM artwork_requests r LEFT JOIN users a ON a.id=r.admin_id JOIN artworks w ON w.id=r.artwork_id
+    WHERE r.owner_id=$1 AND r.status IN ('pending','approved') ORDER BY r.created_at DESC,r.id DESC`, [userId]);
+  const cats = Object.fromEntries((await query('SELECT slug,label FROM categories')).rows.map((c) => [c.slug, c.label]));
+  return r.rows.map((x) => ({ id: x.id, artworkId: x.artwork_id, artTitle: x.art_title, status: x.status, adminName: x.admin_name || 'Admin',
+    createdAt: new Date(x.created_at).toISOString(),
+    changes: Object.entries(x.changes).map(([k, v]) => ({ key: k, label: ART_FIELD_LABEL[k] || k, from: k === 'category' ? (cats[v.from] || v.from) : v.from, to: k === 'category' ? (cats[v.to] || v.to) : v.to })) }));
+}

@@ -14,6 +14,16 @@ const EXPECTED = {
   "created_at": "timestamp with time zone",
   "decided_at": "timestamp with time zone"
  },
+ "artwork_requests": {
+  "id": "integer",
+  "artwork_id": "integer",
+  "owner_id": "integer",
+  "admin_id": "integer",
+  "changes": "jsonb",
+  "status": "character varying",
+  "created_at": "timestamp with time zone",
+  "decided_at": "timestamp with time zone"
+ },
  "artworks": {
   "id": "integer",
   "owner_id": "integer",
