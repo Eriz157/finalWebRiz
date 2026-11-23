@@ -1,4 +1,4 @@
-import { requireRole } from '@/lib/guard';
+import { getUser } from '@/lib/auth';
 import { listChallenges, listArtworks } from '@/lib/queries';
 import { query } from '@/lib/db';
 import ChallengesView from '@/components/ChallengesView';
@@ -6,8 +6,8 @@ import ChallengesView from '@/components/ChallengesView';
 export const metadata = { title: 'Challenge — The Art Archive' };
 
 export default async function Page() {
-  const u = await requireRole(['curator', 'member', 'admin']);
-  const member = u.role === 'member';
+  const u = await getUser();   // terbuka untuk guest dan public juga
+  const member = u?.role === 'member';
   const [challenges, myArts, joined] = await Promise.all([
     listChallenges(),
     member ? listArtworks(u.id, { ownerId: u.id }) : [],

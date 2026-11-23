@@ -7,8 +7,8 @@ import { api } from '@/lib/client';
 import { Avatar, Icon } from './ui';
 
 const NAVS = {
-  guest: [['/', 'Beranda'], ['/gallery', 'Gallery'], ['/login', 'Login / Join']],
-  public: [['/', 'Beranda'], ['/gallery', 'Gallery'], ['/profile', 'Profil']],
+  guest: [['/', 'Beranda'], ['/gallery', 'Gallery'], ['/challenges', 'Challenge'], ['/login', 'Login / Join']],
+  public: [['/', 'Beranda'], ['/gallery', 'Gallery'], ['/challenges', 'Challenge'], ['/profile', 'Profil']],
   curator: [['/', 'Beranda'], ['/gallery', 'Gallery'], ['/overview', 'Overview'], ['/challenges', 'Challenge'], ['/profile', 'Profil']],
   member: [['/', 'Beranda'], ['/gallery', 'Gallery'], ['/challenges', 'Challenge'], ['/my-artwork', 'My Artwork'], ['/profile', 'Profil']],
   admin: [['/', 'Beranda'], ['/gallery', 'Gallery'], ['/challenges', 'Challenge'], ['/users', 'User Management'], ['/profile', 'Profil']],

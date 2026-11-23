@@ -211,7 +211,7 @@ export default function HomeView({ stats, popular, newest, calls, joinedIds }) {
 
       <section className="sec wrap" id="sec-calls" data-sec="3">
         <div className="sec-head"><div><span className="eyebrow">III — Open calls</span><h2 className="h-lg">Challenge yang <em>sedang dibuka.</em></h2></div>
-          {u && ['member', 'curator', 'admin'].includes(role) && <Link className="btn line" href="/challenges">Semua challenge <Icon n="arrow" /></Link>}</div>
+          <Link className="btn line" href="/challenges">Semua challenge <Icon n="arrow" /></Link></div>
         {!calls.length ? <Void title="Belum ada challenge aktif"><p>Pantau terus: curator akan segera membuka open call berikutnya.</p></Void>
           : <div className="ch-grid">{calls.map((c, k) => <ChCard key={c.id} c={c} idx={k + 1} plain />)}</div>}
       </section>

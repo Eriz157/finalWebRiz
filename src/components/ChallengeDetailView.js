@@ -43,7 +43,7 @@ export default function ChallengeDetailView({ challenge: c, submissions, myArts 
   const s = c.status;
   const canJudge = !!u && u.role === 'curator' && c.ownerId === u.id;
   const mine = u ? submissions.find((x) => x.userId === u.id) : null;
-  const back = u && ['curator', 'member', 'admin'].includes(u.role) ? '/challenges' : '/';
+  const back = '/challenges';
   const att = c.attachment;
   const win = submissions.filter((x) => x.rank).sort((a, b) => a.rank - b.rank || (a.createdAt < b.createdAt ? -1 : 1));
   const shared = (r) => win.filter((x) => x.rank === r).length > 1;

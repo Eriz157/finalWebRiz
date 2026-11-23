@@ -35,6 +35,13 @@ async function moveImagesToFolder(c) {
     await c.query(`ALTER TABLE users
       ADD COLUMN IF NOT EXISTS suspended_at timestamptz, ADD COLUMN IF NOT EXISTS suspended_until timestamptz,
       ADD COLUMN IF NOT EXISTS failed_logins smallint NOT NULL DEFAULT 0, ADD COLUMN IF NOT EXISTS locked_until timestamptz`);
+    // Penilaian empat kriteria (database lama hanya punya kolom score tunggal).
+    await c.query(`ALTER TABLE submissions
+      ADD COLUMN IF NOT EXISTS score_creativity smallint CHECK (score_creativity BETWEEN 1 AND 100),
+      ADD COLUMN IF NOT EXISTS score_technique smallint CHECK (score_technique BETWEEN 1 AND 100),
+      ADD COLUMN IF NOT EXISTS score_originality smallint CHECK (score_originality BETWEEN 1 AND 100),
+      ADD COLUMN IF NOT EXISTS score_aesthetics smallint CHECK (score_aesthetics BETWEEN 1 AND 100)`);
+    await c.query('ALTER TABLE submissions ALTER COLUMN score TYPE numeric(5,2)');
     const sql = fs.readFileSync(path.join(__dirname, '..', 'db', 'schema.sql'), 'utf8');
     const a = sql.indexOf('-- @account_requests'), b = sql.indexOf('-- @artwork_requests');
     if (!(await c.query("SELECT to_regclass('public.account_requests') AS t")).rows[0].t) {

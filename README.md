@@ -1,24 +1,24 @@
 <p align="center">
-  <img width="1672" height="941" alt="Walk the Archive in Paint" src="https://github.com/user-attachments/assets/4794d088-17c3-4893-9f1a-3bfb06f3c5aa" />
+  <img src="docs/banner.png" alt="The Art Archive" width="100%">
 </p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Next.js-16-000000?style=for-the-badge&logo=nextdotjs&logoColor=white" alt="Next.js">
   <img src="https://img.shields.io/badge/React-19-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React">
   <img src="https://img.shields.io/badge/JavaScript-ES2023-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" alt="JavaScript">
-  <img src="https://img.shields.io/badge/PostgreSQL-16-4169E1?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL">
+  <img src="https://img.shields.io/badge/PostgreSQL-14+-4169E1?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL">
   <img src="https://img.shields.io/badge/Node.js-22-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js">
-  <img src="https://img.shields.io/badge/CSS-Custom-1572B6?style=for-the-badge&logo=css3&logoColor=white" alt="CSS">
+  <img src="https://img.shields.io/badge/CSS-Design%20Tokens-1572B6?style=for-the-badge&logo=css3&logoColor=white" alt="CSS">
 </p>
 
 <h3 align="center">
-Galeri digital untuk memamerkan, menemukan, dan membahas karya seni, lengkap dengan challenge dan komentar.
+Galeri digital tempat kreator memamerkan karya, bertukar kritik jujur, dan menjawab open call bulanan.
 </h3>
 
 <p align="center">
-  <a href="#-fitur"><img src="https://img.shields.io/badge/📋-Fitur-2F80ED?style=for-the-badge" alt="Fitur"></a>
-  <a href="#-instalasi"><img src="https://img.shields.io/badge/🚀-Instalasi-6AA84F?style=for-the-badge" alt="Instalasi"></a>
-  <a href="#-kontribusi"><img src="https://img.shields.io/badge/🤝-Kontribusi-E07B39?style=for-the-badge" alt="Kontribusi"></a>
+  <a href="#-fitur">📋 Fitur</a> ·
+  <a href="#-instalasi">🚀 Instalasi</a> ·
+  <a href="#-kontribusi">🤝 Kontribusi</a>
 </p>
 
 ---
@@ -58,72 +58,24 @@ Platform ini memiliki lima peran (guest, public, member, curator, admin) dengan 
 - ✅ **Satu Design System** - Warna, tipografi, spasi, radius, shadow, dan transisi dikelola lewat design tokens terpusat
 - ✅ **Galeri Imersif** - Alur tiga tahap: Spiral → Fokus → Detail, dengan animasi yang halus
 - ✅ **Otorisasi di Server** - Setiap route API memeriksa peran pengguna, bukan hanya menyembunyikan tombol
-- ✅ **Gambar di Folder uploads** – Gambar karya disimpan sebagai berkas di uploads/artworks/; database hanya mencatat nama berkasnya, sehingga dump SQL tetap ringkas
+- ✅ **Gambar di Folder `uploads`** - Gambar karya disimpan sebagai berkas di `uploads/artworks/`; database hanya mencatat nama berkasnya, sehingga dump SQL tetap ringkas
 - ✅ **Responsif** - Dirancang untuk desktop, tablet, dan mobile
 
 ---
 
 ## 🖼 Tampilan
 
-<hr>
+| Beranda | Gallery (halaman pertama) |
+|---|---|
+| ![Beranda](docs/screenshots/beranda.jpg) | ![Gallery](docs/screenshots/gallery.jpg) |
 
-<h2>
-  Halaman Beranda
-</h2>
-<img width="1424" height="818" alt="Screenshot 2026-11-20 at 14 08 02" src="https://github.com/user-attachments/assets/e2c98dc6-2501-4c90-849c-9de1b3d8476c" />
-<p>
-  Halaman landing yang memukau dengan ringkasan statistik, challenge, dan karya yang sedang di pamerkan.
-</p>
+| Detail karya | Challenge |
+|---|---|
+| ![Detail karya](docs/screenshots/detail.jpg) | ![Challenge](docs/screenshots/challenge.jpg) |
 
-<hr>
-
-<h2>
-  Halaman Gallery
-</h2>
-<img width="1440" height="818" alt="Screenshot 2026-11-20 at 14 10 20" src="https://github.com/user-attachments/assets/34cc2f8e-c512-4da5-b718-2b75c7d3d70e" />
-<p>
-  Halaman tempat seluruh seniman memamerkan karyanya. Halaman ini di lengkapi dengan fitur pencarian karya, sukai karya, komentar terhadap karya, dan fitur simpan.
-</p>
-
-<hr>
-
-<h2>
-  Halaman Challenge
-</h2>
-<img width="1440" height="817" alt="Screenshot 2026-11-20 at 14 11 28" src="https://github.com/user-attachments/assets/114858ac-8fed-41bd-9e49-84dfd024f206" />
-<p>
-  halaman sebagai tempat curator mempublikasikan challenge yang nantinya di tujukan ke member/seniman. Halaman ini di lengkapi dengan fitur pencarian hingga navigasi untuk challenge-challenge yang sedang berlangsung atau bahkan sudah selesai.
-</p>
-
-<hr>
-
-<h2>
-  Halaman User Management
-</h2>
-<img width="1440" height="819" alt="Screenshot 2026-11-20 at 14 13 27" src="https://github.com/user-attachments/assets/0e97787b-f96f-48a6-8e3e-cc8f32998823" />
-<p>
-  Halaman ini merupakan halaman yang eksklusif hanya untuk akun dengan role admin saja. berisi berbagai fitur mulai dari statistik akun pengguna, manajemen role akun, hingga manajemen karya ataupun challenge.
-</p>
-
-<hr>
-
-<h2>
-  Halaman My Artwork 
-</h2>
-<img width="1440" height="819" alt="Screenshot 2026-11-20 at 14 14 50" src="https://github.com/user-attachments/assets/34880ed7-b7cc-4b27-ba2a-8ce3dbf9c37b" />
-<p>
-  Halaman ini merupakan halaman yang eksklusif hanya untuk akun dengan role member. dilengkapi berbagai fitur untuk manajemen karya dari seniman.
-</p>
-
-<hr>
-
-<h2>
-  Halaman Overview 
-</h2>
-<img width="1440" height="817" alt="Screenshot 2026-11-20 at 14 16 00" src="https://github.com/user-attachments/assets/83bb3f53-4f15-4fff-864e-b2bf1a677445" />
-<p>
-  Halaman ini merupakan halaman yang eksklusif hanya untuk akun dengan role curator. dilengkapi berbagai fitur untuk manajemen challenge.
-</p>
+| My Artwork | User Management |
+|---|---|
+| ![My Artwork](docs/screenshots/my-artwork.jpg) | ![User Management](docs/screenshots/user-management.jpg) |
 
 ---
 
@@ -147,16 +99,14 @@ Platform ini memiliki lima peran (guest, public, member, curator, admin) dengan 
 - 🔎 Pencarian dan filter status
 - 📎 Lampiran brief dari curator
 - 📝 Member mengikuti atau menarik submisi; curator menilai dan mengumumkan pemenang
-- 🧮 Penilaian 4 kriteria (1–100): Kreativitas 30%, Teknik 25%, Orisinalitas 25%, Estetika 20%. Totalnya dihitung otomatis.
-- ⚖️ Pemecah seri berurutan: Kreativitas, lalu Orisinalitas, Teknik, Estetika. Bila masih sama persis, karya menjadi juara bersama (peringkat 1, 1, 3).
-- 🥇 Satu karya, satu peringkat: divalidasi di server.
-
+- 🧮 **Penilaian 4 kriteria (1-100)** - Kreativitas 30%, Teknik 25%, Orisinalitas 25%, Estetika 20%; total dihitung otomatis
+- ⚖️ **Pemecah seri berurutan** - Kreativitas, lalu Orisinalitas, Teknik, Estetika; bila masih sama persis, karya menjadi **juara bersama** (peringkat 1, 1, 3)
+- 🥇 **Satu karya, satu peringkat** - divalidasi di server; dua karya hanya boleh berbagi peringkat bila seluruh nilainya sama persis
 
 ### 👥 Peran dan Akun
 - 🔐 **Lima peran** - Guest, Public, Member, Curator, Admin
 - 📨 **Pengajuan Curator** - Public dapat mengajukan, admin menyetujui atau menolak
-- 🧑‍💼 **User Management** – Admin menyetujui atau menolak pengajuan Curator dan menghapus akun. Admin tidak mengubah nama, email, kata sandi, atau peran secara langsung.
-- 🔔 **Persetujuan pemilik akun** – Perubahan nama atau email dan reset kata sandi (ke pass_default123) hanya berlaku setelah pemilik akun menyetujuinya lewat notifikasi di halaman Profil. Kata sandi default baru terlihat setelah menekan Lihat, lalu Oke menghapus notifikasinya.
+- 🧑‍💼 **User Management** - Admin menyetujui/menolak pengajuan Curator dan menghapus akun. Admin tidak mengubah nama, email, kata sandi, atau peran secara langsung: perubahan nama/email dan reset kata sandi (ke `pass_default123`) hanya berlaku setelah pemilik akun menyetujuinya di halaman Profil
 - 👤 **Profil** - Foto, bio, dan tautan Instagram, Behance, serta website
 
 ### 🎨 Karya Saya (Member)
@@ -192,6 +142,10 @@ Platform ini memiliki lima peran (guest, public, member, curator, admin) dengan 
 
 ![Google Fonts](https://img.shields.io/badge/Google_Fonts-Cormorant_·_DM_Sans_·_Newsreader-4285F4?style=flat-square&logo=googlefonts&logoColor=white)  - Tipografi
 
+![GSAP](https://img.shields.io/badge/GSAP-3_+_ScrollTrigger-88CE02?style=flat-square&logo=greensock&logoColor=white)  - Judul muncul per kata dan elemen masuk satu per satu saat digulir
+
+![Motion](https://img.shields.io/badge/Motion-12+-FF0088?style=flat-square&logo=framer&logoColor=white)  - Animasi card, modal, dan toast (`motion/react`)
+
 ### 🔐 Keamanan
 
 ![JWT](https://img.shields.io/badge/JWT-jose_6-000000?style=flat-square&logo=jsonwebtokens&logoColor=white)  - Sesi lewat cookie JWT
@@ -217,8 +171,8 @@ Cek versi dengan `node -v` dan `psql --version`.
 ### 1️⃣ Clone Repository
 
 ```bash
-git clone https://github.com/Eriz157/finalWebRiz.git
-cd finalWebRiz
+git clone https://github.com/USERNAME-GITHUB-ANDA/NAMA-REPO.git
+cd NAMA-REPO
 ```
 
 ### 2️⃣ Install Dependencies
@@ -270,7 +224,11 @@ npm run db:reset
 > ⚠️ `db:reset` **menghapus seluruh isi database**. Jalankan hanya di awal.
 
 Pilihan lain:
-- Sudah punya data? Jalankan `npm run db:migrate` saja (aman, data tidak diubah).
+- Sudah membuat tabel sendiri dari `db/schema.sql` (tabel masih kosong)? Muat data demo lengkap dengan SQL:
+  ```bash
+  psql "postgres://USER:PASSWORD@localhost:5432/art_archive" -f db/data-demo.sql
+  ```
+- Sudah punya data? Jalankan `npm run db:migrate` (data tidak diubah; pada database lama yang masih menyimpan gambar di kolom `image`, gambarnya dipindah ke folder `uploads/artworks/`), lalu `npm run db:check`.
 - Tanpa data demo, hanya kategori dan satu admin:
   ```bash
   npm run db:admin -- emailanda@gmail.com "SandiAnda" "Nama Anda"
@@ -322,7 +280,7 @@ Tersedia setelah menjalankan `db:reset` atau `db:seed`:
 |---|---|
 | `npm run dev` | Server pengembangan |
 | `npm run build` / `npm start` | Build dan jalankan produksi |
-| `npm run db:migrate` | Membuat tabel; pada database yang sudah ada hanya menambah fitur baru tanpa mengubah data |
+| `npm run db:migrate` | Membuat tabel; pada database yang sudah ada tidak mengubah data (hanya memindahkan gambar lama ke folder `uploads/`) |
 | `npm run db:seed` | Mengisi data demo (hanya bila tabel `users` kosong) |
 | `npm run db:reset` | Hapus semua lalu migrate + seed |
 | `npm run db:admin -- email sandi nama` | Membuat kategori awal dan akun admin |
@@ -340,52 +298,40 @@ Tersedia setelah menjalankan `db:reset` atau `db:seed`:
 
 **`src/lib/`** - Koneksi database, autentikasi, query, dan validasi
 
-**`db/`** - Skema SQL, skrip upgrade, dan data contoh
+**`db/`** - Skema SQL dan data contoh
 
 **`scripts/`** - Migrasi, seed, pembuat admin, dan pemeriksa database
 
 ```
 art-archive-next/
 ├── db/
-│   ├── schema.sql                 # skema PostgreSQL (10 tabel, tanpa ALTER)
-│   ├── data-demo.sql              # data dummy (gambar ada di uploads/)
-│   └── seed/
-│       └── arts.json              # data 10 karya contoh
-├── uploads/
-│   └── artworks/                  # gambar karya
-│       └── demo-c01-senja.jpg ... demo-c10-mercusuar.jpg   # 10 gambar contoh (ikut git)
-├── public/
-│   ├── hall/hall1.jpg, hall2.jpg  # latar ruang pamer
-│   ├── hall1.jpg, hall2.jpg
-│   └── vendor/                    # animasi 3D Beranda
-│       ├── starry-archive.js
-│       ├── art-scene-2.js
-│       ├── starry-plate.webp
-│       └── art-plate-2.webp
+│   ├── schema.sql                 # skema PostgreSQL
+│   ├── data-demo.sql              # data demo lengkap (semua tabel)
+│   ├── seed/arts.json             # data karya contoh
+├── uploads/artworks/              # gambar karya (demo-* disertakan)
 ├── docs/
 │   ├── banner.png
-│   └── screenshots/               # beranda, gallery, detail, challenge, my-artwork, user-management
+│   └── screenshots/
 ├── scripts/
-│   ├── migrate.js                 # buat tabel (--reset: kosongkan)
-│   ├── seed.js                    # isi data contoh
-│   ├── create-admin.js            # buat akun admin
-│   ├── check-db.js                # cek struktur database + berkas gambar
-│   └── db-setup.mjs               # tidak terpakai (sisa versi lama)
+│   ├── migrate.js
+│   ├── seed.js
+│   ├── create-admin.js
+│   └── check-db.js
 ├── src/
 │   ├── app/
-│   │   ├── api/                   # 24 route API
+│   │   ├── api/                   # 30 route API
 │   │   │   ├── artworks/          # CRUD karya, suka, favorit, komentar, gambar
 │   │   │   ├── challenges/        # CRUD challenge, ikut, tutup, pemenang, lampiran
 │   │   │   ├── comments/          # hapus & sukai komentar
-│   │   │   ├── submissions/       # simpan nilai 4 kriteria
-│   │   │   ├── users/             # ubah peran, hapus akun, setujui curator
+│   │   │   ├── submissions/
+│   │   │   ├── users/
 │   │   │   ├── me/                # profil, akun, pengajuan curator
 │   │   │   └── auth/              # login, register, logout
 │   │   ├── gallery/               # spiral → fokus → detail
-│   │   ├── challenges/            # daftar + [id] (penilaian & podium)
+│   │   ├── challenges/
 │   │   ├── my-artwork/
 │   │   ├── overview/              # dashboard curator
-│   │   ├── profile/               # profil sendiri + [id]
+│   │   ├── profile/
 │   │   ├── users/                 # user management (admin)
 │   │   ├── login/
 │   │   ├── globals.css            # design tokens + seluruh gaya
@@ -396,36 +342,17 @@ art-archive-next/
 │   │   ├── galleryController.js   # logika spiral, fokus, detail
 │   │   ├── CommentsDrawer.js
 │   │   ├── ChallengesView.js
-│   │   ├── ChallengeDetailView.js # halaman penilaian + podium
-│   │   ├── challengeParts.js      # formulir challenge
-│   │   ├── OverviewView.js        # dashboard curator + umumkan pemenang
 │   │   ├── HomeView.js
 │   │   ├── MyArtworkView.js
-│   │   ├── ArtForm.js             # formulir unggah/edit karya
 │   │   ├── ProfileView.js
 │   │   ├── UsersView.js
-│   │   ├── LoginView.js
-│   │   ├── Navbar.js
-│   │   ├── Providers.js           # notifikasi, dialog, user aktif
-│   │   ├── context.js
-│   │   └── ui.js                  # ikon & komponen kecil
+│   │   └── Navbar.js
 │   └── lib/
-│       ├── db.js                  # sambungan PostgreSQL
-│       ├── auth.js                # login, bcrypt, JWT
-│       ├── guard.js               # pagar halaman per peran
-│       ├── api.js                 # pembantu route API & validasi
-│       ├── queries.js             # query karya, challenge, nilai
-│       ├── profileData.js         # data profil
-│       ├── scoring.js             # nilai berbobot, seri, juara bersama
-│       ├── files.js               # simpan/baca gambar di uploads/
-│       ├── challengeForm.js       # validasi form challenge
-│       ├── client.js              # pembantu browser (API, kecilkan gambar)
-│       └── format.js              # format tanggal, waktu, inisial
+│       ├── db.js
+│       ├── auth.js
+│       ├── guard.js
+│       └── queries.js
 ├── .env.example
-├── .gitignore
-├── AGENTS.md
-├── jsconfig.json
-├── next.config.mjs
 ├── package.json
 └── README.md
 ```
@@ -453,9 +380,11 @@ art-archive-next/
 ### 🌐 Untuk Guest
 1. 🏠 Menjelajahi Beranda
 2. 🖼️ Melihat Gallery (hanya melihat)
-3. 🔐 **Login** atau **Join** untuk berinteraksi
+3. 🏆 Melihat daftar dan detail Challenge (hanya melihat)
+4. 🔐 **Login** atau **Join** untuk berinteraksi
 
 ### 👤 Untuk Public
+0. 🏆 Melihat Challenge (hanya akun Member yang dapat mengikuti)
 1. ❤️ Menyukai, menyimpan, dan mengomentari karya
 2. 👤 Mengelola profil
 3. 📨 Mengajukan diri menjadi Curator
@@ -470,18 +399,39 @@ art-archive-next/
 2. 📝 Menilai submisi pada challenge miliknya
 
 ### 👨‍💼 Untuk Admin
-1. 🧑‍💼 **User Management** - Mengubah peran, menyetujui atau menolak pengajuan curator, menghapus akun
-2. 🛠️ Mengelola semua karya dan challenge
+1. 🧑‍💼 **User Management** - Menyetujui atau menolak pengajuan curator, mengajukan perubahan nama/email dan reset kata sandi (butuh persetujuan pemilik akun), menangguhkan akun, menghapus akun (hapus dan tangguhkan butuh kata sandi + OTP, lihat Panduan Juri)
+2. 🛠️ Mengelola semua karya dan challenge (tanpa menilai karya atau menetapkan pemenang; itu hak curator pemilik challenge)
+
+### 🧑‍⚖️ Panduan Juri (kode verifikasi demo)
+
+Tindakan sensitif admin di **User Management** (hapus dan tangguhkan akun) meminta kata sandi verifikasi dan kode OTP. OTP-nya **acak 6 digit**, berbeda setiap kali diminta, berlaku 5 menit, dan hanya sah untuk admin dan akun target yang sama. Seharusnya OTP dikirim ke Gmail admin; karena proyek ini masih berstatus demo (gimmick), OTP tampil sebagai **notifikasi demo** (dengan tombol *Isi otomatis*) setelah menekan **Kirim kode OTP**.
+
+| Fungsi | Kata sandi verifikasi |
+|---|---|
+| Hapus akun permanen | `hard_delete123` |
+| Tangguhkan akun | `soft_delete123` |
+
+- pass hapus akun : `hard_delete123`
+- pass tangguhkan akun : `soft_delete123`
+- OTP hapus, tangguhkan, dan lupa email/kata sandi : acak, lihat notifikasi demo
+
+**Tangguhkan akun:** pilih lama penangguhan (1 hari, 1 bulan, 1 tahun, kustom dalam menit/jam/hari, atau tanpa batas waktu). Selama ditangguhkan, akun tidak dapat masuk dan melihat pesan: *"Akun anda ditangguhkan selama jam:menit:detik, mohon maaf atas ketidaknyamanannya"* (atau "...selama batas waktu yang tidak ditentukan..."). Admin dapat mencabutnya lewat tombol **Cabut tangguhan**.
+
+**Blokir login:** salah kata sandi 3 kali berturut-turut memblokir akun tersebut selama 60 detik. Sisa waktu blokir dan penangguhan tampil sebagai hitung mundur langsung di halaman login (60, 59, 58, ... atau jam:menit:detik).
+
+**Perubahan karya oleh admin:** admin tidak dapat mengedit karya secara langsung. Saat admin menekan Edit di Gallery, perubahannya dikirim sebagai permintaan (tabel `artwork_requests`) dan muncul sebagai notifikasi di halaman Profil pemilik karya (Setujui/Tolak, dengan perbandingan sebelum dan sesudah). Setelah disetujui, karya diperbarui, notifikasi berubah menjadi ringkasan bidang yang berubah (misalnya judul, deskripsi, sinopsis) dengan tombol **Lihat** (ke detail karya di Gallery) dan **Oke** (menutup notifikasi). Endpoint pemilik: `POST /api/me/artwork-requests/[id]`. Pada database lama jalankan `npm run db:migrate`.
+
+**Lupa email atau kata sandi:** di halaman login klik *Lupa email atau kata sandi?*, isi nama akun (atau email), lalu OTP acak (muncul sebagai notifikasi demo dengan tombol *Isi otomatis*), dan isi email dan/atau kata sandi baru. Endpoint: `POST /api/auth/recover`. Catatan: menampilkan OTP di layar hanya untuk demo; di produksi OTP harus dikirim ke email pemilik akun.
 
 ### 🛡️ Ringkasan Otoritas
 
 | Peran | Akses |
 |---|---|
-| **Guest** | Beranda, Gallery (lihat saja), Login/Join |
+| **Guest** | Beranda, Gallery dan Challenge (lihat saja), Login/Join |
 | **Public** | + Profil; suka, favorit, komentar; mengajukan jadi Curator |
-| **Member** | + Challenge, My Artwork (CRUD karya sendiri), ikut/tarik submisi |
+| **Member** | + My Artwork (CRUD karya sendiri), ikut/tarik submisi challenge |
 | **Curator** | + Overview (buat challenge, umumkan pemenang), kelola challenge sendiri |
-| **Admin** | + User Management, mengelola semua karya dan challenge |
+| **Admin** | + User Management (persetujuan curator), menghapus karya dan challenge; tidak dapat mengubah karya secara langsung (hanya mengajukan perubahan yang harus disetujui pemilik karya), menilai, atau menetapkan pemenang |
 
 > Akun admin hanya dibuat lewat `npm run db:admin` atau SQL, tidak lewat pendaftaran.
 
@@ -495,7 +445,7 @@ art-archive-next/
 |---|---|
 | `users` | Akun, peran, status pengajuan curator, profil |
 | `categories` | Kategori karya |
-| `artworks` | Karya (termasuk `description`, `synopsis`, `studio_url`, gambar `bytea`) |
+| `artworks` | Karya (termasuk `description`, `synopsis`, `studio_url`, nama berkas gambar `image_file`) |
 | `likes`, `favorites` | Suka dan favorit karya |
 | `comments` | Komentar (`parent_id` untuk balasan) |
 | `comment_likes` | Suka pada komentar |
@@ -503,14 +453,31 @@ art-archive-next/
 | `submissions` | Karya yang diikutsertakan ke challenge |
 | `winners` | Pemenang challenge |
 
+Skema lengkap ada di `db/schema.sql`. `db/schema.sql` sudah mencakup semua tabel dan kolom terbaru (tanpa `ALTER`). Database lama yang strukturnya berbeda sebaiknya dibuat ulang dari skema ini lalu diisi `db/data-demo.sql`; `npm run db:check` menunjukkan bagian yang tidak cocok.
+
+Query manual untuk database lama:
+
+```sql
+-- Atribut deskripsi karya
+ALTER TABLE artworks ADD COLUMN IF NOT EXISTS description varchar(240) NOT NULL DEFAULT '';
+
+-- (Opsional) isi deskripsi karya lama dari cuplikan sinopsis
+UPDATE artworks
+SET description = CASE WHEN length(synopsis) > 150 THEN left(synopsis, 147) || '…' ELSE synopsis END
+WHERE description = '';
+```
+
 ### 🖼️ Penyimpanan Gambar
 
-Semua gambar tersimpan di PostgreSQL:
-- Foto karya: `artworks.image` (`bytea`) dan `image_mime`
-- Lampiran challenge: `challenges.attachment`, `attachment_name`, `attachment_mime`
+Gambar karya disimpan sebagai **berkas**, bukan di dalam database:
+- Foto karya: berkas di `uploads/artworks/` (nama berkas dicatat di `artworks.image_file`, jenisnya di `image_mime`). Lokasi folder bisa diganti lewat `UPLOAD_DIR` di `.env`
+- Gambar contoh (`demo-*.jpg`) ikut di repository; gambar unggahan pengguna tidak ikut git (lihat `.gitignore`)
+- Lampiran challenge: `challenges.attachment`, `attachment_name`, `attachment_mime` (masih di database)
 - Foto profil: `users.avatar` (data URL kecil)
 
-Gambar dikecilkan di browser (maksimal sekitar 900 KB) sebelum diunggah, lalu disajikan lewat `/api/artworks/[id]/image` dan `/api/challenges/[id]/attachment`. Cadangan cukup dengan `pg_dump`.
+Gambar dikecilkan di browser (maksimal sekitar 900 KB) sebelum diunggah, lalu disajikan lewat `/api/artworks/[id]/image` dan `/api/challenges/[id]/attachment`. Cadangan lengkap = `pg_dump` **dan** folder `uploads/`.
+
+> Catatan hosting: folder `uploads/` harus bisa ditulis dan tidak terhapus saat deploy. Platform dengan disk sementara (misalnya Vercel) tidak cocok untuk cara ini.
 
 ### 🎛️ Design Tokens
 
@@ -536,7 +503,7 @@ Ubah nilai token di satu tempat untuk memperbarui seluruh halaman.
 | Komentar | `DELETE /api/comments/[id]`, `POST /api/comments/[id]/like` |
 | Challenge | `POST /api/challenges`, `PATCH/DELETE /api/challenges/[id]`, `/join`, `/close`, `/winners`, `/attachment` |
 | Submisi | `/api/submissions/[id]` |
-| Pengguna | `/api/users/[id]`, `/api/users/[id]/curator` |
+| Pengguna | `/api/users/[id]` (hapus), `/api/users/[id]/curator`, `/api/users/[id]/requests` (ajuan admin), `/api/users/[id]/suspend` (tangguhkan/cabut), `/api/me/requests/[id]` (keputusan pemilik akun) |
 | Akun sendiri | `/api/me/profile`, `/me/account`, `/me/curator-request` (hapus akun mandiri dinonaktifkan; hanya admin yang dapat menghapus akun) |
 
 ---
@@ -560,7 +527,7 @@ npm run build
 - ✅ Suka, simpan, dan komentar (balas serta sukai komentar) dari spiral dan detail
 - ✅ My Artwork: unggah, edit, dan hapus karya
 - ✅ Challenge: ikut, tarik submisi, tutup, umumkan pemenang
-- ✅ User Management: ubah peran dan setujui atau tolak pengajuan curator
+- ✅ User Management: setujui atau tolak pengajuan curator (peran tidak dapat diubah manual)
 - ✅ Tampilan responsif di lebar 1440, 820, dan 390 px
 
 ---
@@ -595,13 +562,8 @@ Kontribusi sangat diterima! Untuk berkontribusi:
 
 ## 👤 Kontak
 
-![GitHub](https://img.shields.io/badge/GitHub-Eriz157-181717?style=for-the-badge&logo=github&logoColor=white) [Eriz157](https://github.com/Eriz157)
+![GitHub](https://img.shields.io/badge/GitHub-USERNAME--GITHUB--ANDA-181717?style=for-the-badge&logo=github&logoColor=white) [@USERNAME-GITHUB-ANDA](https://github.com/USERNAME-GITHUB-ANDA)
 
-![Project](https://img.shields.io/badge/Project-Link-FF6B6B?style=for-the-badge&logo=link&logoColor=white) : [https://github.com/Eriz157/finalWebRiz](https://github.com/Eriz157/finalWebRiz)
+![Project](https://img.shields.io/badge/Project-Link-FF6B6B?style=for-the-badge&logo=link&logoColor=white) : [https://github.com/USERNAME-GITHUB-ANDA/NAMA-REPO](https://github.com/USERNAME-GITHUB-ANDA/NAMA-REPO)
 
 ---
-
-⭐Terima kasih sudah berkunjung!! jika anda menyukai website ini boleh berikan bintang yaa!!
-
-
-

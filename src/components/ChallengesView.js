@@ -268,10 +268,11 @@ export default function ChallengesView({ challenges, joinedIds, myArts }) {
   const manage = !!(c && u && (u.role === 'admin' || (u.role === 'curator' && c.ownerId === u.id)));
   const rules = c ? rulesOf(c) : [];
   const idx = c ? Math.max(0, list.findIndex((x) => x.id === c.id)) : 0;
-  const addBtn = u.role === 'admin'
+  const role = u?.role;
+  const addBtn = role === 'admin'
     ? <button type="button" className="sp-add" onClick={act.create}><Icon n="plus" /> Tambah challenge</button>
-    : u.role === 'curator' ? <Link className="sp-add" href="/overview"><Icon n="plus" /> Buat di Overview</Link> : null;
-  const note = u.role === 'member' ? 'Pilih challenge yang masih aktif, lalu daftarkan salah satu karyamu.' : u.role === 'curator' ? 'Kamu hanya dapat mengelola dan menilai challenge milikmu sendiri.' : 'Sebagai admin, kamu dapat mengelola challenge, tetapi penilaian dan pemenang hanya oleh curator pemilik challenge.';
+    : role === 'curator' ? <Link className="sp-add" href="/overview"><Icon n="plus" /> Buat di Overview</Link> : null;
+  const note = role === 'member' ? 'Pilih challenge yang masih aktif, lalu daftarkan salah satu karyamu.' : role === 'curator' ? 'Kamu hanya dapat mengelola dan menilai challenge milikmu sendiri.' : !u || role === 'public' ? 'Lihat challenge yang sedang dan akan berlangsung. Hanya akun Member yang dapat mengikuti challenge.' : 'Sebagai admin, kamu dapat mengelola challenge, tetapi penilaian dan pemenang hanya oleh curator pemilik challenge.';
 
   return (
     <div className="sp-page" ref={pageRef} id="p-challenge">
@@ -332,13 +333,13 @@ export default function ChallengesView({ challenges, joinedIds, myArts }) {
                   </dl>
                   {c && (
                     <div className="sp-acts sp-fade" style={{ '--i': 4 }}>
-                      {u.role === 'member' && (joined
+                      {role === 'member' && (joined
                         ? <>
                           <span className="sp-joined">Sudah ikut</span>
                           {c.status !== 'ended' && <button type="button" className="sp-cta ghost" onClick={() => act.withdraw(c)}>Tarik submisi</button>}
                         </>
                         : c.status === 'active' && <button type="button" className="sp-cta" onClick={() => act.join(c)}>Ikuti challenge <span aria-hidden="true">→</span></button>)}
-                      <Link className={u.role === 'member' ? 'sp-cta ghost' : 'sp-cta'} href={`/challenges/${c.id}`}>{manage ? (u.role === 'curator' ? 'Kelola & nilai' : 'Kelola') : 'Lihat halaman lengkap'} <span aria-hidden="true">→</span></Link>
+                      <Link className={role === 'member' ? 'sp-cta ghost' : 'sp-cta'} href={`/challenges/${c.id}`}>{manage ? (role === 'curator' ? 'Kelola & nilai' : 'Kelola') : 'Lihat halaman lengkap'} <span aria-hidden="true">→</span></Link>
                       {manage && <>
                         <button type="button" className="sp-cta ghost" onClick={() => act.edit(c)}>Edit</button>
                         {c.status === 'active' && <button type="button" className="sp-cta ghost" onClick={() => act.close(c)}>Akhiri sekarang</button>}
