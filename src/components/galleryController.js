@@ -54,7 +54,7 @@ export function createGallery(env) {
   function aim(i) { const N = state.arts.length; if (!N) return; let d = i - sp.pos; d -= N * Math.round(d / N); sp.tgt = sp.pos + d; }
   function geom() {
     const W = stage.clientWidth || innerWidth, H = stage.clientHeight || innerHeight;
-    sp.ih = Math.round(Math.max(130, Math.min(H * 0.43, W * 0.46, 500)));
+    sp.ih = Math.round(Math.max(130, Math.min(H * 0.33, W * 0.36, 400)));
     sp.dy = Math.round(sp.ih * 1.14); sp.R = Math.round(Math.min(W * 0.28, 480));
     helix.style.setProperty('--ih', sp.ih + 'px');
     paint();

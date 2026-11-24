@@ -44,7 +44,7 @@ export default function Navbar() {
           ))}
         </ul>
         <div className="nav-right">
-          <span className="nav-label" id="navLabel" suppressHydrationWarning>{label}</span>
+          
           {user && (
             <span className="me-chip">
               <Link href="/profile" aria-label="Profil saya"><Avatar u={user} /></Link>

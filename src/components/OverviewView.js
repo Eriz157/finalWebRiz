@@ -114,7 +114,7 @@ export default function OverviewView({ challenges, subs }) {
                   <div className="acts">
                     <Link className="btn soft xs" href={`/challenges/${c.id}`}>Penilaian</Link>
                     <button type="button" className="btn line xs" onClick={() => act.edit(c)}><Icon n="edit" /> Edit</button>
-                    {c.status === 'active' && <button type="button" className="btn line xs" onClick={() => act.close(c)}>Akhiri</button>}
+                    {c.status === 'active' && <button type="button" className="btn danger xs" onClick={() => act.close(c)}>Akhiri</button>}
                     <button type="button" className="btn danger xs" aria-label="Hapus" onClick={() => act.del(c)}><Icon n="trash" /></button>
                   </div>
                 </div>);

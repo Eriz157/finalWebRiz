@@ -562,7 +562,7 @@ select.in{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns=
   --yaw:-17deg;--pit:-7deg;
   --veins:linear-gradient(112deg,transparent 33%,rgba(140,126,112,.17) 33.4%,transparent 34.3%),linear-gradient(72deg,transparent 58%,rgba(140,126,112,.12) 58.4%,transparent 59.5%),linear-gradient(141deg,transparent 12%,rgba(140,126,112,.1) 12.3%,transparent 13.2%);
   position:absolute;left:-500px;top:-900px;width:1000px;height:900px;perspective:2600px;perspective-origin:50% 62%;pointer-events:none;-webkit-box-reflect:below -4px linear-gradient(transparent 84%,rgba(255,255,255,.3))}
-#p-galeri .obj.lg{--bw:620px;--bh:26px;--bd:500px;--pw:560px;--ph:150px;--pd:420px;--cw:480px;--ch:584px;--cd:420px}
+#p-galeri .obj.lg{--bw:620px;--bh:26px;--bd:500px;--pw:560px;--ph:150px;--pd:420px;--cw:300px;--ch:399px;--cd:420px}
 #p-galeri .anchor{position:absolute;left:500px;top:900px;width:0;height:0;transform-style:preserve-3d;transform:rotateX(var(--pit)) rotateY(var(--yaw))}
 #p-galeri .anchor *{pointer-events:none}
 #p-galeri .slot[data-pos="0"] .anchor *,#p-galeri .slot[data-pos="1"] .anchor *,#p-galeri .slot[data-pos="2"] .anchor *,#p-galeri .slot[data-pos="3"] .anchor *{pointer-events:auto}
