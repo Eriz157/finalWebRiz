@@ -171,8 +171,8 @@ Cek versi dengan `node -v` dan `psql --version`.
 ### 1️⃣ Clone Repository
 
 ```bash
-git clone https://github.com/USERNAME-GITHUB-ANDA/NAMA-REPO.git
-cd NAMA-REPO
+git clone https://github.com/Eriz157/finalWebRiz.git
+cd finalWebRiz
 ```
 
 ### 2️⃣ Install Dependencies
