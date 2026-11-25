@@ -65,17 +65,33 @@ Platform ini memiliki lima peran (guest, public, member, curator, admin) dengan 
 
 ## 🖼 Tampilan
 
-| Beranda | Gallery (halaman pertama) |
-|---|---|
-| ![Beranda](<img width="1439" height="818" alt="Screenshot 2026-11-25 at 19 01 27" src="https://github.com/user-attachments/assets/635be1cb-bda6-4efd-b715-fe8fa6cc395c" />) | ![Gallery](<img width="1440" height="813" alt="Screenshot 2026-11-25 at 19 02 22" src="https://github.com/user-attachments/assets/44db33d7-0b0f-4eef-819f-9b9c6ce4e33c" />) |
+Beranda
+<img width="1439" height="818" alt="Screenshot 2026-11-25 at 19 01 27" src="https://github.com/user-attachments/assets/635be1cb-bda6-4efd-b715-fe8fa6cc395c" />
 
-| Detail karya | Challenge |
-|---|---|
-| ![Overview](<img width="1433" height="818" alt="Screenshot 2026-11-25 at 19 03 39" src="https://github.com/user-attachments/assets/aa423d1c-56eb-4563-8cca-9b08cc976d4a" />) | ![Challenge](<img width="1440" height="814" alt="Screenshot 2026-11-25 at 19 03 18" src="https://github.com/user-attachments/assets/bde22da3-5fd8-4f7b-857d-602439f5d9d2" />) |
+---
 
-| My Artwork | User Management |
-|---|---|
-| ![My Artwork](<img width="1440" height="819" alt="Screenshot 2026-11-25 at 19 04 08" src="https://github.com/user-attachments/assets/40d1927e-e4c5-405c-b2a8-8b0b177826d3" />) | ![User Management](<img width="1440" height="819" alt="Screenshot 2026-11-25 at 19 04 44" src="https://github.com/user-attachments/assets/2e30358e-1c4d-4102-bdb8-38c73738e45b" />) |
+Gallery
+<img width="1440" height="813" alt="Screenshot 2026-11-25 at 19 02 22" src="https://github.com/user-attachments/assets/44db33d7-0b0f-4eef-819f-9b9c6ce4e33c" />
+
+---
+
+Overview
+<img width="1433" height="818" alt="Screenshot 2026-11-25 at 19 03 39" src="https://github.com/user-attachments/assets/aa423d1c-56eb-4563-8cca-9b08cc976d4a" />
+
+---
+
+Challenge
+<img width="1440" height="814" alt="Screenshot 2026-11-25 at 19 03 18" src="https://github.com/user-attachments/assets/bde22da3-5fd8-4f7b-857d-602439f5d9d2" />
+
+---
+
+My Artwork
+<img width="1440" height="819" alt="Screenshot 2026-11-25 at 19 04 08" src="https://github.com/user-attachments/assets/40d1927e-e4c5-405c-b2a8-8b0b177826d3" />
+
+---
+
+User Management
+<img width="1440" height="819" alt="Screenshot 2026-11-25 at 19 04 44" src="https://github.com/user-attachments/assets/2e30358e-1c4d-4102-bdb8-38c73738e45b" />
 
 ---
 
