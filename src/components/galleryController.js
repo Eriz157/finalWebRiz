@@ -519,6 +519,10 @@ export function createGallery(env) {
   if (window.visualViewport) on(window.visualViewport, 'resize', schedFit);
   on(window, 'load', schedFit); on(window, 'pageshow', schedFit);
   later(schedFit, 250); later(schedFit, 1200);
+  // Cadangan: bila ukuran jendela berubah tanpa event apa pun (terjadi di Safari), ukur ulang.
+  let lastSize = innerWidth + 'x' + innerHeight;
+  const sizeWatch = setInterval(() => { const n = innerWidth + 'x' + innerHeight; if (n !== lastSize) { lastSize = n; schedFit(); } }, 400);
+  off.push(() => clearInterval(sizeWatch));
 
   return {
     sync, refreshInter, fit,

@@ -3,7 +3,7 @@
 export function isSuspended(row, now = Date.now()) {
   return !!row.suspended_at && (!row.suspended_until || new Date(row.suspended_until).getTime() > now);
 }
-export function fmtRemaining(ms) {
+function fmtRemaining(ms) {
   const t = Math.max(0, Math.ceil(ms / 1000));
   const p = (n) => String(n).padStart(2, '0');
   return `${p(Math.floor(t / 3600))}:${p(Math.floor((t % 3600) / 60))}:${p(t % 60)}`;

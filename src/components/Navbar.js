@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { useApp } from './context';
 import { api } from '@/lib/client';
@@ -16,9 +16,8 @@ const NAVS = {
 const LABELS = { '/': '00 / IV — Entrance', '/gallery': 'The Hall — Gallery', '/login': 'Sign In — Entrance', '/profile': 'Profile — Your Card', '/overview': 'Overview — Curator Desk', '/challenges': 'Open Calls', '/my-artwork': 'My Artwork — Studio', '/users': 'Registry — Users' };
 
 export default function Navbar() {
-  const { user, toast, navLabel } = useApp();
+  const { user, navLabel } = useApp();
   const path = usePathname() || '/';
-  const router = useRouter();
   const [open, setOpen] = useState(false);
   const items = NAVS[user ? user.role : 'guest'];
   const seg = '/' + (path.split('/')[1] || '');
@@ -31,8 +30,8 @@ export default function Navbar() {
   const logout = async () => {
     const n = user?.name || '';
     try { await api('/api/auth/logout', { method: 'POST' }); } catch {}
-    toast('Sampai jumpa' + (n ? ', ' + n.split(' ')[0] : '') + '.', 'ok');
-    router.push('/'); router.refresh();
+    try { sessionStorage.setItem('aa_flash', 'Sampai jumpa' + (n ? ', ' + n.split(' ')[0] : '') + '.'); } catch {}
+    window.location.assign('/');
   };
   return (
     <header className="nav" id="nav">
@@ -44,7 +43,6 @@ export default function Navbar() {
           ))}
         </ul>
         <div className="nav-right">
-          
           {user && (
             <span className="me-chip">
               <Link href="/profile" aria-label="Profil saya"><Avatar u={user} /></Link>

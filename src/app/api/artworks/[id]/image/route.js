@@ -9,5 +9,5 @@ export async function GET(req, ctx) {
   if (!r.rows[0]) return new Response('Not found', { status: 404 });
   const buf = await readArtworkImage(r.rows[0].image_file);
   if (!buf) return new Response('Berkas gambar tidak ditemukan di folder uploads.', { status: 404 });
-  return new Response(buf, { headers: { 'Content-Type': r.rows[0].image_mime, 'Cache-Control': 'public, max-age=31536000, immutable' } });
+  return new Response(buf, { headers: { 'Content-Type': r.rows[0].image_mime, 'Cache-Control': 'public, max-age=31536000, immutable', 'X-Content-Type-Options': 'nosniff' } });
 }

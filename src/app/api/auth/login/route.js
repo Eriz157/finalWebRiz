@@ -4,7 +4,7 @@ import { query } from '@/lib/db';
 import { createSession, mapUser } from '@/lib/auth';
 import { isSuspended, suspendedMessage, remainingMs } from '@/lib/suspension';
 
-const MAX_TRIES = 3, LOCK_SECONDS = 60;
+const MAX_TRIES = 5, LOCK_SECONDS = 60;
 
 export const POST = route(async (req) => {
   const b = await readJson(req);
@@ -14,7 +14,7 @@ export const POST = route(async (req) => {
   const u = (await query('SELECT * FROM users WHERE lower(email)=$1', [email])).rows[0];
   if (!u) throw new ApiError(401, 'Email atau kata sandi tidak cocok.');
 
-  // Diblokir sementara setelah 3x salah kata sandi.
+  // Diblokir sementara setelah 5x salah kata sandi.
   if (u.locked_until && new Date(u.locked_until).getTime() > Date.now()) {
     const ms = new Date(u.locked_until).getTime() - Date.now();
     throw new ApiError(429, `Akun diblokir sementara karena salah kata sandi ${MAX_TRIES} kali. Coba lagi dalam ${Math.ceil(ms / 1000)} detik.`, { lockMs: ms });

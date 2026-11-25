@@ -10,6 +10,7 @@ export const pool =
   g.__artArchivePool ||
   (g.__artArchivePool = new pg.Pool({ connectionString: process.env.DATABASE_URL, max: 10 }));
 
+pool.on('error', (e) => console.error('Koneksi database idle error:', e.message)); // cegah proses mati saat Postgres restart
 export const query = (text, params) => pool.query(text, params);
 
 export async function tx(fn) {

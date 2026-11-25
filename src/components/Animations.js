@@ -2,10 +2,6 @@
 // GSAP + ScrollTrigger: judul per kata, elemen masuk satu-satu (scroll tetap bawaan browser).
 import { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
-gsap.registerPlugin(ScrollTrigger);
 
 const HEADINGS = '.h-lg, .h-xl, .h-sm, .page-head h1, .b-count-head h2';
 const REVEALS = '.sec-head .lead, .sec-head .eyebrow, .b-count-head .eyebrow, .b-count-head .lead, [data-reveal]';
@@ -37,13 +33,22 @@ function splitWords(el) {
 export default function Animations() {
   const pathname = usePathname();
 
-  // GSAP: judul muncul per kata, elemen lain masuk satu-satu saat tergulir ke layar.
+  // GSAP dimuat belakangan (import dinamis) supaya tidak menambah JS awal halaman.
   useEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined;
     if (pathname.startsWith('/gallery')) return undefined;
     const reverts = [];
-    let ctx;
-    const timer = setTimeout(() => {
+    let ctx, dead = false;
+    // Sembunyikan sasaran selama GSAP dimuat, supaya tidak berkedip (tampil lalu hilang lalu muncul).
+    const hide = document.createElement('style');
+    hide.textContent = `${HEADINGS},${REVEALS}{opacity:0}`;
+    document.head.appendChild(hide);
+    const run = async () => {
+      let gsap, ScrollTrigger;
+      try { [{ default: gsap }, { ScrollTrigger }] = await Promise.all([import('gsap'), import('gsap/ScrollTrigger')]); }
+      catch { hide.remove(); return; }
+      if (dead) return;
+      gsap.registerPlugin(ScrollTrigger);
       ctx = gsap.context(() => {
         document.querySelectorAll(HEADINGS).forEach((h) => {
           if (h.closest('#bTitle, .mdl, .drawer') || h.id === 'bTitle' || h.dataset.noSplit != null) return;
@@ -64,8 +69,13 @@ export default function Animations() {
         });
       });
       ScrollTrigger.refresh();
-    }, 80);
-    return () => { clearTimeout(timer); if (ctx) ctx.revert(); reverts.forEach((r) => { try { r(); } catch { /* DOM sudah diganti */ } }); };
+      hide.remove();
+    };
+    // Bila preloader sedang tampil, tunggu sampai selesai agar animasi masuk terlihat pengunjung.
+    const waiting = !!document.getElementById('aap');
+    const timer = waiting ? 0 : setTimeout(run, 0);
+    if (waiting) window.addEventListener('preloader:done', run, { once: true });
+    return () => { dead = true; clearTimeout(timer); window.removeEventListener('preloader:done', run); hide.remove(); if (ctx) ctx.revert(); reverts.forEach((r) => { try { r(); } catch { /* DOM sudah diganti */ } }); };
   }, [pathname]);
 
   return null;

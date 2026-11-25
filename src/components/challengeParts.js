@@ -1,5 +1,4 @@
 'use client';
-import Link from 'next/link';
 import { useState } from 'react';
 import { useApp } from './context';
 import { api, shrinkToBlob } from '@/lib/client';

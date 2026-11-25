@@ -74,6 +74,8 @@ export default function Providers({ user, categories, children }) {
   }, [modal, closeModal]);
   // Setiap perpindahan halaman menutup dialog yang masih terbuka.
   useEffect(() => { if (!user) setDrawer(null); }, [user]);
+  // Pesan setelah masuk/keluar (halaman dimuat ulang penuh agar sesi & menu selalu sinkron).
+  useEffect(() => { try { const f = sessionStorage.getItem('aa_flash'); if (f) { sessionStorage.removeItem('aa_flash'); toast(f, 'ok'); } } catch {} }, [toast]);
 
   const value = useMemo(() => ({
     user, cats, categories, toast, confirm, openModal, closeModal, needLogin, openComments, closeComments,

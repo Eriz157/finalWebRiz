@@ -3,7 +3,7 @@ import { checkOtp } from './otp';
 
 // Kata sandi verifikasi tindakan sensitif admin (tetap, untuk panduan juri).
 // Kode OTP-nya acak per permintaan (lihat src/lib/otp.js dan POST /api/otp).
-export const GUIDE = {
+const GUIDE = {
   hardDelete: { password: 'hard_delete123' },  // hapus akun permanen
   suspend: { password: 'soft_delete123' },     // tangguhkan akun
 };

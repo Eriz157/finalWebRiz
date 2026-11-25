@@ -1,6 +1,5 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { motion } from 'motion/react';
 import { useApp } from './context';
 import { api } from '@/lib/client';
 import { Icon, OtpNote } from './ui';
@@ -31,7 +30,7 @@ function Notice({ notice, onOver }) {
       <div className="notice lock" role="alert" aria-live="off">
         <div className="cd" aria-hidden="true">{sec}</div>
         <div className="nt"><b>Akun diblokir sementara</b>
-          <p>Salah kata sandi 3 kali. Coba lagi dalam <b>{sec}</b> detik.</p>
+          <p>Salah kata sandi 5 kali. Coba lagi dalam <b>{sec}</b> detik.</p>
           <div className="bar"><i style={{ transform: `scaleX(${Math.min(1, ms / 60000)})` }} /></div></div>
       </div>);
   }
@@ -97,7 +96,7 @@ function Recover({ onBack, onDone }) {
 }
 
 export default function LoginView({ showDemo }) {
-  const { toast, router } = useApp();
+  const { toast } = useApp();
   const [tab, setTab] = useState('in');
   const [li, setLi] = useState({ email: '', password: '' });
   const [rg, setRg] = useState({ name: '', email: '', password: '', role: 'public' });
@@ -109,9 +108,8 @@ export default function LoginView({ showDemo }) {
   const noticeOver = (kind) => { setNotice(null); setInfo(kind === 'lock' ? 'Blokir selesai. Silakan coba masuk lagi.' : 'Masa penangguhan berakhir. Silakan masuk kembali.'); };
 
   const done = (user, msg) => {
-    toast(msg || `Selamat datang, ${user.name.split(' ')[0]}.`, 'ok');
-    router.push(user.curatorStatus ? '/profile?tab=akun' : '/');
-    router.refresh();
+    try { sessionStorage.setItem('aa_flash', msg || `Selamat datang, ${user.name.split(' ')[0]}.`); } catch {}
+    window.location.assign(user.curatorStatus ? '/profile?tab=akun' : '/');   // muat ulang penuh: sesi & menu navbar pasti sesuai peran
   };
   const login = async (e, creds) => {
     e && e.preventDefault(); setErr(''); setInfo('');

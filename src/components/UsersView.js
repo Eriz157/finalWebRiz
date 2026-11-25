@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useApp } from './context';
 import { api } from '@/lib/client';
 import { Avatar, Badge, Icon, OtpNote, Void } from './ui';
-import { fmtDate, ROLE_LABEL } from '@/lib/format';
+import { fmtDate } from '@/lib/format';
 
 function RequestChange({ u }) {
   const { closeModal, toast, refresh } = useApp();
@@ -185,10 +185,10 @@ export default function UsersView({ users, artTotal }) {
                   <Link className="btn soft xs" href={`/profile/${u.id}`}>Profil</Link>
                   {!adm && <>
                     <button type="button" className="btn line xs" onClick={() => openModal(<RequestChange u={u} />)}><Icon n="edit" /> Ajukan ubah</button>
-                    <button type="button" className="btn danger xs" onClick={() => resetPw(u)}>Reset sandi</button>
+                    <button type="button" className="btn line xs act-reset" onClick={() => resetPw(u)}>Reset sandi</button>
                     {u.reqPending > 0 && <button type="button" className="btn soft xs" onClick={() => cancelReq(u)}>Batalkan</button>}
                     {u.suspended ? <button type="button" className="btn soft xs" onClick={() => unsuspend(u)}>Cabut tangguhan</button>
-                      : <button type="button" className="btn danger xs" onClick={() => openModal(<SuspendAccount u={u} />)}>Tangguhkan</button>}
+                      : <button type="button" className="btn line xs act-hold" onClick={() => openModal(<SuspendAccount u={u} />)}>Tangguhkan</button>}
                     <button type="button" className="btn danger xs" aria-label={`Hapus ${u.name}`} onClick={() => openModal(<DeleteAccount u={u} />)}><Icon n="trash" /></button></>}
                 </div>
               </div>);

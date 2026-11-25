@@ -342,7 +342,7 @@ export default function ChallengesView({ challenges, joinedIds, myArts }) {
                       <Link className={role === 'member' ? 'sp-cta ghost' : 'sp-cta'} href={`/challenges/${c.id}`}>{manage ? (role === 'curator' ? 'Kelola & nilai' : 'Kelola') : 'Lihat halaman lengkap'} <span aria-hidden="true">→</span></Link>
                       {manage && <>
                         <button type="button" className="sp-cta ghost" onClick={() => act.edit(c)}>Edit</button>
-                        {c.status === 'active' && <button type="button" className="sp-cta danger" onClick={() => act.close(c)}>Akhiri sekarang</button>}
+                        {c.status === 'active' && <button type="button" className="sp-cta ghost" onClick={() => act.close(c)}>Akhiri sekarang</button>}
                         <button type="button" className="sp-cta danger" onClick={() => act.del(c)}>Hapus</button>
                       </>}
                     </div>

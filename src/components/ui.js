@@ -44,7 +44,7 @@ export function ArtCard({ a, footer }) {
       <div className="im">
         {a.example && <span className="badge">Contoh</span>}
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={a.image} alt={`${a.title}, karya ${a.painter}`} width={a.w} height={a.h} loading="lazy" decoding="async" />
+        <img src={a.image} alt={`${a.title}, karya ${a.painter}`} width={a.w} height={a.h} style={{ '--ar': a.w / a.h }} loading="lazy" decoding="async" />
         <Link className="lnk" href={`/gallery/${a.id}`} aria-label={`Lihat ${a.title} di galeri`} />
       </div>
       <div className="tx"><h4>{a.title}</h4><p>{a.painter}</p></div>

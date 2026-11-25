@@ -8,5 +8,5 @@ export async function GET(req, ctx) {
   const c = r.rows[0];
   if (!c || !c.attachment) return new Response('Not found', { status: 404 });
   const safe = String(c.attachment_name).replace(/[^\w.\-]+/g, '_');
-  return new Response(c.attachment, { headers: { 'Content-Type': c.attachment_mime, 'Content-Disposition': `inline; filename="${safe}"`, 'Cache-Control': 'private, max-age=300' } });
+  return new Response(c.attachment, { headers: { 'Content-Type': c.attachment_mime, 'Content-Disposition': `inline; filename="${safe}"`, 'Cache-Control': 'private, max-age=300', 'X-Content-Type-Options': 'nosniff' } });
 }

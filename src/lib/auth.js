@@ -1,5 +1,6 @@
 import { SignJWT, jwtVerify } from 'jose';
 import { cookies } from 'next/headers';
+import { cache } from 'react';
 import { query } from './db';
 import { isSuspended } from './suspension';
 
@@ -26,14 +27,14 @@ export function mapUser(r, withEmail = true) {
   };
 }
 
-// Selalu membaca ulang dari database supaya perubahan peran langsung berlaku.
-export async function getUser() {
+// Dibaca ulang dari database (peran langsung berlaku), tetapi hanya sekali per permintaan (layout + halaman berbagi hasil).
+export const getUser = cache(async () => {
   const token = (await cookies()).get(COOKIE)?.value;
   if (!token) return null;
   try {
     const { payload } = await jwtVerify(token, key());
-    const r = await query('SELECT * FROM users WHERE id=$1', [payload.uid]);
+    const r = await query('SELECT id,name,email,role,curator_status,bio,avatar,instagram,behance,website,created_at,suspended_at,suspended_until FROM users WHERE id=$1', [payload.uid]);
     if (!r.rows[0] || isSuspended(r.rows[0])) return null; // akun ditangguhkan = dianggap belum masuk
     return mapUser(r.rows[0]);
   } catch { return null; }
-}
+});
