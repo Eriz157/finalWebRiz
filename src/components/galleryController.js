@@ -20,6 +20,13 @@ export function createGallery(env) {
   const catOf = (a) => CATS()[a.category] || { label: a.category, color: '#7a6648' };
   const live = (t) => { const l = byId('live'); if (l) l.textContent = t; };
   const noop = () => {};
+  // Rasio gambar diketahui dari server (a.w x a.h) sehingga ukuran bingkai benar sebelum gambar selesai dimuat.
+  const arOf = (a) => (a.w / a.h).toFixed(4);
+  function mkImg(a, alt = '', opt) {
+    const im = new Image(); im.alt = alt; im.style.setProperty('--ar', arOf(a));
+    if (opt) { im.decoding = 'async'; im.draggable = false; }
+    im.src = a.image; return im;
+  }
 
   function cube(name, extra) {
     return '<div class="cube ' + name + '"><div class="f fr">' + (extra || '') + '</div><div class="f bk"></div><div class="f lf"></div><div class="f rt"></div><div class="f tp"></div></div>';
@@ -34,7 +41,7 @@ export function createGallery(env) {
       $('b', pq).textContent = a.title; $('i', pq).textContent = a.painter;
       const fr = document.createElement('div'); fr.className = 'frame';
       const art = document.createElement('div'); art.className = 'art';
-      const im = new Image(); im.alt = a.title + ', karya ' + a.painter; im.decoding = 'async'; im.draggable = false; im.src = a.image;
+      const im = mkImg(a, a.title + ', karya ' + a.painter, 1);
       art.appendChild(im); fr.appendChild(art); inside.appendChild(fr);
     }
     return o;
@@ -45,7 +52,7 @@ export function createGallery(env) {
     const b = document.createElement('button'); b.type = 'button'; b.className = 'si'; b.dataset.id = a.id;
     b.setAttribute('aria-label', a.title + ', karya ' + a.painter + ', kategori ' + catOf(a).label);
     const g = document.createElement('span'); g.className = 'sg';
-    const im = new Image(); im.alt = ''; im.decoding = 'async'; im.draggable = false; im.src = a.image; g.appendChild(im);
+    const im = mkImg(a, '', 1); g.appendChild(im);
     b.appendChild(g); return b;
   }
   const currentIndex = () => { const i = state.arts.findIndex((a) => a.id === state.centerId); return i < 0 ? 0 : i; };
@@ -54,7 +61,7 @@ export function createGallery(env) {
   function aim(i) { const N = state.arts.length; if (!N) return; let d = i - sp.pos; d -= N * Math.round(d / N); sp.tgt = sp.pos + d; }
   function geom() {
     const W = stage.clientWidth || innerWidth, H = stage.clientHeight || innerHeight;
-    sp.ih = Math.round(Math.max(130, Math.min(H * 0.33, W * 0.36, 400)));
+    sp.ih = Math.round(Math.max(110, Math.min(H * 0.34, W * 0.36, 400)));
     sp.dy = Math.round(sp.ih * 1.14); sp.R = Math.round(Math.min(W * 0.28, 480));
     helix.style.setProperty('--ih', sp.ih + 'px');
     paint();
@@ -150,6 +157,14 @@ export function createGallery(env) {
     byId('dInter').hidden = false;
     refreshInter();
     ds.appendChild(buildObject(a, true));
+    fit();
+    // Kotak kaca 3D kadang tergambar dengan ukuran keliru pada render pertama (baru benar setelah resize):
+    // paksa browser menyusun ulang lapisan 3D-nya setelah tata letak dan fade-in selesai.
+    later(settle3d, 90); later(settle3d, 1500);
+  }
+  function settle3d() {
+    const o = byId('dslot').firstElementChild; if (!o || state.view !== 'detail') return;
+    o.style.display = 'none'; void o.offsetWidth; o.style.display = '';
     fit();
   }
   // Kolom aksi di tepi kanan halaman pertama (sukai, komentar, simpan) untuk karya yang sedang di tengah spiral.
@@ -302,7 +317,7 @@ export function createGallery(env) {
     fc.rx = fc.ry = fc.tx = fc.ty = fc.z = fc.tz = 0; fc.mx = fc.my = 50; fc.hold = false; fc.over = false; ftick();
   }
   function fillFocus(a) {
-    fimg.src = a.image; fimg.alt = a.title + ', karya ' + a.painter;
+    fimg.style.setProperty('--ar', arOf(a)); fimg.src = a.image; fimg.alt = a.title + ', karya ' + a.painter;
     byId('focTitle').textContent = a.title; byId('focBy').textContent = a.painter; live('Karya terpilih: ' + a.title);
   }
 
@@ -312,7 +327,7 @@ export function createGallery(env) {
     if (!f) {
       f = document.createElement('div'); f.className = 'fly';
       f.style.cssText = 'left:' + base.left + 'px;top:' + base.top + 'px;width:' + base.width + 'px;height:' + base.height + 'px';
-      const im = new Image(); im.alt = ''; im.src = a.image; f.appendChild(im);
+      f.appendChild(mkImg(a));
       document.body.appendChild(f);
     }
     const kf = [];
@@ -410,7 +425,7 @@ export function createGallery(env) {
     const ease = 'cubic-bezier(.45,0,.2,1)';
     const f = document.createElement('div'); f.className = 'fly dive';
     f.style.cssText = 'left:' + r.left + 'px;top:' + r.top + 'px;width:' + r.width + 'px;height:' + r.height + 'px;border-radius:' + (fromHome ? '3px' : '14px') + '';
-    const im = new Image(); im.alt = ''; im.src = a.image; f.appendChild(im);
+    f.appendChild(mkImg(a));
     document.body.appendChild(f);
     if (fromHome) { if (srcItem) srcItem.style.visibility = 'hidden'; } else { fw.style.visibility = 'hidden'; focusEl.classList.add('leave'); }
     const S = Math.max(W / r.width, H / r.height) * 1.6;
@@ -498,6 +513,12 @@ export function createGallery(env) {
     setView('detail', true);
   }
   fit(); layout(); requestAnimationFrame(fit);
+  // Safari bisa melaporkan ukuran jendela yang belum final saat render pertama dan tidak mengirim event resize:
+  // ukur ulang saat ukuran berubah, setelah halaman dimuat penuh, dan sekali lagi sesaat kemudian.
+  if (window.ResizeObserver) { const ro = new ResizeObserver(schedFit); ro.observe(document.documentElement); ro.observe(stage); off.push(() => ro.disconnect()); }
+  if (window.visualViewport) on(window.visualViewport, 'resize', schedFit);
+  on(window, 'load', schedFit); on(window, 'pageshow', schedFit);
+  later(schedFit, 250); later(schedFit, 1200);
 
   return {
     sync, refreshInter, fit,

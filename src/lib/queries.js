@@ -1,6 +1,7 @@
 import { query, todayStr } from './db';
 import { mapUser } from './auth';
 import { isSuspended } from './suspension';
+import { imageSize } from './files';
 
 /* ---------- kategori ---------- */
 export async function listCategories() {
@@ -16,11 +17,12 @@ const ART_SELECT = `
     EXISTS(SELECT 1 FROM likes l WHERE l.artwork_id=a.id AND l.user_id=$1) AS liked,
     EXISTS(SELECT 1 FROM favorites f WHERE f.artwork_id=a.id AND f.user_id=$1) AS faved
   FROM artworks a`;
-export function mapArt(r) {
+function mapArt(r) {
+  const [w, h] = imageSize(r.image_file) || [4, 5];
   return {
     id: r.id, ownerId: r.owner_id, title: r.title, painter: r.painter, synopsis: r.synopsis, description: r.description || '', category: r.category,
     studioUrl: r.studio_url, example: r.is_example, createdAt: new Date(r.created_at).toISOString(),
-    likes: r.likes, comments: r.comments, liked: r.liked, faved: r.faved, image: `/api/artworks/${r.id}/image?v=${encodeURIComponent(r.image_file)}`,
+    likes: r.likes, comments: r.comments, liked: r.liked, faved: r.faved, image: `/api/artworks/${r.id}/image?v=${encodeURIComponent(r.image_file)}`, w, h,
   };
 }
 export async function listArtworks(viewerId, { ownerId, favoritesOf } = {}) {
@@ -30,11 +32,6 @@ export async function listArtworks(viewerId, { ownerId, favoritesOf } = {}) {
   const r = await query(`${ART_SELECT}${where} ORDER BY a.created_at, a.id`, params);
   return r.rows.map(mapArt);
 }
-export async function getArtwork(id, viewerId) {
-  const r = await query(`${ART_SELECT} WHERE a.id=$2`, [viewerId || 0, id]);
-  return r.rows[0] ? mapArt(r.rows[0]) : null;
-}
-
 /* ---------- pengguna ---------- */
 export async function getPublicUser(id, viewer) {
   const r = await query('SELECT * FROM users WHERE id=$1', [id]);
@@ -55,7 +52,7 @@ const CH_SELECT = `
     c.announced_at,c.attachment_name,c.attachment_mime,c.created_at, ${STATUS} AS status,
     (SELECT count(*) FROM submissions s WHERE s.challenge_id=c.id) AS participants
   FROM challenges c JOIN users u ON u.id=c.owner_id`;
-export function mapChallenge(r) {
+function mapChallenge(r) {
   const att = r.attachment_name ? { name: r.attachment_name, mime: r.attachment_mime, url: `/api/challenges/${r.id}/attachment` } : null;
   return {
     id: r.id, ownerId: r.owner_id, ownerName: r.owner_name, title: r.title, description: r.description, rules: r.rules,
@@ -128,7 +125,7 @@ export async function listMyRequests(userId) {
 }
 
 /* ---------- permintaan admin: ubah karya, menunggu persetujuan pemilik karya ---------- */
-export const ART_FIELD_LABEL = { title: 'Judul', painter: 'Nama seniman', synopsis: 'Sinopsis', description: 'Deskripsi', category: 'Kategori', studio_url: 'Tautan Studio View' };
+const ART_FIELD_LABEL = { title: 'Judul', painter: 'Nama seniman', synopsis: 'Sinopsis', description: 'Deskripsi', category: 'Kategori', studio_url: 'Tautan Studio View' };
 export async function listMyArtworkRequests(userId) {
   const r = await query(`SELECT r.id,r.artwork_id,r.changes,r.status,r.created_at,a.name AS admin_name,w.title AS art_title
     FROM artwork_requests r LEFT JOIN users a ON a.id=r.admin_id JOIN artworks w ON w.id=r.artwork_id

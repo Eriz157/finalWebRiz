@@ -1,7 +1,6 @@
 'use client';
 import Link from 'next/link';
-import { useEffect, useRef } from 'react';
-import { motion } from 'motion/react';
+import { m } from 'motion/react';
 import { useApp } from './context';
 import { ROLE_LABEL, initials, bannerStyle, patCircles, chWhen, fmtDate, CH_LABEL, pad2 } from '@/lib/format';
 
@@ -30,28 +29,22 @@ export const Void = ({ title, children, style }) => (
   <div className="void" style={style}>{title && <div className="h-sm">{title}</div>}{children}</div>
 );
 
-// Gambar bingkai: rasio asli diterapkan setelah dimuat.
+// Gambar bingkai: rasio asli sudah diketahui dari server, jadi tidak ada lompatan ukuran saat gambar dimuat.
 export function FrameImg({ a }) {
-  const ref = useRef(null);
-  useEffect(() => {
-    const img = ref.current; if (!img) return;
-    const f = () => { if (img.naturalWidth) { img.style.aspectRatio = img.naturalWidth + '/' + img.naturalHeight; img.style.objectFit = 'cover'; } };
-    if (img.complete) f(); else img.addEventListener('load', f, { once: true });
-  }, [a]);
   if (!a) return <div className="ph" role="img" aria-label="Bingkai kosong" />;
   // eslint-disable-next-line @next/next/no-img-element
-  return <img ref={ref} src={a.image} alt={`${a.title}, karya ${a.painter}`} />;
+  return <img src={a.image} alt={`${a.title}, karya ${a.painter}`} width={a.w} height={a.h} style={{ aspectRatio: `${a.w}/${a.h}`, objectFit: 'cover' }} />;
 }
 
 export function ArtCard({ a, footer }) {
   const { cats } = useApp();
   const c = cats[a.category] || { label: a.category, color: '#7a6648' };
   return (
-    <motion.article className="art-card" initial={{ opacity: 0, y: 36 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '0px 0px -8% 0px' }} transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: Math.min(0, 3) * 0.06 }} whileHover={{ y: -6 }}>
+    <m.article className="art-card" initial={{ opacity: 0, y: 36 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '0px 0px -8% 0px' }} transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: 0 }} whileHover={{ y: -6 }}>
       <div className="im">
         {a.example && <span className="badge">Contoh</span>}
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={a.image} alt={`${a.title}, karya ${a.painter}`} loading="lazy" />
+        <img src={a.image} alt={`${a.title}, karya ${a.painter}`} width={a.w} height={a.h} loading="lazy" decoding="async" />
         <Link className="lnk" href={`/gallery/${a.id}`} aria-label={`Lihat ${a.title} di galeri`} />
       </div>
       <div className="tx"><h4>{a.title}</h4><p>{a.painter}</p></div>
@@ -62,7 +55,7 @@ export function ArtCard({ a, footer }) {
         <span title="Komentar"><Icon n="chat" />{a.comments}</span>
       </div>
       <div className="ft" style={footer ? undefined : { paddingBottom: 8 }}>{footer}</div>
-    </motion.article>
+    </m.article>
   );
 }
 
@@ -70,7 +63,7 @@ export function ChCard({ c, idx = 1, plain, joined, onJoin, onEdit, onDelete }) 
   const { user } = useApp();
   const manage = user && (user.role === 'admin' || (user.role === 'curator' && c.ownerId === user.id));
   return (
-    <motion.article className="ch-card" initial={{ opacity: 0, y: 36 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '0px 0px -8% 0px' }} transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: Math.min(idx % 4, 3) * 0.06 }} whileHover={{ y: -6 }}>
+    <m.article className="ch-card" initial={{ opacity: 0, y: 36 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '0px 0px -8% 0px' }} transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: Math.min(idx % 4, 3) * 0.06 }} whileHover={{ y: -6 }}>
       <div className="ch-ban" style={bannerStyle(c)}>
         {!c.banner && (
           <svg className="pat" viewBox="0 0 400 170" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
@@ -93,7 +86,7 @@ export function ChCard({ c, idx = 1, plain, joined, onJoin, onEdit, onDelete }) 
           </>}
         </div>
       </div>
-    </motion.article>
+    </m.article>
   );
 }
 
@@ -104,11 +97,11 @@ export function Foot({ children }) {
 // Notifikasi demo: menampilkan OTP acak yang seharusnya dikirim lewat email.
 export function OtpNote({ otp, onFill, expiresIn = 300 }) {
   return (
-    <motion.div className="otp-note" role="status" key={otp} initial={{ opacity: 0, y: -14, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ type: 'spring', stiffness: 380, damping: 26 }}>
+    <m.div className="otp-note" role="status" key={otp} initial={{ opacity: 0, y: -14, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ type: 'spring', stiffness: 380, damping: 26 }}>
       <div><span className="upper">Notifikasi demo: OTP masuk</span>
         <p>Kode OTP kamu: <code>{otp}</code></p>
         <small className="mute">Seharusnya dikirim ke email. Kode acak, berlaku {Math.round(expiresIn / 60)} menit dan hanya untuk tindakan ini.</small></div>
       <button type="button" className="btn soft sm" onClick={onFill}>Isi otomatis</button>
-    </motion.div>
+    </m.div>
   );
 }
