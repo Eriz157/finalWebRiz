@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/banner.png" alt="The Art Archive" width="100%">
+  <img width="1672" height="941" alt="Walk the Archive_ A Painterly Journey" src="https://github.com/user-attachments/assets/af05e1c0-0afc-49b8-9c8f-fb862b4e9511" />
 </p>
 
 <p align="center">
@@ -67,15 +67,15 @@ Platform ini memiliki lima peran (guest, public, member, curator, admin) dengan 
 
 | Beranda | Gallery (halaman pertama) |
 |---|---|
-| ![Beranda](docs/screenshots/beranda.jpg) | ![Gallery](docs/screenshots/gallery.jpg) |
+| ![Beranda](<img width="1439" height="818" alt="Screenshot 2026-11-25 at 19 01 27" src="https://github.com/user-attachments/assets/635be1cb-bda6-4efd-b715-fe8fa6cc395c" />) | ![Gallery](<img width="1440" height="813" alt="Screenshot 2026-11-25 at 19 02 22" src="https://github.com/user-attachments/assets/44db33d7-0b0f-4eef-819f-9b9c6ce4e33c" />) |
 
 | Detail karya | Challenge |
 |---|---|
-| ![Detail karya](docs/screenshots/detail.jpg) | ![Challenge](docs/screenshots/challenge.jpg) |
+| ![Overview](<img width="1433" height="818" alt="Screenshot 2026-11-25 at 19 03 39" src="https://github.com/user-attachments/assets/aa423d1c-56eb-4563-8cca-9b08cc976d4a" />) | ![Challenge](<img width="1440" height="814" alt="Screenshot 2026-11-25 at 19 03 18" src="https://github.com/user-attachments/assets/bde22da3-5fd8-4f7b-857d-602439f5d9d2" />) |
 
 | My Artwork | User Management |
 |---|---|
-| ![My Artwork](docs/screenshots/my-artwork.jpg) | ![User Management](docs/screenshots/user-management.jpg) |
+| ![My Artwork](<img width="1440" height="819" alt="Screenshot 2026-11-25 at 19 04 08" src="https://github.com/user-attachments/assets/40d1927e-e4c5-405c-b2a8-8b0b177826d3" />) | ![User Management](<img width="1440" height="819" alt="Screenshot 2026-11-25 at 19 04 44" src="https://github.com/user-attachments/assets/2e30358e-1c4d-4102-bdb8-38c73738e45b" />) |
 
 ---
 
